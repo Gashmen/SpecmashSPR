@@ -1,0 +1,4 @@
+[2023-12-07 10:24:34,162: INFO] info
+[2023-12-07 10:25:51,605: INFO] __name__ info
+[2023-12-07 10:28:06,249: DEBUG] __name__ debug information
+[2023-12-07 10:28:06,249: INFO] __name__ info
