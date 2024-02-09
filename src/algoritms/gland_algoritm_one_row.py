@@ -45,6 +45,9 @@ class OneRowChecker(GlandAlgoritmChecker):
                  x_start_rectanglee, x_end_rectangle,
                  y_start_rectangle, y_end_rectangle):
 
+        self.status_add_to_possible_biggest_input = False
+        self.status_add_in_one_row = False
+
         self.install_one_row_checker(list_glands_on_side=list_glands_on_side,
                                      clearens = clearens,
                                      x_start_rectangle=x_start_rectanglee,
@@ -53,15 +56,17 @@ class OneRowChecker(GlandAlgoritmChecker):
                                      y_end_rectangle=y_end_rectangle)
         self.set_glands_diametrs()
         if self.check_possible_to_add_biggest_input():
+            self.status_add_to_possible_biggest_input = True
             if self.check_possible_to_add_all_inputs_in_one_row():
+                self.status_add_in_one_row = True
                 self.calculate_x_one_row()
                 self.calculate_y_one_row()
                 self.calculate_new_x_start_rectangle()
                 self.delete_gland_one_row()
             else:
-                raise BaseException('Не получается в один ряд поставить')
+                self.status_add_in_one_row = False
         else:
-            raise BaseException('Кабельный ввод больше чем размер оболочки')
+            self.status_add_to_possible_biggest_input = False
 
     def install_one_row_checker(self,list_glands_on_side,clearens,
                                 x_start_rectangle,x_end_rectangle,
@@ -104,9 +109,9 @@ class OneRowChecker(GlandAlgoritmChecker):
         :return: x_coordinate
         '''
         if len(self.list_glands) != 1:
-            self.gland_x_coordinate = self.x_start_rectangle + self.list_diam[0]/2 + self.free_space/(len(self.list_glands)-1)
+            self.gland_x_coordinate = self.x_start_rectangle + self.list_diam[0]/2 + self.free_space/(len(self.list_glands)+1)
         else:
-            self.gland_x_coordinate = self.x_start_rectangle + self.list_diam[0]/2
+            self.gland_x_coordinate = self.x_start_rectangle + (self.x_end_rectangle - self.x_start_rectangle)/2
 
         self.list_glands[0].set_x_coordinate(x_coordinate=self.gland_x_coordinate)
 
@@ -116,7 +121,7 @@ class OneRowChecker(GlandAlgoritmChecker):
         :return:
         '''
         if len(self.list_glands) != 1:
-            self.new_x_start_rectangle = self.x_start_rectangle + self.list_diam[0] + self.clearens + self.free_space/(len(self.list_glands)-1)
+            self.new_x_start_rectangle = self.x_start_rectangle + self.list_diam[0] + self.clearens + self.free_space/(len(self.list_glands)+1)
         else:
             self.new_x_start_rectangle = self.x_end_rectangle
 

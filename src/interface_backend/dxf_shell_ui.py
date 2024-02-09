@@ -23,15 +23,17 @@ class DxfShellQtCommunication(dxf_base_ui.DxfQtCommunication):
         self.sizeCombobox_shellpage.currentTextChanged.connect(self.check_possible_to_add_shell)
         self.sizeCombobox_shellpage.currentTextChanged.connect(self.set_shell_blocks)
 
-        self.sideVListWidget.model().rowsInserted.connect(self.test_draw_glands_in_downside)
-        self.sideVListWidget.model().rowsRemoved.connect(self.test_draw_glands_in_downside)
-
+        self.sideVListWidget.model().rowsInserted.connect(self.draw_glands_in_downside)
+        self.sideVListWidget.model().rowsRemoved.connect(self.draw_glands_in_downside)
 
 
 
     def set_shell_blocks(self):
         self.set_shell_topside_block()
         self.set_shell_downside_block()
+        self.set_shell_leftside_block()
+        self.set_shell_upside_block()
+        self.set_shell_rightside_block()
 
     def check_possible_to_add_shell(self):
         '''Проверка возможности добавления коробки
@@ -51,7 +53,12 @@ class DxfShellQtCommunication(dxf_base_ui.DxfQtCommunication):
                                                                  doc_base=self.base_dxf.doc_base,
                                                                  glands_on_sides_dict=self.glands_on_sides_dict)
 
-
+    def set_shell_upside_block(self):
+        if hasattr(self,'shell_dict'):
+            if hasattr(self,'shell_base_dxf'):
+                self.upside_block = dxf_shell.ShellUpSideBlock(translit_name=self.shell_base_dxf.shell_translit_name,
+                                                                   doc_base=self.base_dxf.doc_base,
+                                                                   glands_on_sides_dict=self.glands_on_sides_dict)
     def set_shell_downside_block(self):
         if hasattr(self,'shell_dict'):
             if hasattr(self,'shell_base_dxf'):
@@ -59,18 +66,25 @@ class DxfShellQtCommunication(dxf_base_ui.DxfQtCommunication):
                                                                    doc_base=self.base_dxf.doc_base,
                                                                    glands_on_sides_dict=self.glands_on_sides_dict)
 
-    def test_draw_glands_in_downside(self):
+    def draw_glands_in_downside(self):
         if hasattr(self,'downside_block'):
             self.downside_block.calculate_coordinate_glands_for_draw()
-            print(self.glands_on_sides_dict)
+            # self.downside_block.draw_glands_in_block()
 
 
+    def set_shell_leftside_block(self):
+        if hasattr(self,'shell_dict'):
+            if hasattr(self,'shell_base_dxf'):
+                self.leftside_block = dxf_shell.ShellLeftSideBlock(translit_name=self.shell_base_dxf.shell_translit_name,
+                                                                   doc_base=self.base_dxf.doc_base,
+                                                                   glands_on_sides_dict=self.glands_on_sides_dict)
 
-
-
-
-
-
+    def set_shell_rightside_block(self):
+        if hasattr(self,'shell_dict'):
+            if hasattr(self,'shell_base_dxf'):
+                self.rightside_block = dxf_shell.ShellRightSideBlock(translit_name=self.shell_base_dxf.shell_translit_name,
+                                                                     doc_base=self.base_dxf.doc_base,
+                                                                     glands_on_sides_dict=self.glands_on_sides_dict)
 
 
 

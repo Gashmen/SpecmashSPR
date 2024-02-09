@@ -1,5 +1,5 @@
 import transliterate
-from src.dxf_creating import shell_create
+from src._notuse_src.src.dxf_creating import shell_create
 '''
 DICT-WITH-INPUTS
 {'А': {0: {'ВЗ-Н20': [33.4, 37.5]}, 1: {'ВЗ-Н20': [86.6, 37.5]}},

@@ -16,6 +16,7 @@ class SetupInterface(QtWidgets.QMainWindow, mainver03.Ui_MainWindow):
 
         '''БАЗА ПРИ ЗАПУСКЕ'''
         super().__init__()
+        QtCore.qInstallMessageHandler(self.qt_message_handler)
         self.connect_smb() #получаем self.smb_specmash
 
         self.setupUi(self)
@@ -31,6 +32,21 @@ class SetupInterface(QtWidgets.QMainWindow, mainver03.Ui_MainWindow):
         self.optionsButton_leftMenu.clicked.connect(self.set_options_page)
 
         self.pushButton_2.clicked.connect(self.error_window.call_error)
+
+    def qt_message_handler(self,mode, context, message):
+        if mode == 4:
+            mode = 'INFO'
+        elif mode == 1:
+            mode = 'WARNING'
+        elif mode == 2:
+            mode = 'CRITICAL'
+        elif mode == 3:
+            mode = 'FATAL'
+        else:
+            mode = 'DEBUG'
+        print('qt_message_handler: line: %d, func: %s(), file: %s' % (
+            context.line, context.function, context.file))
+        print('  %s: %s\n' % (mode, message))
 
     def set_authorization_information(self,
                                       task_number='',

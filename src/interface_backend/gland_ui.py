@@ -465,6 +465,7 @@ class GlandInterface(shell_ui.ShellInterface):
                     self.gland = gland_csv.CableGlandInformation(
                         gland_dict=self.gland_information.gland_main_dict[self.key_gland])
                     self.add_options_to_gland()
+                    self.gland.side = 'upside'
                     self.glands_on_sides_dict['А'].append(self.gland)
                     self.sideAListWidget.addItem(self.gland.gland_russian_name)
 
@@ -475,6 +476,7 @@ class GlandInterface(shell_ui.ShellInterface):
                     self.gland = gland_csv.CableGlandInformation(
                         gland_dict=self.gland_information.gland_main_dict[self.key_gland])
                     self.add_options_to_gland()
+                    self.gland.side = 'rightside'
                     self.glands_on_sides_dict['Б'].append(self.gland)
                     self.sideBListWidget.addItem(self.gland.gland_russian_name)
 
@@ -485,6 +487,7 @@ class GlandInterface(shell_ui.ShellInterface):
                     self.gland = gland_csv.CableGlandInformation(
                         gland_dict=self.gland_information.gland_main_dict[self.key_gland])
                     self.add_options_to_gland()
+                    self.gland.side = 'downside'
                     self.glands_on_sides_dict['В'].append(self.gland)
                     self.sideVListWidget.addItem(self.gland.gland_russian_name)
 
@@ -495,6 +498,7 @@ class GlandInterface(shell_ui.ShellInterface):
                     self.gland = gland_csv.CableGlandInformation(
                         gland_dict=self.gland_information.gland_main_dict[self.key_gland])
                     self.add_options_to_gland()
+                    self.gland.side = 'leftside'
                     self.glands_on_sides_dict['Г'].append(self.gland)
                     self.sideGListWidget.addItem(self.gland.gland_russian_name)
 
@@ -505,6 +509,7 @@ class GlandInterface(shell_ui.ShellInterface):
                     self.gland = gland_csv.CableGlandInformation(
                         gland_dict=self.gland_information.gland_main_dict[self.key_gland])
                     self.add_options_to_gland()
+                    self.gland.side = 'topside'
                     self.glands_on_sides_dict['Крышка'].append(self.gland)
                     self.CoverListWidget.addItem(self.gland.gland_russian_name)
 

@@ -6,7 +6,7 @@ from ezdxf.document import Drawing
 from src.draw.base import DxfBase
 from src.csv.shell_csv import Shell_csv
 from src.algoritms import gland_algoritm_one_row
-
+from src.csv.gland_csv import CableGlandInformation
 
 
 class ShellBaseDxf:
@@ -35,7 +35,7 @@ class ShellBaseDxf:
         if hasattr(self,'shell_russian_name'):
             self.shell_translit_name =  transliterate.translit(self.shell_russian_name, language_code='ru', reversed=True)
 
-    def check_possible_to_draw(self,dxf_base:DxfBase):
+    def check_possible_to_draw(self, dxf_base: DxfBase):
         '''Проверка на наличие в базе dxf оболочки'''
         if isinstance(dxf_base,DxfBase):
             return dxf_base.check_shell(shell_translite_name=self.shell_translit_name)
@@ -56,7 +56,7 @@ class ShellBaseDxf:
 
 class ShellSideBlock(DxfBase):
 
-    def set_doc_base(self,doc_base:Drawing):
+    def set_doc_base(self,doc_base: Drawing):
         '''
         Установка doc
         :param doc: doc_base общая dxf база
@@ -116,9 +116,20 @@ class ShellSideBlock(DxfBase):
                                                                    x_end_rectangle=x_end_rectangle,
                                                                    y_end_rectangle=y_end_rectangle,
                                                                    clearens=5)
+
+
                 if hasattr(first_check, 'new_x_start_rectangle'):
                     x_start_rectangle = first_check.new_x_start_rectangle
 
+
+
+    def draw_glands_in_block(self):
+        if hasattr(self,'list_glands'):
+            if len(self.list_glands) > 0:
+                for cable_gland_information in self.list_glands:
+                    self.block.add_blockref(name=cable_gland_information.gland_dxf_name + '_exe',
+                                            insert=(cable_gland_information.x_coordinate,
+                                                    cable_gland_information.y_coordinate))
 
 class ShellTopSideBlock(ShellSideBlock):
 
@@ -150,6 +161,11 @@ class ShellTopSideBlock(ShellSideBlock):
         self.topside_insert = self.doc_base.modelspace().add_blockref(name=self.shell_topside_name,
                                                                       insert=(0,0))
 
+    def draw_glands_around_topside(self, downside_block, leftside_block, rightside_block, upside_block):
+
+
+
+
 
 class ShellDownSideBlock(ShellSideBlock):
 
@@ -168,6 +184,58 @@ class ShellDownSideBlock(ShellSideBlock):
         self.set_block_from_dxf_base()
         self.set_status_painting_side()
         self.search_polyline()
+
+class ShellUpSideBlock(ShellSideBlock):
+    def __init__(self,translit_name,doc_base:Drawing,glands_on_sides_dict):
+        '''
+        Построение downside у оболочки
+        :param translit_name: VP.161610
+        :param doc:Drawing
+        :param glands_on_sides_dict:{"А": [], "Б": [], 'В': [], "Г": [], "Крышка": []}
+        '''
+        self.set_doc_base(doc_base=doc_base)
+        self.set_shell_side_name(translit_name=translit_name,
+                                 side_dxf_name='upside')
+        self.set_side_russian_name(side_russian_name='А')
+        self.set_dict_glands_all_sizes(glands_on_sides_dict=glands_on_sides_dict)
+        self.set_block_from_dxf_base()
+        self.set_status_painting_side()
+        self.search_polyline()
+
+class ShellLeftSideBlock(ShellSideBlock):
+    def __init__(self,translit_name,doc_base:Drawing,glands_on_sides_dict):
+        '''
+        Построение downside у оболочки
+        :param translit_name: VP.161610
+        :param doc:Drawing
+        :param glands_on_sides_dict:{"А": [], "Б": [], 'В': [], "Г": [], "Крышка": []}
+        '''
+        self.set_doc_base(doc_base=doc_base)
+        self.set_shell_side_name(translit_name=translit_name,
+                                 side_dxf_name='leftside')
+        self.set_side_russian_name(side_russian_name='Г')
+        self.set_dict_glands_all_sizes(glands_on_sides_dict=glands_on_sides_dict)
+        self.set_block_from_dxf_base()
+        self.set_status_painting_side()
+        self.search_polyline()
+
+class ShellRightSideBlock(ShellSideBlock):
+    def __init__(self,translit_name,doc_base:Drawing,glands_on_sides_dict):
+        '''
+        Построение downside у оболочки
+        :param translit_name: VP.161610
+        :param doc:Drawing
+        :param glands_on_sides_dict:{"А": [], "Б": [], 'В': [], "Г": [], "Крышка": []}
+        '''
+        self.set_doc_base(doc_base=doc_base)
+        self.set_shell_side_name(translit_name=translit_name,
+                                 side_dxf_name='rightside')
+        self.set_side_russian_name(side_russian_name='Б')
+        self.set_dict_glands_all_sizes(glands_on_sides_dict=glands_on_sides_dict)
+        self.set_block_from_dxf_base()
+        self.set_status_painting_side()
+        self.search_polyline()
+
 
 class PolylineSurfaceOnSideDxf:
 

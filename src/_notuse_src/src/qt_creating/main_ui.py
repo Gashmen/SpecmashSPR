@@ -7,17 +7,17 @@ import openpyxl
 from PyQt5 import QtCore, QtGui, QtWidgets
 import sys
 
-from src.pdf_creator import pdf_main
-from src.qt_creating.terminal_ui import TerminalPage
-from src.dxf_changer import TERMINAL_DB
-from src.dxf_creating import import_module, shell_create, main_shell_create,terminal_create,inputs_create
-from src.dxf_creating import move_inserts
-from src.dxf_creating import dimension_create
-from src.dxf_creating import border_create
-from src.dxf_creating import BOM_create
-from src.dxf_creating import cutside_works
-from src.dxf_creating import nameplate
-from src.price_directory import price_creator
+from src._notuse_src.src.pdf_creator import pdf_main
+from src._notuse_src.src.qt_creating.terminal_ui import TerminalPage
+
+from src._notuse_src.src.dxf_creating import import_module, shell_create,terminal_create,inputs_create
+from src._notuse_src.src.dxf_creating import move_inserts
+from src._notuse_src.src.dxf_creating import dimension_create
+from src._notuse_src.src.dxf_creating import border_create
+from src._notuse_src.src.dxf_creating import BOM_create
+from src._notuse_src.src.dxf_creating import cutside_works
+from src._notuse_src.src.dxf_creating import nameplate
+from src._notuse_src.src.price_directory import price_creator
 
 class DxfCreator(TerminalPage):
 
