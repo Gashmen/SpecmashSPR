@@ -2,12 +2,15 @@ import os
 import sys
 import re
 from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.QtWidgets import QMessageBox
+
 from src.interface_backend import shell_ui
 
 from config import csv_config
 from src.Widgets_Custom.Error import Ui_WidgetError
 from src.csv import gland_csv
-from src.Widgets_Custom import ExtendedCombobox
+from src.Widgets_Custom import ExtendedCombobox, UI_BaseError
+
 
 class GlandInterface(shell_ui.ShellInterface):
 
@@ -489,7 +492,15 @@ class GlandInterface(shell_ui.ShellInterface):
                     self.add_options_to_gland()
                     self.gland.side = 'downside'
                     self.glands_on_sides_dict['В'].append(self.gland)
-                    self.sideVListWidget.addItem(self.gland.gland_russian_name)
+                    if hasattr(self, 'downside_block'):
+                        self.downside_block.calculate_coordinate_glands_for_draw()
+                    if self.gland.status_add_to_possible_biggest_input != False:
+                        self.glands_on_sides_dict['В'].append(self.gland)
+                        self.sideVListWidget.addItem(self.gland.gland_russian_name)
+                    else:
+                        QMessageBox.critical(self, "Ошибка ", "Выделите элемент который хотите изменить", QMessageBox.Ok)
+                        # window_error.call_error()
+                        break
 
     def add_gland_side_G(self):
         if hasattr(self,'key_gland'):
@@ -639,5 +650,3 @@ if __name__ == "__main__":
     welcome_window = GlandInterface()
     welcome_window.show()
     sys.exit(app.exec_())
-
-

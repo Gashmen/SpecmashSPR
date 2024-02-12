@@ -445,6 +445,9 @@ class CableGlandInformation:
     def set_z_coordinate(self,z_coordinate):
         self.z_coordinate = z_coordinate
 
+    def set_status_add_to_possible_biggest_input(self,status:bool):
+        self.status_add_to_possible_biggest_input = status
+
 
 if __name__ == '__main__':
     print(set_correct_number(number = '-13,5'))

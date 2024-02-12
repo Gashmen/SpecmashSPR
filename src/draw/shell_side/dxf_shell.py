@@ -7,7 +7,7 @@ from src.draw.base import DxfBase
 from src.csv.shell_csv import Shell_csv
 from src.algoritms import gland_algoritm_one_row
 from src.csv.gland_csv import CableGlandInformation
-
+from src.Widgets_Custom import UI_BaseError
 
 class ShellBaseDxf:
     '''
@@ -109,6 +109,11 @@ class ShellSideBlock(DxfBase):
             y_start_rectangle = self.polyline.y0
             y_end_rectangle = self.polyline.y1
 
+            ###################
+            # ДЛЯ ВТОРОГО УРОВНЯ
+            ###################
+            level_dict = dict()
+
             while len(list_glands_for_delete)>0:
                 first_check = gland_algoritm_one_row.OneRowChecker(list_glands_on_side=list_glands_for_delete,
                                                                    x_start_rectanglee=x_start_rectangle,
@@ -116,11 +121,14 @@ class ShellSideBlock(DxfBase):
                                                                    x_end_rectangle=x_end_rectangle,
                                                                    y_end_rectangle=y_end_rectangle,
                                                                    clearens=5)
-
+                if first_check.status_add_to_possible_biggest_input == False:
+                    # UI_BaseError.Ui_BaseError(text_base_error='НЕ ВОЗМОЖНО УСТАНОВИТЬ САМЫЙ '
+                    #                                           'БОЛЬШОЙ КАБЕЛЬНЫЙ ВВОД НА СТОРОНЕ'
+                    #                                           +self.side_russian_name).call_error()
+                    break
 
                 if hasattr(first_check, 'new_x_start_rectangle'):
                     x_start_rectangle = first_check.new_x_start_rectangle
-
 
 
     def draw_glands_in_block(self):
@@ -161,8 +169,7 @@ class ShellTopSideBlock(ShellSideBlock):
         self.topside_insert = self.doc_base.modelspace().add_blockref(name=self.shell_topside_name,
                                                                       insert=(0,0))
 
-    def draw_glands_around_topside(self, downside_block, leftside_block, rightside_block, upside_block):
-
+    # def draw_glands_around_topside(self, downside_block, leftside_block, rightside_block, upside_block):
 
 
 

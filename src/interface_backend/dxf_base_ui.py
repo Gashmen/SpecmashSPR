@@ -43,6 +43,7 @@ class DxfQtCommunication(gland_ui.GlandInterface):
 
 
 
+
 if __name__ == '__main__':
     app = QtWidgets.QApplication(sys.argv)
     welcome_window = DxfQtCommunication()

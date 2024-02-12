@@ -7,7 +7,7 @@ from src.interface_backend import dxf_base_ui #ПОМЕНЯТЬ НА ИТОГО�
 
 from config import dxf_config
 from src.csv import gland_csv
-from src.Widgets_Custom import ExtendedCombobox,Shell_Error
+from src.Widgets_Custom import ExtendedCombobox,UI_BaseError
 from src.draw import base
 from src.draw.shell_side import dxf_shell
 
@@ -23,8 +23,8 @@ class DxfShellQtCommunication(dxf_base_ui.DxfQtCommunication):
         self.sizeCombobox_shellpage.currentTextChanged.connect(self.check_possible_to_add_shell)
         self.sizeCombobox_shellpage.currentTextChanged.connect(self.set_shell_blocks)
 
-        self.sideVListWidget.model().rowsInserted.connect(self.draw_glands_in_downside)
-        self.sideVListWidget.model().rowsRemoved.connect(self.draw_glands_in_downside)
+        # self.sideVListWidget.model().rowsInserted.connect(self.draw_glands_in_downside)
+        # self.sideVListWidget.model().rowsRemoved.connect(self.draw_glands_in_downside)
 
 
 
@@ -42,8 +42,8 @@ class DxfShellQtCommunication(dxf_base_ui.DxfQtCommunication):
             if hasattr(self, 'shell_base_dxf'):
                 self.possible_shell_draw = self.base_dxf.check_shell(shell_translite_name=self.shell_base_dxf.shell_translit_name)
                 if self.possible_shell_draw == False:
-                    window_shellerror = Shell_Error.Ui_ShellError()
-                    window_shellerror.call_shellerror()
+                    window_shellerror = UI_BaseError.Ui_BaseError(text_base_error='НЕТ ДАННОЙ ОБОЛОЧКИ В БАЗЕ DXF')
+                    window_shellerror.call_error()
 
 
     def set_shell_topside_block(self):
@@ -85,9 +85,6 @@ class DxfShellQtCommunication(dxf_base_ui.DxfQtCommunication):
                 self.rightside_block = dxf_shell.ShellRightSideBlock(translit_name=self.shell_base_dxf.shell_translit_name,
                                                                      doc_base=self.base_dxf.doc_base,
                                                                      glands_on_sides_dict=self.glands_on_sides_dict)
-
-
-
 
 
 

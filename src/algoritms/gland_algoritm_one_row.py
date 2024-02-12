@@ -37,8 +37,6 @@ class GlandAlgoritmChecker:
                 return False
 
 
-
-
 class OneRowChecker(GlandAlgoritmChecker):
     '''Проверка установки в одну линию'''
     def __init__(self,list_glands_on_side,clearens,
@@ -49,7 +47,7 @@ class OneRowChecker(GlandAlgoritmChecker):
         self.status_add_in_one_row = False
 
         self.install_one_row_checker(list_glands_on_side=list_glands_on_side,
-                                     clearens = clearens,
+                                     clearens=clearens,
                                      x_start_rectangle=x_start_rectanglee,
                                      x_end_rectangle=x_end_rectangle,
                                      y_start_rectangle=y_start_rectangle,
@@ -57,6 +55,7 @@ class OneRowChecker(GlandAlgoritmChecker):
         self.set_glands_diametrs()
         if self.check_possible_to_add_biggest_input():
             self.status_add_to_possible_biggest_input = True
+
             if self.check_possible_to_add_all_inputs_in_one_row():
                 self.status_add_in_one_row = True
                 self.calculate_x_one_row()
@@ -67,6 +66,8 @@ class OneRowChecker(GlandAlgoritmChecker):
                 self.status_add_in_one_row = False
         else:
             self.status_add_to_possible_biggest_input = False
+
+        self.set_status_add_to_possible_biggest_inputs()
 
     def install_one_row_checker(self,list_glands_on_side,clearens,
                                 x_start_rectangle,x_end_rectangle,
@@ -79,6 +80,9 @@ class OneRowChecker(GlandAlgoritmChecker):
         self.set_clearens(clearens=clearens)
 
     '''ИХ ОБРАБОТКА'''
+
+    def set_status_add_to_possible_biggest_inputs(self):
+        self.list_glands[0].set_status_add_to_possible_biggest_input(status=self.status_add_to_possible_biggest_input)
 
     def check_possible_to_add_all_inputs_in_one_row(self):
         '''
@@ -130,6 +134,106 @@ class OneRowChecker(GlandAlgoritmChecker):
         т.к. по одному вводу идет цикл
         '''
         self.list_glands.pop(0)
+
+
+# class TwoRowChecker(GlandAlgoritmChecker):
+#     '''Проверка установки в одну линию'''
+#
+#     def __init__(self, list_glands_on_side, clearens,
+#                  x_start_rectanglee, x_end_rectangle,
+#                  y_start_rectangle, y_end_rectangle):
+#
+#         self.status_add_in_two_row = False
+#
+#         self.install_two_row_checker(list_glands_on_side=list_glands_on_side,
+#                                      clearens=clearens,
+#                                      x_start_rectangle=x_start_rectanglee,
+#                                      x_end_rectangle=x_end_rectangle,
+#                                      y_start_rectangle=y_start_rectangle,
+#                                      y_end_rectangle=y_end_rectangle)
+#         self.set_glands_diametrs()
+#         if self.check_possible_to_add_biggest_input():
+#             if self.check_possible_to_add_all_inputs_in_one_row():
+#                 self.status_add_in_one_row = True
+#                 self.calculate_x_one_row()
+#                 self.calculate_y_one_row()
+#                 self.calculate_new_x_start_rectangle()
+#                 self.delete_gland_one_row()
+#             else:
+#                 self.status_add_in_one_row = False
+#         else:
+#             self.status_add_to_possible_biggest_input = False
+#
+#
+#     def install_two_row_checker(self, list_glands_on_side, clearens,
+#                                 x_start_rectangle, x_end_rectangle,
+#                                 y_start_rectangle, y_end_rectangle):
+#         self.set_list_glands(list_glands_on_side=list_glands_on_side)
+#         self.set_x_start_rectangle(x_start_rectangle=x_start_rectangle)
+#         self.set_x_end_rectangle(x_end_rectangle=x_end_rectangle)
+#         self.set_y_start_rectangle(y_start_rectangle=y_start_rectangle)
+#         self.set_y_end_rectangle(y_end_rectangle=y_end_rectangle)
+#
+#         self.set_clearens(clearens=clearens)
+#
+#     '''ИХ ОБРАБОТКА'''
+#
+#     def check_possible_to_create_level(self):
+#         '''
+#         Проверка, есть ли вообще окружности, которые могут быть друг под другом
+#         :param dict_with_inputs_information:{0: ['ВЗ-Н25', 37.3], 1: ['ВЗ-Н25', 37.3], 2: ['ВЗ-Н25', 37.3], 3: ['ВЗ-Н25', 37.3], 4: ['ВЗ-Н25', 37.3], 5: ['ВЗ-Н25', 37.3]}
+#         :param width: 62.2
+#         :return:
+#         '''
+#         self.status_add_in_two_row = False
+#         for gland_diam_i in self.list_diam:
+#             diam_width = list()
+#             for gland_diam_j in self.list_diam:
+#
+#
+#
+#
+#
+#     def calculate_y_one_row(self):
+#         '''
+#         Получение координаты y для установки в одну линию
+#         :return: y_coordinate
+#         '''
+#         self.gland_y_coordinate = self.y_start_rectangle + (self.y_end_rectangle + self.y_start_rectangle) / 2
+#         self.list_glands[0].set_y_coordinate(y_coordinate=self.gland_y_coordinate)
+#
+#     def calculate_x_one_row(self):
+#         '''
+#         Получение координаты x для установки в одну линию
+#         :return: x_coordinate
+#         '''
+#         if len(self.list_glands) != 1:
+#             self.gland_x_coordinate = self.x_start_rectangle + self.list_diam[0] / 2 + self.free_space / (
+#                         len(self.list_glands) + 1)
+#         else:
+#             self.gland_x_coordinate = self.x_start_rectangle + (self.x_end_rectangle - self.x_start_rectangle) / 2
+#
+#         self.list_glands[0].set_x_coordinate(x_coordinate=self.gland_x_coordinate)
+#
+#     def calculate_new_x_start_rectangle(self):
+#         '''
+#         Получение свободного пространства, чтобы равномерно раздвинуть
+#         :return:
+#         '''
+#         if len(self.list_glands) != 1:
+#             self.new_x_start_rectangle = self.x_start_rectangle + self.list_diam[
+#                 0] + self.clearens + self.free_space / (len(self.list_glands) + 1)
+#         else:
+#             self.new_x_start_rectangle = self.x_end_rectangle
+#
+#     def delete_gland_one_row(self):
+#         '''Удаление ввода из списка вводов
+#         т.к. по одному вводу идет цикл
+#         '''
+#         self.list_glands.pop(0)
+
+
+
 
 
 if __name__ == '__main__':

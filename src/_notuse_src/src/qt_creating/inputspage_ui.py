@@ -4,14 +4,14 @@ import sys
 from transliterate import translit
 
 
-from src.qt_creating import shellpage_ui
-from src.qt_creating import start_ui as designer_ui
-import src.algoritms.new as new
-from src.algoritms import second_level_type
-import src.csv_reader.csv_reader as csv_reader
-import src.dxf_creating.inputs_create as inputs_create
-import src.examples.create_inputs as input_create_examples
-import src.examples.create_inputs_check as input_create_expamles_check
+from src._notuse_src.src.qt_creating import shellpage_ui
+from src._notuse_src.src.qt_creating import start_ui as designer_ui
+import src._notuse_src.src.algoritms.new as new
+from src._notuse_src.src.algoritms import second_level_type
+import src._notuse_src.src.csv_reader.csv_reader as csv_reader
+import src._notuse_src.src.dxf_creating.inputs_create as inputs_create
+import src._notuse_src.src.examples.create_inputs as input_create_examples
+import src._notuse_src.src.examples.create_inputs_check as input_create_expamles_check
 class InputsPageSetup(shellpage_ui.ShellPageSetup,designer_ui.Mainver):
 
     def __init__(self,save_path = None, path_to_csv = None, path_to_dxf = None,path_to_terminal_dxf = None):
