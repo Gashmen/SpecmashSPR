@@ -1,7 +1,7 @@
 import os
 import sys
 
-from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5 import QtCore, QtGui, QtWidgets,Qt
 from src.interface_backend import setup_ui
 
 from config import csv_config
@@ -77,11 +77,12 @@ class ShellInterface(setup_ui.SetupInterface):
 
 
 
-
+    @Qt.pyqtSlot()
     def install_shell_csv(self):
         self.smb_specmash.get_shell_csv_path()
         self.shell_information = shell_csv.Shell_csv(shell_csv_path=self.smb_specmash.shell_csv_path)
 
+    @Qt.pyqtSlot()
     def install_enabled_widgets(self):
         self.serialCombobox_shellpage.setEnabled(False)
         self.sizeCombobox_shellpage.setEnabled(False)
@@ -91,7 +92,7 @@ class ShellInterface(setup_ui.SetupInterface):
         self.ore_mark_RadioButton_shellpage.setEnabled(False)
         self.temperature_class_comboBox_shellpage.setEnabled(False)
 
-
+    @Qt.pyqtSlot()
     def set_shell_page(self):
         '''Устанавливает при запуске всегда первую страницу StackedWidget '''
         if self.stackedWidget.count() != 0:
@@ -107,14 +108,17 @@ class ShellInterface(setup_ui.SetupInterface):
         self.safefactortypeCombobox_shellpage.clear()
         self.safefactortypeCombobox_shellpage.addItems(['', *csv_config.EXPLOSION_PROTECTION])
 
+    @Qt.pyqtSlot()
     def set_shell_manufacturer(self):
         self.shell_manufacturer = self.manufactureComboboxWidget_shellpage.currentText()
         self.shell_information.set_manufacturer(manufacturer=self.shell_manufacturer)
 
+    @Qt.pyqtSlot()
     def set_explosion_protection(self):
         self.shell_explosion_protection = self.safefactortypeCombobox_shellpage.currentText()
         self.shell_information.set_explosion_protection(explosion_protection=self.shell_explosion_protection)
 
+    @Qt.pyqtSlot()
     def install_enabled_serial(self):
         # self.serialCombobox_shellpage.clear()
         if hasattr(self, 'shell_manufacturer') and hasattr(self, 'shell_explosion_protection'):
@@ -125,6 +129,7 @@ class ShellInterface(setup_ui.SetupInterface):
         else:
             self.serialCombobox_shellpage.setEnabled(False)
 
+    @Qt.pyqtSlot()
     def give_serial_type(self):
         '''
         Добавляет виды оболочек
@@ -135,10 +140,12 @@ class ShellInterface(setup_ui.SetupInterface):
                 self.shell_information.get_unique_series()
                 self.serialCombobox_shellpage.addItems(['',*self.shell_information.unique_series])
 
+    @Qt.pyqtSlot()
     def set_shell_series(self):
         self.shell_series = self.serialCombobox_shellpage.currentText()
         self.shell_information.set_series(shell_series=self.shell_series)
 
+    @Qt.pyqtSlot()
     def install_enabled_size(self):
         # self.sizeCombobox_shellpage.clear()
         if self.serialCombobox_shellpage.isEnabled():
@@ -150,6 +157,7 @@ class ShellInterface(setup_ui.SetupInterface):
             else:
                 self.sizeCombobox_shellpage.setEnabled(False)
 
+    @Qt.pyqtSlot()
     def give_size_type(self):
         self.sizeCombobox_shellpage.clear()
         if self.serialCombobox_shellpage.isEnabled():
@@ -158,10 +166,12 @@ class ShellInterface(setup_ui.SetupInterface):
                     self.shell_information.get_unique_sizes()
                     self.sizeCombobox_shellpage.addItems(['', *self.shell_information.unique_sizes])
 
+    @Qt.pyqtSlot()
     def set_shell_size(self):
         self.shell_size = self.sizeCombobox_shellpage.currentText()
         self.shell_information.set_size(shell_size=self.shell_size)
 
+    @Qt.pyqtSlot()
     def set_dict_shell_information(self):
         if hasattr(self,'shell_size'):
             if self.shell_size != '':
@@ -169,11 +179,13 @@ class ShellInterface(setup_ui.SetupInterface):
                 if hasattr(self.shell_information,'shell_dict'):
                     self.shell_dict = self.shell_information.shell_dict
 
+    @Qt.pyqtSlot()
     def define_all_marking_explosion_protection(self):
         if hasattr(self,'shell_dict'):
             self.shell_information.define_marking_explosion_protections()
             self.marking_explosion_dict = self.shell_information.marking_dict
 
+    @Qt.pyqtSlot()
     def install_enabled_marking_explosion(self):
         if hasattr(self,'shell_dict'):
             if self.shell_size != '':
@@ -183,6 +195,7 @@ class ShellInterface(setup_ui.SetupInterface):
         else:
             self.gasdustoreComboBox_shellpage.setEnabled(False)
 
+    @Qt.pyqtSlot()
     def install_enabled_gas_mark(self):
         if hasattr(self,'marking_explosion_dict'):
             if self.shell_size != '':
@@ -193,6 +206,7 @@ class ShellInterface(setup_ui.SetupInterface):
             else:
                 self.gas_mark_RadioButton_shellpage.setEnabled(False)
 
+    @Qt.pyqtSlot()
     def install_enabled_dust_mark(self):
         if hasattr(self, 'marking_explosion_dict'):
             if self.shell_size != '':
@@ -203,7 +217,7 @@ class ShellInterface(setup_ui.SetupInterface):
             else:
                 self.dust_mark_RadioButton_shellpage.setEnabled(False)
 
-
+    @Qt.pyqtSlot()
     def install_enabled_ore_mark(self):
         if hasattr(self, 'marking_explosion_dict'):
             if self.shell_size != '':
@@ -214,6 +228,7 @@ class ShellInterface(setup_ui.SetupInterface):
             else:
                 self.ore_mark_RadioButton_shellpage.setEnabled(False)
 
+    @Qt.pyqtSlot()
     def give_marking_explosion(self):
         '''Добавление типов '''
         self.gasdustoreComboBox_shellpage.clear()
@@ -225,11 +240,13 @@ class ShellInterface(setup_ui.SetupInterface):
             elif self.ore_mark_RadioButton_shellpage.isChecked():
                 self.gasdustoreComboBox_shellpage.addItems(['', *self.marking_explosion_dict['ore']])
 
+    @Qt.pyqtSlot()
     def set_marking_explosion_protection(self):
         self.marking_explosion_protection = self.gasdustoreComboBox_shellpage.currentText()
         self.shell_information.set_marking_explosion_protection(marking_explosion_protection=
                                                                 self.marking_explosion_protection)
 
+    @Qt.pyqtSlot()
     def install_enabled_temrepature(self):
         if hasattr(self, 'marking_explosion_protection'):
             if self.marking_explosion_protection != '':
@@ -237,7 +254,7 @@ class ShellInterface(setup_ui.SetupInterface):
             else:
                 self.temperature_class_comboBox_shellpage.setEnabled(False)
 
-
+    @Qt.pyqtSlot()
     def give_T_class_and_maxT(self):
         '''Определяет Т класс в зависимости от указанного температурного диапазона'''
         self.temperature_class_comboBox_shellpage.clear()

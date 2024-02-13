@@ -1,7 +1,7 @@
 import os
 import sys
 import re
-from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5 import QtCore, QtGui, QtWidgets, Qt
 from PyQt5.QtWidgets import QMessageBox
 
 from src.interface_backend import shell_ui
@@ -43,6 +43,8 @@ class GlandInterface(shell_ui.ShellInterface):
 
         # Добавление имен в siteA
         self.addButton_2.clicked.connect(self.add_gland_side_A)
+        self.addButton_2.clicked.connect(self.check_to_add_biggest_gland_side_A)
+        self.addButton_2.clicked.connect(self.check_to_possible_to_create_all_glands_in_one_row)
         # Добавление имен в siteB
         self.addButton_2.clicked.connect(self.add_gland_side_B)
         # Добавление имен в siteV
@@ -137,6 +139,7 @@ class GlandInterface(shell_ui.ShellInterface):
         self.vzorglandcomboBox.setObjectName("vzorglandcomboBox")
         self.verticalLayout_14.addWidget(self.vzorglandcomboBox)
 
+    @Qt.pyqtSlot()
     def set_gland_page(self):
         '''Устанавливает 1 индекс у SHELL PAGE, если он не установлен'''
         if self.stackedWidget.count() != 5:
@@ -160,19 +163,21 @@ class GlandInterface(shell_ui.ShellInterface):
         self.j_gland_tube_mr_markingWidget.setEnabled(False)
         self.k_gland_optionsWidget.setEnabled(False)
 
-
+    @Qt.pyqtSlot()
     def install_choose_gland_widget_enabled(self):
         if self.gland_from_allRadioButton.isChecked():
             self.b_vzorglandWidget.setEnabled(True)
         else:
             self.b_vzorglandWidget.setEnabled(False)
 
+    @Qt.pyqtSlot()
     def give_gland_all_names_vzor(self):
         self.vzorglandcomboBox.clear()
         if self.gland_from_allRadioButton.isChecked():
             self.gland_information.get_all_glands()
             self.vzorglandcomboBox.addItems(['',*list(self.gland_information.gland_all_names.keys())])
 
+    @Qt.pyqtSlot()
     def set_current_gland_from_all_names(self):
         if self.vzorglandcomboBox.isEnabled():
             if self.vzorglandcomboBox.count() !=0:
@@ -180,8 +185,7 @@ class GlandInterface(shell_ui.ShellInterface):
                     shell_name = self.vzorglandcomboBox.currentText()
                     self.key_gland = self.gland_information.gland_all_names[shell_name]
 
-
-
+    @Qt.pyqtSlot()
     def install_gland_designation_widget_enabled(self):
         if self.gland_from_propertiesRadioButton.isChecked():
             self.c_gland_designationWidget.setEnabled(True)
@@ -197,10 +201,12 @@ class GlandInterface(shell_ui.ShellInterface):
             self.gland_information.get_unique_designation()
             self.gland_designationcomboBox.addItems(['',*self.gland_information.gland_unique_designation])
 
+    @Qt.pyqtSlot()
     def set_gland_designation(self):
         self.gland_designation = self.gland_designationcomboBox.currentText()
         self.gland_information.set_gland_designation(gland_designation=self.gland_designation)
 
+    @Qt.pyqtSlot()
     def install_gland_material_enabled(self):
         if hasattr(self, 'gland_designation'):
             if self.gland_designation == 'Кабельный ввод':
@@ -211,16 +217,19 @@ class GlandInterface(shell_ui.ShellInterface):
         else:
             self.d_gland_materialWidget.setEnabled(False)
 
+    @Qt.pyqtSlot()
     def give_gland_material(self):
         if self.d_gland_materialWidget.isEnabled():
             self.gland_materialcomboBox.clear()
             self.gland_information.get_unique_material()
             self.gland_materialcomboBox.addItems(['',*self.gland_information.gland_unique_material])
 
+    @Qt.pyqtSlot()
     def set_gland_material(self):
         self.gland_material = self.gland_materialcomboBox.currentText()
         self.gland_information.set_gland_material(gland_material=self.gland_material)
 
+    @Qt.pyqtSlot()
     def install_gland_cabletype_enabled(self):
         if hasattr(self,'gland_material'):
             if self.gland_material != '':
@@ -237,6 +246,7 @@ class GlandInterface(shell_ui.ShellInterface):
             self.gland_information.get_unique_cable_type()
             self.gland_cabletypecomboBox.addItems(['',*self.gland_information.gland_unique_cable_type])
 
+    @Qt.pyqtSlot()
     def set_gland_cabletype(self):
         self.gland_cabletype = self.gland_cabletypecomboBox.currentText()
         self.gland_information.set_cable_type(gland_cable_type=self.gland_cabletype)
@@ -257,10 +267,12 @@ class GlandInterface(shell_ui.ShellInterface):
             self.gland_information.get_unique_thread()
             self.gland_threadtypecomboBox.addItems(['',*self.gland_information.gland_unique_thread])
 
+    @Qt.pyqtSlot()
     def set_gland_thread(self):
         self.gland_threadtype = self.gland_threadtypecomboBox.currentText()
         self.gland_information.set_gland_thread(gland_thread=self.gland_threadtype)
 
+    @Qt.pyqtSlot()
     def install_gland_ckeckdiam_enabled(self):
         if hasattr(self,'gland_threadtype'):
             if self.gland_threadtype == 'М':
@@ -293,7 +305,7 @@ class GlandInterface(shell_ui.ShellInterface):
                         self.gland_checkdiam_maxlineedit.setText(self.gland_checkdiam_minlineedit.text())
                 self.max_diam_qt = max_diam_qt
 
-
+    @Qt.pyqtSlot()
     def install_gland_g_npt_enabled(self):
         if hasattr(self,'gland_threadtype'):
             if self.gland_threadtype == 'NPT' or self.gland_threadtype == 'G':
@@ -303,6 +315,7 @@ class GlandInterface(shell_ui.ShellInterface):
         else:
             self.h_gland_mr_or_tubeWidget.setEnabled(False)
 
+    @Qt.pyqtSlot()
     def set_dict_for_calculate_gland_diam(self):
         if hasattr(self,'gland_threadtype'):
             if self.gland_threadtype != '':
@@ -343,6 +356,7 @@ class GlandInterface(shell_ui.ShellInterface):
                     self.gland_additionalmarkingcomboBox.addItems(
                         ['',*self.gland_information.list_with_modifications_name])
 
+    @Qt.pyqtSlot()
     def set_gland_additional_marking(self):
         if self.i_gland_additionalmarkingWidget.isEnabled():
             if self.gland_additionalmarkingcomboBox.count() != 0:
@@ -352,6 +366,7 @@ class GlandInterface(shell_ui.ShellInterface):
                         gland_additional_marking=self.gland_additionalmarking
                     )
 
+    @Qt.pyqtSlot()
     def install_gland_type_mr_marking_enabled(self):
         if self.gland_additionalmarkingcomboBox.isEnabled():
             if self.gland_additionalmarkingcomboBox.currentText() != '':
@@ -361,6 +376,7 @@ class GlandInterface(shell_ui.ShellInterface):
         else:
             self.j_gland_tube_mr_markingWidget.setEnabled(False)
 
+    @Qt.pyqtSlot()
     def give_gland_tube_mr_modification(self):
         self.gland_tube_mr_markingcomboBox.clear()
         if self.gland_additionalmarkingcomboBox.isEnabled():
@@ -379,6 +395,7 @@ class GlandInterface(shell_ui.ShellInterface):
                 self.gland_information.set_gland_tube_mr_modification(
                     gland_tube_mr_modification= self.gland_tube_mr_modification)
 
+    @Qt.pyqtSlot()
     def set_key_gland(self):
         '''Установка ключа кабельнного ввода при выборе модификаций'''
         if hasattr(self,'gland_tube_mr_modification'):
@@ -386,6 +403,7 @@ class GlandInterface(shell_ui.ShellInterface):
                     self.gland_information.set_gland()
                     self.key_gland = self.gland_information.key_gland
 
+    @Qt.pyqtSlot()
     def install_gland_options_enabled(self):
         '''Установка возможности получения опций для кабельнного ввода'''
         if self.i_gland_additionalmarkingWidget.isEnabled() or self.h_gland_mr_or_tubeWidget.isEnabled():
@@ -394,6 +412,7 @@ class GlandInterface(shell_ui.ShellInterface):
         else:
             self.k_gland_optionsWidget.setEnabled(False)
 
+    @Qt.pyqtSlot()
     def set_vz_radiobutton(self):
         self.VZeradioButton.setChecked(False)
         self.VZradioButton.setChecked(False)
@@ -419,7 +438,6 @@ class GlandInterface(shell_ui.ShellInterface):
             if self.VZeradioButton.isChecked():
                 self.gland.vz_vz = False
                 self.gland.vz_vze = True
-
 
     def add_ch_in_gland(self):
         '''Добавляет защитных кожух в self.gland'''
@@ -453,13 +471,16 @@ class GlandInterface(shell_ui.ShellInterface):
             else:
                 self.gland.kz = False
 
+    @Qt.pyqtSlot()
     def add_options_to_gland(self):
-        self.add_vz_in_gland()
-        self.add_ch_in_gland()
-        self.add_gsh_in_gland()
-        self.add_kg_in_gland()
-        self.add_kz_in_gland()
+        if hasattr(self,'gland'):
+            self.add_vz_in_gland()
+            self.add_ch_in_gland()
+            self.add_gsh_in_gland()
+            self.add_kg_in_gland()
+            self.add_kz_in_gland()
 
+    @Qt.pyqtSlot()
     def add_gland_side_A(self):
         if hasattr(self,'key_gland'):
             if self.siteASpinBox_2.text() != '0':
@@ -471,7 +492,32 @@ class GlandInterface(shell_ui.ShellInterface):
                     self.gland.side = 'upside'
                     self.glands_on_sides_dict['А'].append(self.gland)
                     self.sideAListWidget.addItem(self.gland.gland_russian_name)
+    @Qt.pyqtSlot()
+    def check_to_add_biggest_gland_side_A(self):
+        if hasattr(self, 'upside_block'):
+            self.upside_block.set_dict_glands_all_sizes(self.glands_on_sides_dict)
+            if self.upside_block.check_possible_to_add_biggest_gland() == False:
+                biggest_cable_gland = self.glands_on_sides_dict['А'][0]
+                QMessageBox.critical(self, "Ошибка",
+                                     f"{biggest_cable_gland.gland_russian_name} не помещается кабельный ввод на сторону А",
+                                     QMessageBox.Ok)
+                self.sideAListWidget.clear()
+                self.glands_on_sides_dict['А'].clear()
+                self.upside_block.glands_on_sides_dict['А'].clear()
+    @Qt.pyqtSlot()
+    def check_to_possible_to_create_all_glands_in_one_row(self):
+        if hasattr(self, 'upside_block'):
+            self.upside_block.set_dict_glands_all_sizes(self.glands_on_sides_dict)
+            if self.upside_block.check_possible_to_add_in_one_row() == False:
+                QMessageBox.critical(self, "Справка",
+                                     f"На сторону А в один ряд не помещаются кабельные вводы",
+                                     QMessageBox.Ok)
+                # self.sideAListWidget.clear()
+                # self.glands_on_sides_dict['А'].clear()
+                # self.upside_block.glands_on_sides_dict['А'].clear()
 
+
+    @Qt.pyqtSlot()
     def add_gland_side_B(self):
         if hasattr(self,'key_gland'):
             if self.siteBSpinBox_2.text() != '0':
@@ -481,8 +527,19 @@ class GlandInterface(shell_ui.ShellInterface):
                     self.add_options_to_gland()
                     self.gland.side = 'rightside'
                     self.glands_on_sides_dict['Б'].append(self.gland)
-                    self.sideBListWidget.addItem(self.gland.gland_russian_name)
+                    if hasattr(self, 'rightside_block'):
+                        self.rightside_block.calculate_coordinate_glands_for_draw()
+                    if self.gland.status_add_to_possible_biggest_input != False:
+                        self.sideBListWidget.addItem(self.gland.gland_russian_name)
+                    else:
+                        QMessageBox.critical(self, "Ошибка",
+                                             f"{self.gland.gland_russian_name} не помещается кабельный ввод на сторону А",
+                                             QMessageBox.Ok)
+                        self.glands_on_sides_dict['Б'].clear()
+                        # window_error.call_error()
+                        break
 
+    @Qt.pyqtSlot()
     def add_gland_side_V(self):
         if hasattr(self,'key_gland'):
             if self.siteVSpinBox_2.text() != '0':
@@ -495,13 +552,16 @@ class GlandInterface(shell_ui.ShellInterface):
                     if hasattr(self, 'downside_block'):
                         self.downside_block.calculate_coordinate_glands_for_draw()
                     if self.gland.status_add_to_possible_biggest_input != False:
-                        self.glands_on_sides_dict['В'].append(self.gland)
                         self.sideVListWidget.addItem(self.gland.gland_russian_name)
                     else:
-                        QMessageBox.critical(self, "Ошибка ", "Выделите элемент который хотите изменить", QMessageBox.Ok)
+                        QMessageBox.critical(self, "Ошибка",
+                                             f"{self.gland.gland_russian_name} не помещается кабельный ввод на сторону В",
+                                             QMessageBox.Ok)
+                        self.glands_on_sides_dict['В'].clear()
                         # window_error.call_error()
                         break
 
+    @Qt.pyqtSlot()
     def add_gland_side_G(self):
         if hasattr(self,'key_gland'):
             if self.siteGSpinBox_2.text() != '0':
@@ -511,8 +571,20 @@ class GlandInterface(shell_ui.ShellInterface):
                     self.add_options_to_gland()
                     self.gland.side = 'leftside'
                     self.glands_on_sides_dict['Г'].append(self.gland)
-                    self.sideGListWidget.addItem(self.gland.gland_russian_name)
+                    if hasattr(self, 'leftside_block'):
+                        self.leftside_block.calculate_coordinate_glands_for_draw()
+                    if self.gland.status_add_to_possible_biggest_input != False:
+                        self.glands_on_sides_dict['Г'].append(self.gland)
+                        self.sideGListWidget.addItem(self.gland.gland_russian_name)
+                    else:
+                        QMessageBox.critical(self, "Ошибка",
+                                             f"{self.gland.gland_russian_name} не помещается кабельный ввод на сторону Г",
+                                             QMessageBox.Ok)
+                        self.glands_on_sides_dict['Г'].clear()
+                        # window_error.call_error()
+                        break
 
+    @Qt.pyqtSlot()
     def add_gland_side_Cover(self):
         if hasattr(self,'key_gland'):
             if self.siteCoverSpinBox.text() != '0':
@@ -524,7 +596,7 @@ class GlandInterface(shell_ui.ShellInterface):
                     self.glands_on_sides_dict['Крышка'].append(self.gland)
                     self.CoverListWidget.addItem(self.gland.gland_russian_name)
 
-
+    @Qt.pyqtSlot()
     def clear_ABVG_spinbox_afted_add_button(self):
         # Установка нулевых значений в spinbox
         self.siteASpinBox_2.setValue(0)
@@ -536,6 +608,7 @@ class GlandInterface(shell_ui.ShellInterface):
         self.gland_checkdiam_maxlineedit.clear()
         self.gland_additionalmarkingcomboBox.clear()
 
+    @Qt.pyqtSlot()
     def clear_all_list_widget(self):
         self.sideAListWidget.clear()
         self.sideBListWidget.clear()
@@ -543,6 +616,7 @@ class GlandInterface(shell_ui.ShellInterface):
         self.sideGListWidget.clear()
         self.CoverListWidget.clear()
 
+    @Qt.pyqtSlot()
     def click_up_button_A(self):
         rowIndex = self.sideAListWidget.currentRow()
         currentItem = self.sideAListWidget.takeItem(rowIndex)
@@ -551,6 +625,7 @@ class GlandInterface(shell_ui.ShellInterface):
         self.sideAListWidget.insertItem(rowIndex - 1, currentItem)
         self.sideAListWidget.setCurrentRow(rowIndex - 1)
 
+    @Qt.pyqtSlot()
     def click_up_button_B(self):
         rowIndex = self.sideBListWidget.currentRow()
         currentItem = self.sideBListWidget.takeItem(rowIndex)
@@ -559,6 +634,7 @@ class GlandInterface(shell_ui.ShellInterface):
         self.sideBListWidget.insertItem(rowIndex - 1, currentItem)
         self.sideBListWidget.setCurrentRow(rowIndex - 1)
 
+    @Qt.pyqtSlot()
     def click_up_button_V(self):
         rowIndex = self.sideVListWidget.currentRow()
         currentItem = self.sideVListWidget.takeItem(rowIndex)
@@ -567,6 +643,7 @@ class GlandInterface(shell_ui.ShellInterface):
         self.sideVListWidget.insertItem(rowIndex - 1, currentItem)
         self.sideVListWidget.setCurrentRow(rowIndex - 1)
 
+    @Qt.pyqtSlot()
     def click_up_button_G(self):
         rowIndex = self.sideGListWidget.currentRow()
         currentItem = self.sideGListWidget.takeItem(rowIndex)
@@ -575,12 +652,14 @@ class GlandInterface(shell_ui.ShellInterface):
         self.sideGListWidget.insertItem(rowIndex - 1, currentItem)
         self.sideGListWidget.setCurrentRow(rowIndex - 1)
 
+    @Qt.pyqtSlot()
     def click_up_button_cover(self):
         rowIndex = self.CoverListWidget.currentRow()
         currentItem = self.CoverListWidget.takeItem(rowIndex)
         self.CoverListWidget.insertItem(rowIndex - 1, currentItem)
         self.CoverListWidget.setCurrentRow(rowIndex - 1)
 
+    @Qt.pyqtSlot()
     def click_down_button_A(self):
         rowIndex = self.sideAListWidget.currentRow()
         currentItem = self.sideAListWidget.takeItem(rowIndex)
@@ -589,6 +668,7 @@ class GlandInterface(shell_ui.ShellInterface):
         self.sideAListWidget.insertItem(rowIndex + 1, currentItem)
         self.sideAListWidget.setCurrentRow(rowIndex + 1)
 
+    @Qt.pyqtSlot()
     def click_down_button_B(self):
         rowIndex = self.sideBListWidget.currentRow()
         currentItem = self.sideBListWidget.takeItem(rowIndex)
@@ -597,6 +677,7 @@ class GlandInterface(shell_ui.ShellInterface):
         self.sideBListWidget.insertItem(rowIndex + 1, currentItem)
         self.sideBListWidget.setCurrentRow(rowIndex + 1)
 
+    @Qt.pyqtSlot()
     def click_down_button_V(self):
         rowIndex = self.sideVListWidget.currentRow()
         currentItem = self.sideVListWidget.takeItem(rowIndex)
@@ -605,6 +686,7 @@ class GlandInterface(shell_ui.ShellInterface):
         self.sideVListWidget.insertItem(rowIndex + 1, currentItem)
         self.sideVListWidget.setCurrentRow(rowIndex + 1)
 
+    @Qt.pyqtSlot()
     def click_down_button_G(self):
         rowIndex = self.sideGListWidget.currentRow()
         currentItem = self.sideGListWidget.takeItem(rowIndex)
@@ -613,32 +695,38 @@ class GlandInterface(shell_ui.ShellInterface):
         self.sideGListWidget.insertItem(rowIndex + 1, currentItem)
         self.sideGListWidget.setCurrentRow(rowIndex + 1)
 
+    @Qt.pyqtSlot()
     def click_down_button_cover(self):
         rowIndex = self.CoverListWidget.currentRow()
         currentItem = self.CoverListWidget.takeItem(rowIndex)
         self.CoverListWidget.insertItem(rowIndex + 1, currentItem)
         self.CoverListWidget.setCurrentRow(rowIndex + 1)
 
+    @Qt.pyqtSlot()
     def click_delete_button_A(self):
         rowIndex = self.sideAListWidget.currentRow()
         self.glands_on_sides_dict['А'].pop(rowIndex)
         currentItem = self.sideAListWidget.takeItem(rowIndex)
 
+    @Qt.pyqtSlot()
     def click_delete_button_B(self):
         rowIndex = self.sideBListWidget.currentRow()
         self.glands_on_sides_dict['Б'].pop(rowIndex)
         currentItem = self.sideBListWidget.takeItem(rowIndex)
 
+    @Qt.pyqtSlot()
     def click_delete_button_V(self):
         rowIndex = self.sideVListWidget.currentRow()
         self.glands_on_sides_dict['В'].pop(rowIndex)
         currentItem = self.sideVListWidget.takeItem(rowIndex)
 
+    @Qt.pyqtSlot()
     def click_delete_button_G(self):
         rowIndex = self.sideGListWidget.currentRow()
         self.glands_on_sides_dict['Г'].pop(rowIndex)
         currentItem = self.sideGListWidget.takeItem(rowIndex)
 
+    @Qt.pyqtSlot()
     def click_delete_button_cover(self):
         rowIndex = self.CoverListWidget.currentRow()
         self.glands_on_sides_dict['Крышка'].pop(rowIndex)

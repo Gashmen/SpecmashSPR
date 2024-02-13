@@ -33,7 +33,7 @@ class ShellBaseDxf:
     def set_translit_name(self):
         '''Получение транслита имени'''
         if hasattr(self,'shell_russian_name'):
-            self.shell_translit_name =  transliterate.translit(self.shell_russian_name, language_code='ru', reversed=True)
+            self.shell_translit_name = transliterate.translit(self.shell_russian_name, language_code='ru', reversed=True)
 
     def check_possible_to_draw(self, dxf_base: DxfBase):
         '''Проверка на наличие в базе dxf оболочки'''
@@ -98,7 +98,44 @@ class ShellSideBlock(DxfBase):
         if hasattr(self,'side_dxf_name'):# задаются координаты Полилинии
             self.polyline.side = self.side_dxf_name  # Имя стороны по последней части имени в блоке
 
-    def calculate_coordinate_glands_for_draw(self):
+    def check_possible_to_add_biggest_gland(self):
+        '''Проверка на помещение самого большого кабельного ввода на сторону'''
+        if hasattr(self,'side_russian_name'):
+            self.list_glands = self.glands_on_sides_dict[self.side_russian_name]
+
+            x_start_rectangle = self.polyline.x0
+            x_end_rectangle = self.polyline.x1
+            y_start_rectangle = self.polyline.y0
+            y_end_rectangle = self.polyline.y1
+
+            self.biggest_check = gland_algoritm_one_row.BigGlandChecker(list_glands_on_side=self.list_glands,
+                                                                   x_start_rectangle=x_start_rectangle,
+                                                                   y_start_rectangle=y_start_rectangle,
+                                                                   x_end_rectangle=x_end_rectangle,
+                                                                   y_end_rectangle=y_end_rectangle,
+                                                                   )
+            return self.biggest_check.status_add_to_possible_biggest_input
+
+    def check_possible_to_add_in_one_row(self):
+        '''Проверка на помещение самого большого кабельного ввода на сторону'''
+        if hasattr(self,'side_russian_name'):
+            self.list_glands = self.glands_on_sides_dict[self.side_russian_name]
+
+            x_start_rectangle = self.polyline.x0
+            x_end_rectangle = self.polyline.x1
+            y_start_rectangle = self.polyline.y0
+            y_end_rectangle = self.polyline.y1
+
+            self.one_row_check = gland_algoritm_one_row.OneRowGlandChecker(list_glands_on_side=self.list_glands,
+                                                                       x_start_rectangle=x_start_rectangle,
+                                                                       y_start_rectangle=y_start_rectangle,
+                                                                       x_end_rectangle=x_end_rectangle,
+                                                                       y_end_rectangle=y_end_rectangle,
+                                                                       )
+            return self.one_row_check.status_add_in_one_row
+
+
+    def calculate_coordinate_glands_one_row(self):
         '''Рассчет координат '''
         if hasattr(self,'side_russian_name'):
             self.list_glands = self.glands_on_sides_dict[self.side_russian_name]
@@ -108,6 +145,8 @@ class ShellSideBlock(DxfBase):
             x_end_rectangle = self.polyline.x1
             y_start_rectangle = self.polyline.y0
             y_end_rectangle = self.polyline.y1
+
+
 
             ###################
             # ДЛЯ ВТОРОГО УРОВНЯ
@@ -121,14 +160,14 @@ class ShellSideBlock(DxfBase):
                                                                    x_end_rectangle=x_end_rectangle,
                                                                    y_end_rectangle=y_end_rectangle,
                                                                    clearens=5)
-                if first_check.status_add_to_possible_biggest_input == False:
-                    # UI_BaseError.Ui_BaseError(text_base_error='НЕ ВОЗМОЖНО УСТАНОВИТЬ САМЫЙ '
-                    #                                           'БОЛЬШОЙ КАБЕЛЬНЫЙ ВВОД НА СТОРОНЕ'
-                    #                                           +self.side_russian_name).call_error()
+
+                if first_check.status_add_in_one_row == False:
                     break
 
                 if hasattr(first_check, 'new_x_start_rectangle'):
                     x_start_rectangle = first_check.new_x_start_rectangle
+
+
 
 
     def draw_glands_in_block(self):
@@ -172,8 +211,6 @@ class ShellTopSideBlock(ShellSideBlock):
     # def draw_glands_around_topside(self, downside_block, leftside_block, rightside_block, upside_block):
 
 
-
-
 class ShellDownSideBlock(ShellSideBlock):
 
     def __init__(self,translit_name,doc_base:Drawing,glands_on_sides_dict):
@@ -204,9 +241,9 @@ class ShellUpSideBlock(ShellSideBlock):
         self.set_shell_side_name(translit_name=translit_name,
                                  side_dxf_name='upside')
         self.set_side_russian_name(side_russian_name='А')
-        self.set_dict_glands_all_sizes(glands_on_sides_dict=glands_on_sides_dict)
+        # self.set_dict_glands_all_sizes(glands_on_sides_dict=glands_on_sides_dict)
         self.set_block_from_dxf_base()
-        self.set_status_painting_side()
+        # self.set_status_painting_side()
         self.search_polyline()
 
 class ShellLeftSideBlock(ShellSideBlock):

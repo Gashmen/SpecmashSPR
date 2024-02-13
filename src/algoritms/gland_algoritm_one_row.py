@@ -24,26 +24,190 @@ class GlandAlgoritmChecker:
     def set_glands_diametrs(self):
         self.list_diam = [float(gland.diametr) for gland in self.list_glands]
 
+
+class BigGlandChecker(GlandAlgoritmChecker):
+    '''Проверка на возможность в целом установки в самый большой кабельный ввод'''
+
+    def __init__(self,list_glands_on_side,
+                 x_start_rectangle,x_end_rectangle,
+                 y_start_rectangle,y_end_rectangle):
+        self.big_gland_check_setup(list_glands_on_side=list_glands_on_side,
+                                   x_start_rectangle=x_start_rectangle,
+                                   x_end_rectangle=x_end_rectangle,
+                                   y_start_rectangle=y_start_rectangle,
+                                   y_end_rectangle=y_end_rectangle)
+        self.check_possible_to_add_biggest_input()
+
+
+    def big_gland_check_setup(self,list_glands_on_side,
+                              x_start_rectangle, x_end_rectangle,
+                              y_start_rectangle, y_end_rectangle
+                              ):
+        self.set_list_glands(list_glands_on_side=list_glands_on_side)
+        self.set_glands_diametrs()
+        self.set_x_start_rectangle(x_start_rectangle=x_start_rectangle)
+        self.set_x_end_rectangle(x_end_rectangle=x_end_rectangle)
+        self.set_y_start_rectangle(y_start_rectangle=y_start_rectangle)
+        self.set_y_end_rectangle(y_end_rectangle=y_end_rectangle)
+
     def check_possible_to_add_biggest_input(self):
         '''
         Проверка на то, влезут ли все самый большой кабельный ввод вообще
         :return: True or False
         '''
-        self.min_size = min(self.x_end_rectangle-self.x_start_rectangle, self.y_end_rectangle - self.y_start_rectangle)
-        if hasattr(self,'list_diam'):
+        self.min_size = min(self.x_end_rectangle - self.x_start_rectangle,
+                            self.y_end_rectangle - self.y_start_rectangle)
+        if hasattr(self, 'list_diam'):
             if max(self.list_diam) <= self.min_size:
-                return True
+                self.status_add_to_possible_biggest_input = True
             else:
-                return False
+                self.status_add_to_possible_biggest_input = False
+
+class OneRowGlandChecker(GlandAlgoritmChecker):
+    '''Проверка на возможность в целом установки в самый большой кабельный ввод'''
+
+    def __init__(self,list_glands_on_side,
+                 x_start_rectangle,x_end_rectangle,
+                 y_start_rectangle,y_end_rectangle,
+                 clearens=5):
+        self.one_row_gland_check_setup(list_glands_on_side=list_glands_on_side,
+                                       x_start_rectangle=x_start_rectangle,
+                                       x_end_rectangle=x_end_rectangle,
+                                       y_start_rectangle=y_start_rectangle,
+                                       y_end_rectangle=y_end_rectangle,
+                                       clearens=clearens)
+        self.check_possible_to_add_all_inputs_in_one_row()
+
+
+    def one_row_gland_check_setup(self,list_glands_on_side,
+                                  x_start_rectangle, x_end_rectangle,
+                                  y_start_rectangle, y_end_rectangle,
+                                  clearens):
+        '''НЕОБХОДИМО ПЕРЕДАВАТЬ СЮДА ЛИСТ С ОСТАВШИМИСЯ КАБЕЛЬНЫМИ ВВОДАМИ ПОСЛЕ ПРОХОЖДЕНИЯ ПРОВЕРКИ НА ДВА РЯДА
+        Т.Е. ПЕРВАЯ ИТЕРАЦИЯ БУДЕТ ЭТОТ АЛГОРИТМ ПРОВЕРКИ, ЕСЛИ НЕТ, ТО ИДЕТ НА ДВА РЯДА, ДВА РЯДА ДОЛЖЕН ДАВАТЬ СРАЗУ КООРДИНАТЫ ВВОДАМ
+        '''
+        self.set_list_glands(list_glands_on_side=list_glands_on_side)
+        self.set_glands_diametrs()
+        self.set_x_start_rectangle(x_start_rectangle=x_start_rectangle)
+        self.set_x_end_rectangle(x_end_rectangle=x_end_rectangle)
+        self.set_y_start_rectangle(y_start_rectangle=y_start_rectangle)
+        self.set_y_end_rectangle(y_end_rectangle=y_end_rectangle)
+        self.set_clearens(clearens=clearens)
+
+    def check_possible_to_add_all_inputs_in_one_row(self):
+        '''
+        Если все ввода помещаются, и расстояние между ними = 5 мм, то значит их можно вставить
+        :param free_space: max(x,y)
+        :param length_clearens: вот этот клириэнс между вводами, по дефолту = 5
+        :return: True or False
+        '''
+        self.max_size = max(self.x_end_rectangle-self.x_start_rectangle, self.y_end_rectangle - self.y_start_rectangle)
+        self.len_cable_glands = sum(self.list_diam) + self.clearens * (len(self.list_diam)-1)
+        self.free_space = self.max_size - self.len_cable_glands
+        if self.max_size >= sum(self.list_diam) + self.clearens * (len(self.list_diam)-1):
+            self.status_add_in_one_row = True
+        else:
+            self.status_add_in_one_row = False
+
+class TwoRowGlandChecker(GlandAlgoritmChecker):
+    '''Проверка, есть ли вообще окружности, которые могут быть друг под другом'''
+    def __init__(self,list_glands_on_side,
+                 x_start_rectangle,x_end_rectangle,
+                 y_start_rectangle,y_end_rectangle):
+        self.two_row_gland_check_setup(list_glands_on_side=list_glands_on_side,
+                                       x_start_rectangle=x_start_rectangle,
+                                       x_end_rectangle=x_end_rectangle,
+                                       y_start_rectangle=y_start_rectangle,
+                                       y_end_rectangle=y_end_rectangle)
+
+        self.min_size = min(self.x_end_rectangle - self.x_start_rectangle,
+                            self.y_end_rectangle - self.y_start_rectangle)
+
+        self.widht_for_cut = self.min_size
+
+        '''Описание и заполнение уровней'''
+        self.level_dict = dict()
+        self.current_gland = self.list_glands[0]
+
+        # while len(self.list_glands) > 0:
+
+
+
+
+    def set_sorted_glands(self):
+        self.list_sorted_glands = sorted(self.list_glands,key=lambda gland:gland.diametr,reverse=True)
+        self.list_sorted_diam = [float(gland.diametr) for gland in self.list_sorted_glands]
+    def two_row_gland_check_setup(self,list_glands_on_side,
+                                  x_start_rectangle, x_end_rectangle,
+                                  y_start_rectangle, y_end_rectangle
+                                  ):
+        '''НЕОБХОДИМО ПЕРЕДАВАТЬ СЮДА ЛИСТ С ОСТАВШИМИСЯ КАБЕЛЬНЫМИ ВВОДАМИ ПОСЛЕ ПРОХОЖДЕНИЯ ПРОВЕРКИ НА ДВА РЯДА
+        Т.Е. ПЕРВАЯ ИТЕРАЦИЯ БУДЕТ ЭТОТ АЛГОРИТМ ПРОВЕРКИ, ЕСЛИ НЕТ, ТО ИДЕТ НА ДВА РЯДА, ДВА РЯДА ДОЛЖЕН ДАВАТЬ СРАЗУ КООРДИНАТЫ ВВОДАМ
+        '''
+        self.set_list_glands(list_glands_on_side=list_glands_on_side)
+        self.set_sorted_glands()
+        self.set_x_start_rectangle(x_start_rectangle=x_start_rectangle)
+        self.set_x_end_rectangle(x_end_rectangle=x_end_rectangle)
+        self.set_y_start_rectangle(y_start_rectangle=y_start_rectangle)
+        self.set_y_end_rectangle(y_end_rectangle=y_end_rectangle)
+
+    def check_possible_to_create_level(self):
+        '''
+        Если все ввода помещаются, и расстояние между ними = 5 мм, то значит их можно вставить
+        :param free_space: max(x,y)
+        :param length_clearens: вот этот клириэнс между вводами, по дефолту = 5
+        :return: True or False
+        '''
+        possible_create_levels = False
+
+        for gland_diam_i in self.list_sorted_diam:
+            for gland_diam_j in self.list_sorted_diam:
+                if self.min_size >= gland_diam_i + gland_diam_j + 5:
+                    possible_create_levels = True
+                    return possible_create_levels
+        return possible_create_levels
+
+    def create_level(self):
+        '''
+        Создание нового уровня в словаре уровня
+        :param level_dict: {номер уровня: {'x_insert': x_coordinate, список кабельных вводов:[ gland], диаметр: gland.diametr} ,
+                            номер уровня +1:... }
+        :return:level_dict с новой инфой {x_coordinate:[['ВЗ-Н25' : 42.6],...]}
+        '''
+
+        if self.level_dict == dict():
+            number_gland_level = 0
+        else:
+            number_gland_level = max(list(self.level_dict.keys())) + 1
+
+        dict_for_level_dict = dict()
+
+        x_insert_coordinate = self.list_sorted_glands[0].diametr / 2
+        dict_for_level_dict['x_insert_coordinate'] = x_insert_coordinate
+
+        list_cable_glands = [self.list_sorted_glands[0]]
+        dict_for_level_dict['list_cable_glands'] = list_cable_glands
+
+        level_main_diametr = self.list_sorted_glands[0].diametr
+        dict_for_level_dict['level_main_diametr'] = level_main_diametr
+
+        self.level_dict[number_gland_level] = dict_for_level_dict
+
+        self.widht_for_cut -= level_main_diametr
+
+
+
 
 
 class OneRowChecker(GlandAlgoritmChecker):
     '''Проверка установки в одну линию'''
-    def __init__(self,list_glands_on_side,clearens,
-                 x_start_rectanglee, x_end_rectangle,
-                 y_start_rectangle, y_end_rectangle):
+    def __init__(self,list_glands_on_side,
+                 x_start_rectanglee,
+                 x_end_rectangle,
+                 y_start_rectangle,
+                 y_end_rectangle,
+                 clearens):
 
-        self.status_add_to_possible_biggest_input = False
         self.status_add_in_one_row = False
 
         self.install_one_row_checker(list_glands_on_side=list_glands_on_side,
@@ -53,6 +217,7 @@ class OneRowChecker(GlandAlgoritmChecker):
                                      y_start_rectangle=y_start_rectangle,
                                      y_end_rectangle=y_end_rectangle)
         self.set_glands_diametrs()
+        self.gland_current_iteration = self.list_glands[0]
         if self.check_possible_to_add_biggest_input():
             self.status_add_to_possible_biggest_input = True
 
@@ -61,13 +226,14 @@ class OneRowChecker(GlandAlgoritmChecker):
                 self.calculate_x_one_row()
                 self.calculate_y_one_row()
                 self.calculate_new_x_start_rectangle()
-                self.delete_gland_one_row()
             else:
                 self.status_add_in_one_row = False
         else:
             self.status_add_to_possible_biggest_input = False
 
         self.set_status_add_to_possible_biggest_inputs()
+        self.set_status_add_in_one_row()
+        self.delete_gland_one_row()
 
     def install_one_row_checker(self,list_glands_on_side,clearens,
                                 x_start_rectangle,x_end_rectangle,
@@ -82,7 +248,10 @@ class OneRowChecker(GlandAlgoritmChecker):
     '''ИХ ОБРАБОТКА'''
 
     def set_status_add_to_possible_biggest_inputs(self):
-        self.list_glands[0].set_status_add_to_possible_biggest_input(status=self.status_add_to_possible_biggest_input)
+        self.gland_current_iteration.set_status_add_to_possible_biggest_input(status=self.status_add_to_possible_biggest_input)
+
+    def set_status_add_in_one_row(self):
+        self.gland_current_iteration.set_status_add_in_one_row(status=self.status_add_in_one_row)
 
     def check_possible_to_add_all_inputs_in_one_row(self):
         '''

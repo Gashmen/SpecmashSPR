@@ -2,7 +2,7 @@ import ezdxf
 import os
 import sys
 
-from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5 import QtCore, QtGui, QtWidgets, Qt
 from src.interface_backend import dxf_base_ui #ПОМЕНЯТЬ НА ИТОГОВЫЙ ИНТЕРФЕЙСНЫЙ МОДУЛЬ В ОЧЕРЕДНОСТИ
 
 from config import dxf_config
@@ -26,8 +26,7 @@ class DxfShellQtCommunication(dxf_base_ui.DxfQtCommunication):
         # self.sideVListWidget.model().rowsInserted.connect(self.draw_glands_in_downside)
         # self.sideVListWidget.model().rowsRemoved.connect(self.draw_glands_in_downside)
 
-
-
+    @Qt.pyqtSlot()
     def set_shell_blocks(self):
         self.set_shell_topside_block()
         self.set_shell_downside_block()
@@ -35,6 +34,7 @@ class DxfShellQtCommunication(dxf_base_ui.DxfQtCommunication):
         self.set_shell_upside_block()
         self.set_shell_rightside_block()
 
+    @Qt.pyqtSlot()
     def check_possible_to_add_shell(self):
         '''Проверка возможности добавления коробки
         Есть ли она в базе dxf'''

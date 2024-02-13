@@ -2,7 +2,7 @@ import os
 import sys
 import ezdxf
 import time
-from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5 import QtCore, QtGui, QtWidgets,Qt
 
 
 from config import csv_config

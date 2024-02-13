@@ -339,6 +339,10 @@ class CableGlandInformation:
         self.create_name()
         self.create_dxf_name()
 
+        '''Для алгоритмов добавления кабельных вводов'''
+        self.set_status_add_in_one_row(status=False)
+        self.set_status_add_to_possible_biggest_input(status=False)
+
     def set_gland_dict(self, gland_dict):
         self.gland_dict = gland_dict
 
@@ -447,6 +451,9 @@ class CableGlandInformation:
 
     def set_status_add_to_possible_biggest_input(self,status:bool):
         self.status_add_to_possible_biggest_input = status
+
+    def set_status_add_in_one_row(self,status:bool):
+        self.status_add_in_one_row = status
 
 
 if __name__ == '__main__':
