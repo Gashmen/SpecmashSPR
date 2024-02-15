@@ -177,9 +177,13 @@ class TwoRowGlandChecker(GlandAlgoritmChecker):
                     else:
                         if self.level_dict == dict():
                             self.create_level()
+                            # self.calculate_x_one_row()
                             y_coordinate = self.y_start_rectangle + self.list_glands[0].diametr/2
                             self.list_glands[0].set_y_coordinate(y_coordinate=y_coordinate)
+
+
                         else:
+
 
 
 
@@ -287,11 +291,13 @@ class TwoRowGlandChecker(GlandAlgoritmChecker):
             y_previous = self.level_dict[max(list(self.level_dict.keys()))]['list_cable_glands'][0].y_coordinate
         diam_previous = self.self.level_dict[max(list(self.level_dict.keys()))]['level_main_diametr']
 
+        x_start_rectangle = x_previous + diam_previous
+        x_insert_coordinate = x_start_rectangle + \
+                              ((diam_previous/2+5)*(self.list_glands[0].diametr/2) -
+                              (self.y_end_rectangle - self.y_start_rectangle - diam_previous/2 - self.list_glands[0].diametr/2)**2) \
+                              ** (1/2)#ПРОВЕРИТЬ, diam один +5, потому что достаточно, если что прибавить ко второму диаметру тоже +5
 
-        x_insert_coordinate = ((diam_previous/2+5)*(self.list_glands[0].diametr/2+5) -
-                               (self.y_end_rectangle - diam_previous/2 - self.list_glands[0].diametr/2)**2) ** (1/2)
         dict_for_level_dict['x_insert_coordinate'] = x_insert_coordinate
-
 
         list_cable_glands = [self.list_glands[0]]
         dict_for_level_dict['list_cable_glands'] = list_cable_glands
@@ -300,7 +306,7 @@ class TwoRowGlandChecker(GlandAlgoritmChecker):
         dict_for_level_dict['level_main_diametr'] = level_main_diametr
 
         self.gland_x_coordinate = x_insert_coordinate
-        # self.gland_y_coordinate =
+        self.gland_y_coordinate = y_end_rectangle * (1/2*(1 - (-1)**number_gland_level) + (level_main_diametr/2)*(-1)**number_gland_level)
 
         self.level_dict[number_gland_level] = dict_for_level_dict
 

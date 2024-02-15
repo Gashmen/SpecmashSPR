@@ -466,7 +466,7 @@ class CableGlandInformation:
     def set_property_onerow_algoritm(self):
         self.property_onerow_algoritm = True
         self.property_tworow_algoritm = False
-        self.property_tworow_algoritm = False
+        self.property_snake_algoritm = False
 
     def set_property_tworow_algoritm(self):
         self.property_tworow_algoritm = True
