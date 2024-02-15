@@ -430,7 +430,15 @@ class CableGlandInformation:
                     self.external_tube_size = str(self.gland_dict['Внешняя трубная резьба, размер'])
     def set_diametr(self):
         diametr = str(self.gland_dict['Описаный диаметр кабельного ввода'])
-        self.diametr = diametr
+        '''Удаление запятой или еще чего из числа'''
+        if ',' in str(diametr):
+            diametr = str(diametr).replace(',', '.')
+        try:
+            self.diametr = float(diametr)
+        except:
+            self.diametr = 0
+
+
 
     def set_options(self):
         self.vz_vz = False
@@ -454,6 +462,22 @@ class CableGlandInformation:
 
     def set_status_add_in_one_row(self,status:bool):
         self.status_add_in_one_row = status
+
+    def set_property_onerow_algoritm(self):
+        self.property_onerow_algoritm = True
+        self.property_tworow_algoritm = False
+        self.property_tworow_algoritm = False
+
+    def set_property_tworow_algoritm(self):
+        self.property_tworow_algoritm = True
+        self.property_onerow_algoritm = False
+        self.property_snake_algoritm = False
+
+    def set_property_snake_algoritm(self):
+        self.property_snake_algoritm = True
+        self.property_onerow_algoritm = False
+        self.property_tworow_algoritm = False
+
 
 
 if __name__ == '__main__':

@@ -44,7 +44,9 @@ class GlandInterface(shell_ui.ShellInterface):
         # Добавление имен в siteA
         self.addButton_2.clicked.connect(self.add_gland_side_A)
         self.addButton_2.clicked.connect(self.check_to_add_biggest_gland_side_A)
+        self.addButton_2.clicked.connect(self.check_to_add_all_area_glands_side_A)
         self.addButton_2.clicked.connect(self.check_to_possible_to_create_all_glands_in_one_row)
+        self.addButton_2.clicked.connect(self.check_to_possible_to_create_all_glands_in_two_row)
         # Добавление имен в siteB
         self.addButton_2.clicked.connect(self.add_gland_side_B)
         # Добавление имен в siteV
@@ -504,18 +506,51 @@ class GlandInterface(shell_ui.ShellInterface):
                 self.sideAListWidget.clear()
                 self.glands_on_sides_dict['А'].clear()
                 self.upside_block.glands_on_sides_dict['А'].clear()
+
+    @Qt.pyqtSlot()
+    def check_to_add_all_area_glands_side_A(self):
+        if hasattr(self, 'upside_block'):
+            self.upside_block.set_dict_glands_all_sizes(self.glands_on_sides_dict)
+            if self.upside_block.check_possible_to_add_all_gland() == False:
+                QMessageBox.critical(self, "Ошибка",
+                                     f"Невозможно поместить эти кабельные вводы",
+                                     QMessageBox.Ok)
+                self.sideAListWidget.clear()
+                self.glands_on_sides_dict['А'].clear()
+                self.upside_block.glands_on_sides_dict['А'].clear()
+
     @Qt.pyqtSlot()
     def check_to_possible_to_create_all_glands_in_one_row(self):
         if hasattr(self, 'upside_block'):
             self.upside_block.set_dict_glands_all_sizes(self.glands_on_sides_dict)
             if self.upside_block.check_possible_to_add_in_one_row() == False:
                 QMessageBox.critical(self, "Справка",
-                                     f"На сторону А в один ряд не помещаются кабельные вводы",
+                                     f"На сторону А в один ряд НЕ помещаются кабельные вводы",
                                      QMessageBox.Ok)
+            else:
+                QMessageBox.critical(self, "Справка",
+                                     f"На сторону А в один ряд ПОМЕЩАЮТСЯ кабельные вводы",
+                                     QMessageBox.Ok)
+
                 # self.sideAListWidget.clear()
                 # self.glands_on_sides_dict['А'].clear()
                 # self.upside_block.glands_on_sides_dict['А'].clear()
 
+    @Qt.pyqtSlot()
+    def check_to_possible_to_create_all_glands_in_two_row(self):
+        if hasattr(self, 'upside_block'):
+            self.upside_block.set_dict_glands_all_sizes(self.glands_on_sides_dict)
+            if hasattr(self.upside_block,'one_row_check'):
+                if self.upside_block.one_row_check.status_add_in_one_row == False:
+                    try:
+                        self.upside_block.calculate_coordinates_glands_two_row()
+                    except:
+                        QMessageBox.critical(self, "Справка",
+                                             f"Невозможно создать в два ряда",
+                                             QMessageBox.Ok)
+                        self.sideAListWidget.clear()
+                        self.glands_on_sides_dict['А'].clear()
+                        self.upside_block.glands_on_sides_dict['А'].clear()
 
     @Qt.pyqtSlot()
     def add_gland_side_B(self):
@@ -704,33 +739,38 @@ class GlandInterface(shell_ui.ShellInterface):
 
     @Qt.pyqtSlot()
     def click_delete_button_A(self):
-        rowIndex = self.sideAListWidget.currentRow()
-        self.glands_on_sides_dict['А'].pop(rowIndex)
-        currentItem = self.sideAListWidget.takeItem(rowIndex)
+        if self.sideAListWidget.count() !=0:
+            rowIndex = self.sideAListWidget.currentRow()
+            self.glands_on_sides_dict['А'].pop(rowIndex)
+            currentItem = self.sideAListWidget.takeItem(rowIndex)
 
     @Qt.pyqtSlot()
     def click_delete_button_B(self):
-        rowIndex = self.sideBListWidget.currentRow()
-        self.glands_on_sides_dict['Б'].pop(rowIndex)
-        currentItem = self.sideBListWidget.takeItem(rowIndex)
+        if self.sideBListWidget.count() != 0:
+            rowIndex = self.sideBListWidget.currentRow()
+            self.glands_on_sides_dict['Б'].pop(rowIndex)
+            currentItem = self.sideBListWidget.takeItem(rowIndex)
 
     @Qt.pyqtSlot()
     def click_delete_button_V(self):
-        rowIndex = self.sideVListWidget.currentRow()
-        self.glands_on_sides_dict['В'].pop(rowIndex)
-        currentItem = self.sideVListWidget.takeItem(rowIndex)
+        if self.sideVListWidget.count() != 0:
+            rowIndex = self.sideVListWidget.currentRow()
+            self.glands_on_sides_dict['В'].pop(rowIndex)
+            currentItem = self.sideVListWidget.takeItem(rowIndex)
 
     @Qt.pyqtSlot()
     def click_delete_button_G(self):
-        rowIndex = self.sideGListWidget.currentRow()
-        self.glands_on_sides_dict['Г'].pop(rowIndex)
-        currentItem = self.sideGListWidget.takeItem(rowIndex)
+        if self.sideGListWidget.count() != 0:
+            rowIndex = self.sideGListWidget.currentRow()
+            self.glands_on_sides_dict['Г'].pop(rowIndex)
+            currentItem = self.sideGListWidget.takeItem(rowIndex)
 
     @Qt.pyqtSlot()
     def click_delete_button_cover(self):
-        rowIndex = self.CoverListWidget.currentRow()
-        self.glands_on_sides_dict['Крышка'].pop(rowIndex)
-        currentItem = self.CoverListWidget.takeItem(rowIndex)
+        if self.CoverListWidget.count() != 0:
+            rowIndex = self.CoverListWidget.currentRow()
+            self.glands_on_sides_dict['Крышка'].pop(rowIndex)
+            currentItem = self.CoverListWidget.takeItem(rowIndex)
 
 
 if __name__ == "__main__":
