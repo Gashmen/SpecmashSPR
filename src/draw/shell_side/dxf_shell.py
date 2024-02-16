@@ -99,20 +99,23 @@ class ShellSideBlock(DxfBase):
             self.polyline.side = self.side_dxf_name  # Имя стороны по последней части имени в блоке
 
     def check_possible_to_add_all_gland(self):
-        '''Проверка на помещение самого большого кабельного ввода на сторону'''
+        '''Проверка на всех кабельных вводов на сторону'''
         if hasattr(self, 'side_russian_name'):
             self.list_glands = self.glands_on_sides_dict[self.side_russian_name]
+            if len(self.list_glands) >0:
 
-            x_start_rectangle = self.polyline.x0
-            x_end_rectangle = self.polyline.x1
-            y_start_rectangle = self.polyline.y0
-            y_end_rectangle = self.polyline.y1
+                x_start_rectangle = self.polyline.x0
+                x_end_rectangle = self.polyline.x1
+                y_start_rectangle = self.polyline.y0
+                y_end_rectangle = self.polyline.y1
 
-            area_rectangle_polyline = (x_end_rectangle-x_start_rectangle) * (y_end_rectangle-y_start_rectangle)
-            area_rectangle_glands = sum([(3.14 * gland.diametr * gland.diametr /4 ) for gland in self.list_glands])
+                area_rectangle_polyline = (x_end_rectangle-x_start_rectangle) * (y_end_rectangle-y_start_rectangle)
+                area_rectangle_glands = sum([(3.14 * gland.diametr * gland.diametr /4 ) for gland in self.list_glands])
 
-            if area_rectangle_polyline >= area_rectangle_glands:
-                return True
+                if area_rectangle_polyline >= area_rectangle_glands:
+                    return True
+                else:
+                    return False
             else:
                 return False
 
@@ -121,53 +124,58 @@ class ShellSideBlock(DxfBase):
         '''Проверка на помещение самого большого кабельного ввода на сторону'''
         if hasattr(self,'side_russian_name'):
             self.list_glands = self.glands_on_sides_dict[self.side_russian_name]
+            if len(self.list_glands) >0:
+                x_start_rectangle = self.polyline.x0
+                x_end_rectangle = self.polyline.x1
+                y_start_rectangle = self.polyline.y0
+                y_end_rectangle = self.polyline.y1
 
-            x_start_rectangle = self.polyline.x0
-            x_end_rectangle = self.polyline.x1
-            y_start_rectangle = self.polyline.y0
-            y_end_rectangle = self.polyline.y1
+                self.biggest_check = gland_algoritm_one_row.BigGlandChecker(list_glands_on_side=self.list_glands,
+                                                                       x_start_rectangle=x_start_rectangle,
+                                                                       y_start_rectangle=y_start_rectangle,
+                                                                       x_end_rectangle=x_end_rectangle,
+                                                                       y_end_rectangle=y_end_rectangle,
+                                                                       )
+                return self.biggest_check.status_add_to_possible_biggest_input
 
-            self.biggest_check = gland_algoritm_one_row.BigGlandChecker(list_glands_on_side=self.list_glands,
-                                                                   x_start_rectangle=x_start_rectangle,
-                                                                   y_start_rectangle=y_start_rectangle,
-                                                                   x_end_rectangle=x_end_rectangle,
-                                                                   y_end_rectangle=y_end_rectangle,
-                                                                   )
-            return self.biggest_check.status_add_to_possible_biggest_input
+
 
     def check_possible_to_add_in_one_row(self):
         '''Проверка на помещение самого большого кабельного ввода на сторону'''
         if hasattr(self,'side_russian_name'):
             self.list_glands = self.glands_on_sides_dict[self.side_russian_name]
+            if len(self.list_glands) > 0:
 
-            x_start_rectangle = self.polyline.x0
-            x_end_rectangle = self.polyline.x1
-            y_start_rectangle = self.polyline.y0
-            y_end_rectangle = self.polyline.y1
+                x_start_rectangle = self.polyline.x0
+                x_end_rectangle = self.polyline.x1
+                y_start_rectangle = self.polyline.y0
+                y_end_rectangle = self.polyline.y1
 
-            self.one_row_check = gland_algoritm_one_row.OneRowGlandChecker(list_glands_on_side=self.list_glands,
-                                                                           x_start_rectangle=x_start_rectangle,
-                                                                           y_start_rectangle=y_start_rectangle,
-                                                                           x_end_rectangle=x_end_rectangle,
-                                                                           y_end_rectangle=y_end_rectangle,
-                                                                           )
-            return self.one_row_check.status_add_in_one_row
-
-    def calculate_coordinates_glands_two_row(self):
-        if hasattr(self,'side_russian_name'):
-            self.list_glands = self.glands_on_sides_dict[self.side_russian_name]
-
-            x_start_rectangle = self.polyline.x0
-            x_end_rectangle = self.polyline.x1
-            y_start_rectangle = self.polyline.y0
-            y_end_rectangle = self.polyline.y1
-
-            self.two_row_calculate = gland_algoritm_one_row.TwoRowGlandChecker(list_glands_on_side=self.list_glands,
+                self.one_row_check = gland_algoritm_one_row.OneRowGlandChecker(list_glands_on_side=self.list_glands,
                                                                                x_start_rectangle=x_start_rectangle,
                                                                                y_start_rectangle=y_start_rectangle,
                                                                                x_end_rectangle=x_end_rectangle,
                                                                                y_end_rectangle=y_end_rectangle,
                                                                                )
+                return self.one_row_check.status_add_in_one_row
+
+    def calculate_coordinates_glands_two_row(self):
+        if hasattr(self,'side_russian_name'):
+            self.list_glands = self.glands_on_sides_dict[self.side_russian_name]
+            if len(self.list_glands) > 0:
+
+                x_start_rectangle = self.polyline.x0
+                x_end_rectangle = self.polyline.x1
+                y_start_rectangle = self.polyline.y0
+                y_end_rectangle = self.polyline.y1
+
+                self.two_row_calculate = gland_algoritm_one_row.TwoRowGlandChecker(list_glands_on_side=self.list_glands,
+                                                                                   x_start_rectangle=x_start_rectangle,
+                                                                                   y_start_rectangle=y_start_rectangle,
+                                                                                   x_end_rectangle=x_end_rectangle,
+                                                                                   y_end_rectangle=y_end_rectangle,
+                                                                                   )
+                self.list_glands = self.two_row_calculate.list_glands
 
     def calculate_coordinate_glands_one_row(self):
         '''Рассчет координат '''

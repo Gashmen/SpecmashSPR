@@ -58,10 +58,12 @@ class BigGlandChecker(GlandAlgoritmChecker):
         self.min_size = min(self.x_end_rectangle - self.x_start_rectangle,
                             self.y_end_rectangle - self.y_start_rectangle)
         if hasattr(self, 'list_diam'):
-            if max(self.list_diam) <= self.min_size:
-                self.status_add_to_possible_biggest_input = True
-            else:
-                self.status_add_to_possible_biggest_input = False
+            if len(self.list_diam) >0:
+                # if self.list_diam
+                if max(self.list_diam) <= self.min_size:
+                    self.status_add_to_possible_biggest_input = True
+                else:
+                    self.status_add_to_possible_biggest_input = False
 
 class OneRowGlandChecker(GlandAlgoritmChecker):
     '''Проверка на возможность в целом установки в самый большой кабельный ввод'''
@@ -150,6 +152,8 @@ class TwoRowGlandChecker(GlandAlgoritmChecker):
                         self.set_sorted_glands()
                         if self.width_for_cut == self.min_size:
                             self.create_level()
+                            self.width_for_cut -= self.level_dict[max(list(self.level_dict.keys()))]['list_cable_glands'][-1].diametr
+                            self.x_start_rectangle = self.calculate_new_x_start_rectangle()
                             self.list_glands[0].set_property_tworow_algoritm()
                             self.list_glands.pop(0)
                             self.list_diam.pop(0)
@@ -157,22 +161,20 @@ class TwoRowGlandChecker(GlandAlgoritmChecker):
                             while self.width_for_cut >= 0:
                                 if self.search_inputs_can_insert_in_level() == True:
                                     self.add_in_current_level()
-                                    self.width_for_cut -= self.level_dict[max(list(self.level_dict.keys()))]['list_cable_glands'][-1].diametr -5
+                                    self.width_for_cut -= self.level_dict[max(list(self.level_dict.keys()))]['list_cable_glands'][-1].diametr +5
                                     self.list_glands[self.current_gland_index].set_property_tworow_algoritm()
                                     self.list_glands.pop(self.current_gland_index)
                                     self.list_diam.pop(self.current_gland_index)
                                 else:
                                     break
-                            y_free_space = self.min_size - self.width_for_cut
+                            y_free_space = self.width_for_cut
                             y_start = self.y_start_rectangle
                             for gland_two_row in self.level_dict[max(list(self.level_dict.keys()))]['list_cable_glands']:
                                 gland_y_coordinate = y_start + gland_two_row.diametr/2 + \
-                                                     (y_free_space/(self.level_dict[max(list(self.level_dict.keys()))]['list_cable_glands']))
-                                y_start += gland_two_row.diametr + 5
+                                                     (y_free_space/len(self.level_dict[max(list(self.level_dict.keys()))]['list_cable_glands'])+1)
+                                y_start += gland_two_row.diametr/2 + 5
                                 gland_two_row.set_y_coordinate(y_coordinate=gland_y_coordinate)
 
-
-                            self.x_start_rectangle = self.calculate_new_x_start_rectangle()
                             self.width_for_cut = self.min_size
                     else:
                         if self.level_dict == dict():
@@ -180,25 +182,25 @@ class TwoRowGlandChecker(GlandAlgoritmChecker):
                             # self.calculate_x_one_row()
                             y_coordinate = self.y_start_rectangle + self.list_glands[0].diametr/2
                             self.list_glands[0].set_y_coordinate(y_coordinate=y_coordinate)
-
-
+                            self.x_start_rectangle = self.list_glands[0].diametr + 5
+                            self.list_glands[0].set_property_snake_algoritm()
+                            self.list_glands.pop(0)
+                            self.list_diam.pop(0)
                         else:
+                            self.create_snake_level()
+                            self.x_start_rectangle = self.level_dict[max(list(self.level_dict.keys()))]['x_insert_coordinate'] + \
+                                                     self.level_dict[max(list(self.level_dict.keys()))]['level_main_diametr']/2 + \
+                                                     5
 
+                            self.list_glands[0].set_property_snake_algoritm()
+                            self.list_glands.pop(0)
+                            self.list_diam.pop(0)
 
-
-
-
-
-
-            # else:
-            #     self.status_possible_to_create_input = False
-            #     #     break
             else:
                 self.status_possible_to_create_input_all_inputs_after_algoritms = False
+                break
 
         print(self.level_dict)
-
-
 
     def check_possible_to_add_all_inputs_in_one_row(self,clearens=5):
         '''
@@ -289,12 +291,12 @@ class TwoRowGlandChecker(GlandAlgoritmChecker):
         x_previous = self.level_dict[max(list(self.level_dict.keys()))]['x_insert_coordinate']
         if hasattr(self.level_dict[max(list(self.level_dict.keys()))]['list_cable_glands'][0],'y_coordinate'):
             y_previous = self.level_dict[max(list(self.level_dict.keys()))]['list_cable_glands'][0].y_coordinate
-        diam_previous = self.self.level_dict[max(list(self.level_dict.keys()))]['level_main_diametr']
+        diam_previous = self.level_dict[max(list(self.level_dict.keys()))]['level_main_diametr']
 
-        x_start_rectangle = x_previous + diam_previous
-        x_insert_coordinate = x_start_rectangle + \
-                              ((diam_previous/2+5)*(self.list_glands[0].diametr/2) -
-                              (self.y_end_rectangle - self.y_start_rectangle - diam_previous/2 - self.list_glands[0].diametr/2)**2) \
+        x_start_rectangle = x_previous + diam_previous/2
+        x_insert_coordinate = x_previous + \
+                              ((diam_previous/2+5+self.list_glands[0].diametr/2)**2 -
+                              (self.y_end_rectangle - self.list_glands[0].diametr/2 - self.y_start_rectangle - diam_previous/2)**2) \
                               ** (1/2)#ПРОВЕРИТЬ, diam один +5, потому что достаточно, если что прибавить ко второму диаметру тоже +5
 
         dict_for_level_dict['x_insert_coordinate'] = x_insert_coordinate
@@ -306,7 +308,7 @@ class TwoRowGlandChecker(GlandAlgoritmChecker):
         dict_for_level_dict['level_main_diametr'] = level_main_diametr
 
         self.gland_x_coordinate = x_insert_coordinate
-        self.gland_y_coordinate = y_end_rectangle * (1/2*(1 - (-1)**number_gland_level) + (level_main_diametr/2)*(-1)**number_gland_level)
+        self.gland_y_coordinate = self.y_end_rectangle * (1/2*(1 - (-1)**number_gland_level)) + ((level_main_diametr/2)*(-1)**number_gland_level)
 
         self.level_dict[number_gland_level] = dict_for_level_dict
 
@@ -324,11 +326,12 @@ class TwoRowGlandChecker(GlandAlgoritmChecker):
         '''
         search_gland_success = False
         if self.list_glands is not None:
-            for gland in self.list_glands:
-                if self.width_for_cut - 5 >= gland.diametr:
-                    self.current_gland_index = self.list_glands.index(gland)
-                    search_gland_success = True
-                    return search_gland_success
+            if len(self.list_glands) > 0:
+                for gland in self.list_glands:
+                    if self.width_for_cut >= gland.diametr:
+                        self.current_gland_index = self.list_glands.index(gland)
+                        search_gland_success = True
+                        return search_gland_success
         return search_gland_success
 
 

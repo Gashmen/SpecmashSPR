@@ -42,6 +42,7 @@ class GlandInterface(shell_ui.ShellInterface):
         self.inputsButton_leftMenu.clicked.connect(self.set_gland_page)
 
         # Добавление имен в siteA
+
         self.addButton_2.clicked.connect(self.add_gland_side_A)
         self.addButton_2.clicked.connect(self.check_to_add_biggest_gland_side_A)
         self.addButton_2.clicked.connect(self.check_to_add_all_area_glands_side_A)
@@ -486,7 +487,6 @@ class GlandInterface(shell_ui.ShellInterface):
     def add_gland_side_A(self):
         if hasattr(self,'key_gland'):
             if self.siteASpinBox_2.text() != '0':
-
                 for _ in range(0, int(self.siteASpinBox_2.text())):
                     self.gland = gland_csv.CableGlandInformation(
                         gland_dict=self.gland_information.gland_main_dict[self.key_gland])
@@ -528,7 +528,7 @@ class GlandInterface(shell_ui.ShellInterface):
                                      f"На сторону А в один ряд НЕ помещаются кабельные вводы",
                                      QMessageBox.Ok)
             else:
-                QMessageBox.critical(self, "Справка",
+                QMessageBox.information(self, "Справка",
                                      f"На сторону А в один ряд ПОМЕЩАЮТСЯ кабельные вводы",
                                      QMessageBox.Ok)
 
@@ -543,7 +543,11 @@ class GlandInterface(shell_ui.ShellInterface):
             if hasattr(self.upside_block,'one_row_check'):
                 if self.upside_block.one_row_check.status_add_in_one_row == False:
                     try:
-                        self.upside_block.calculate_coordinates_glands_two_row()
+                         self.upside_block.calculate_coordinates_glands_two_row()
+                         if self.upside_block.list_glands != []:
+                             QMessageBox.critical(self, "Справка",
+                                                  f"Невозможно добавить {[_.gland_russian_name for _ in self.upside_block.list_glands]}",
+                                                  QMessageBox.Ok)
                     except:
                         QMessageBox.critical(self, "Справка",
                                              f"Невозможно создать в два ряда",
@@ -650,6 +654,7 @@ class GlandInterface(shell_ui.ShellInterface):
         self.sideVListWidget.clear()
         self.sideGListWidget.clear()
         self.CoverListWidget.clear()
+        self.glands_on_sides_dict = {"А": [], "Б": [], 'В': [], "Г": [], "Крышка": []}
 
     @Qt.pyqtSlot()
     def click_up_button_A(self):
