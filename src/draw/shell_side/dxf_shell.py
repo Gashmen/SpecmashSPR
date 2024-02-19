@@ -210,8 +210,6 @@ class ShellSideBlock(DxfBase):
                     x_start_rectangle = first_check.new_x_start_rectangle
 
 
-
-
     def draw_glands_in_block(self):
         if hasattr(self,'list_glands'):
             if len(self.list_glands) > 0:
@@ -219,6 +217,34 @@ class ShellSideBlock(DxfBase):
                     self.block.add_blockref(name=cable_gland_information.gland_dxf_name + '_exe',
                                             insert=(cable_gland_information.x_coordinate,
                                                     cable_gland_information.y_coordinate))
+
+    def add_gland_in_block(self):
+        '''Вставка кабельных вводов в блок'''
+
+
+        if hasattr(self,'two_row_calculate'):
+            if hasattr(self.two_row_calculate,'level_dict'):
+                if len(list(self.two_row_calculate.level_dict.keys()))>0:
+                    '''self.two_row_calculate.level_dict:
+                       {0: {'x_insert_coordinate': 10.95, 'list_cable_glands': [<src.csv.gland_csv.CableGlandInformation object at 0x0000024BEC0BBBE0>, <src.csv.gland_csv.CableGlandInformation object at 0x0000024BEC0BBA30>], 'level_main_diametr': 21.9}, 
+                       1: {'x_insert_coordinate': 37.849999999999994, 'list_cable_glands': [<src.csv.gland_csv.CableGlandInformation object at 0x0000024BEC0BB490>], 'level_main_diametr': 21.9}, 
+                       2: {'x_insert_coordinate': 64.75, 'list_cable_glands': [<src.csv.gland_csv.CableGlandInformation object at 0x0000024BEC0BB850>], 'level_main_diametr': 21.9}, 
+                       3: {'x_insert_coordinate': 91.64999999999999, 'list_cable_glands': [<src.csv.gland_csv.CableGlandInformation object at 0x0000024BEC0BB880>], 'level_main_diametr': 21.9}
+                       }'''
+                    for level_gland in self.two_row_calculate.level_dict:
+                        level_information = self.two_row_calculate.level_dict[level_gland]
+                        for cable_gland in level_information['list_cable_glands']:
+                            self.block.add_blockref(cable_gland.gland_dxf_name + '_exe',
+                                                    insert=(cable_gland.x_coordinate,cable_gland.y_coordinate))
+
+
+    # def calculate_max_length_gland(self):
+    #     if hasattr(self,'glands_on_sides_dict'):
+    #         if self.glands_on_sides_dict[self.side_russian_name] != []:
+    #             if hasattr(self,'two_row_calculate'):
+
+
+
 
 class ShellTopSideBlock(ShellSideBlock):
 
@@ -239,6 +265,8 @@ class ShellTopSideBlock(ShellSideBlock):
         self.set_status_painting_side()
         self.search_polyline()
 
+
+
     def draw_topside_insert(self):
         '''
         Создает shell_topside в координатах 0,0
@@ -251,6 +279,8 @@ class ShellTopSideBlock(ShellSideBlock):
                                                                       insert=(0,0))
 
     # def draw_glands_around_topside(self, downside_block, leftside_block, rightside_block, upside_block):
+
+
 
 
 class ShellDownSideBlock(ShellSideBlock):
@@ -271,6 +301,7 @@ class ShellDownSideBlock(ShellSideBlock):
         self.set_status_painting_side()
         self.search_polyline()
 
+
 class ShellUpSideBlock(ShellSideBlock):
     def __init__(self,translit_name,doc_base:Drawing,glands_on_sides_dict):
         '''
@@ -287,6 +318,7 @@ class ShellUpSideBlock(ShellSideBlock):
         self.set_block_from_dxf_base()
         # self.set_status_painting_side()
         self.search_polyline()
+
 
 class ShellLeftSideBlock(ShellSideBlock):
     def __init__(self,translit_name,doc_base:Drawing,glands_on_sides_dict):

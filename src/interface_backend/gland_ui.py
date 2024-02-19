@@ -46,14 +46,26 @@ class GlandInterface(shell_ui.ShellInterface):
         self.addButton_2.clicked.connect(self.add_gland_side_A)
         self.addButton_2.clicked.connect(self.check_to_add_biggest_gland_side_A)
         self.addButton_2.clicked.connect(self.check_to_add_all_area_glands_side_A)
-        self.addButton_2.clicked.connect(self.check_to_possible_to_create_all_glands_in_one_row)
-        self.addButton_2.clicked.connect(self.check_to_possible_to_create_all_glands_in_two_row)
+        self.addButton_2.clicked.connect(self.check_to_possible_to_create_all_glands_in_one_row_A)
+        self.addButton_2.clicked.connect(self.check_to_possible_to_create_all_glands_in_two_row_A)
         # Добавление имен в siteB
         self.addButton_2.clicked.connect(self.add_gland_side_B)
+        self.addButton_2.clicked.connect(self.check_to_add_biggest_gland_side_B)
+        self.addButton_2.clicked.connect(self.check_to_add_all_area_glands_side_B)
+        self.addButton_2.clicked.connect(self.check_to_possible_to_create_all_glands_in_one_row_B)
+        self.addButton_2.clicked.connect(self.check_to_possible_to_create_all_glands_in_two_row_B)
         # Добавление имен в siteV
         self.addButton_2.clicked.connect(self.add_gland_side_V)
+        self.addButton_2.clicked.connect(self.check_to_add_biggest_gland_side_V)
+        self.addButton_2.clicked.connect(self.check_to_add_all_area_glands_side_V)
+        self.addButton_2.clicked.connect(self.check_to_possible_to_create_all_glands_in_one_row_V)
+        self.addButton_2.clicked.connect(self.check_to_possible_to_create_all_glands_in_two_row_V)
         # Добавление имен в siteG
         self.addButton_2.clicked.connect(self.add_gland_side_G)
+        self.addButton_2.clicked.connect(self.check_to_add_biggest_gland_side_G)
+        self.addButton_2.clicked.connect(self.check_to_add_all_area_glands_side_G)
+        self.addButton_2.clicked.connect(self.check_to_possible_to_create_all_glands_in_one_row_G)
+        self.addButton_2.clicked.connect(self.check_to_possible_to_create_all_glands_in_two_row_G)
         # Добавление имен в Cover
         self.addButton_2.clicked.connect(self.add_gland_side_Cover)
         # Обнуление SpinBox
@@ -186,7 +198,8 @@ class GlandInterface(shell_ui.ShellInterface):
             if self.vzorglandcomboBox.count() !=0:
                 if self.vzorglandcomboBox.currentText() != '':
                     shell_name = self.vzorglandcomboBox.currentText()
-                    self.key_gland = self.gland_information.gland_all_names[shell_name]
+                    if shell_name in self.gland_information.gland_all_names:
+                        self.key_gland = self.gland_information.gland_all_names[shell_name]
 
     @Qt.pyqtSlot()
     def install_gland_designation_widget_enabled(self):
@@ -494,12 +507,18 @@ class GlandInterface(shell_ui.ShellInterface):
                     self.gland.side = 'upside'
                     self.glands_on_sides_dict['А'].append(self.gland)
                     self.sideAListWidget.addItem(self.gland.gland_russian_name)
+                    if self.base_dxf.check_gland(gland_translite_name=self.gland.gland_dxf_name):
+                        continue
+                    else:
+                        QMessageBox.critical(self, "Ошибка",
+                                             f"{self.gland.gland_russian_name} не добавлен в базу DXF",
+                                             QMessageBox.Ok)
     @Qt.pyqtSlot()
     def check_to_add_biggest_gland_side_A(self):
         if hasattr(self, 'upside_block'):
             self.upside_block.set_dict_glands_all_sizes(self.glands_on_sides_dict)
             if self.upside_block.check_possible_to_add_biggest_gland() == False:
-                biggest_cable_gland = self.glands_on_sides_dict['А'][0]
+                biggest_cable_gland = sorted(self.glands_on_sides_dict['А'], key=lambda x:x.diametr,reverse=True)[0]
                 QMessageBox.critical(self, "Ошибка",
                                      f"{biggest_cable_gland.gland_russian_name} не помещается кабельный ввод на сторону А",
                                      QMessageBox.Ok)
@@ -520,7 +539,7 @@ class GlandInterface(shell_ui.ShellInterface):
                 self.upside_block.glands_on_sides_dict['А'].clear()
 
     @Qt.pyqtSlot()
-    def check_to_possible_to_create_all_glands_in_one_row(self):
+    def check_to_possible_to_create_all_glands_in_one_row_A(self):
         if hasattr(self, 'upside_block'):
             self.upside_block.set_dict_glands_all_sizes(self.glands_on_sides_dict)
             if self.upside_block.check_possible_to_add_in_one_row() == False:
@@ -537,7 +556,7 @@ class GlandInterface(shell_ui.ShellInterface):
                 # self.upside_block.glands_on_sides_dict['А'].clear()
 
     @Qt.pyqtSlot()
-    def check_to_possible_to_create_all_glands_in_two_row(self):
+    def check_to_possible_to_create_all_glands_in_two_row_A(self):
         if hasattr(self, 'upside_block'):
             self.upside_block.set_dict_glands_all_sizes(self.glands_on_sides_dict)
             if hasattr(self.upside_block,'one_row_check'):
@@ -566,17 +585,65 @@ class GlandInterface(shell_ui.ShellInterface):
                     self.add_options_to_gland()
                     self.gland.side = 'rightside'
                     self.glands_on_sides_dict['Б'].append(self.gland)
-                    if hasattr(self, 'rightside_block'):
-                        self.rightside_block.calculate_coordinate_glands_for_draw()
-                    if self.gland.status_add_to_possible_biggest_input != False:
-                        self.sideBListWidget.addItem(self.gland.gland_russian_name)
-                    else:
-                        QMessageBox.critical(self, "Ошибка",
-                                             f"{self.gland.gland_russian_name} не помещается кабельный ввод на сторону А",
+                    self.sideBListWidget.addItem(self.gland.gland_russian_name)
+
+    @Qt.pyqtSlot()
+    def check_to_add_biggest_gland_side_B(self):
+        if hasattr(self, 'rightside_block'):
+            self.rightside_block.set_dict_glands_all_sizes(self.glands_on_sides_dict)
+            if self.rightside_block.check_possible_to_add_biggest_gland() == False:
+                biggest_cable_gland = self.glands_on_sides_dict['Б'][0]
+                QMessageBox.critical(self, "Ошибка",
+                                     f"{biggest_cable_gland.gland_russian_name} не помещается кабельный ввод на сторону Б",
+                                     QMessageBox.Ok)
+                self.sideBListWidget.clear()
+                self.glands_on_sides_dict['Б'].clear()
+                self.rightside_block.glands_on_sides_dict['Б'].clear()
+
+    @Qt.pyqtSlot()
+    def check_to_add_all_area_glands_side_B(self):
+        if hasattr(self, 'rightside_block'):
+            self.rightside_block.set_dict_glands_all_sizes(self.glands_on_sides_dict)
+            if self.rightside_block.check_possible_to_add_all_gland() == False:
+                QMessageBox.critical(self, "Ошибка",
+                                     f"Невозможно поместить эти кабельные вводы",
+                                     QMessageBox.Ok)
+                self.sideBListWidget.clear()
+                self.glands_on_sides_dict['Б'].clear()
+                self.rightside_block.glands_on_sides_dict['Б'].clear()
+
+    @Qt.pyqtSlot()
+    def check_to_possible_to_create_all_glands_in_one_row_B(self):
+        if hasattr(self, 'rightside_block'):
+            self.rightside_block.set_dict_glands_all_sizes(self.glands_on_sides_dict)
+            if self.rightside_block.check_possible_to_add_in_one_row() == False:
+                QMessageBox.critical(self, "Справка",
+                                     f"На сторону Б в один ряд НЕ помещаются кабельные вводы",
+                                     QMessageBox.Ok)
+            else:
+                QMessageBox.information(self, "Справка",
+                                     f"На сторону Б в один ряд ПОМЕЩАЮТСЯ кабельные вводы",
+                                     QMessageBox.Ok)
+
+    @Qt.pyqtSlot()
+    def check_to_possible_to_create_all_glands_in_two_row_B(self):
+        if hasattr(self, 'rightside_block'):
+            self.rightside_block.set_dict_glands_all_sizes(self.glands_on_sides_dict)
+            if hasattr(self.rightside_block,'one_row_check'):
+                if self.rightside_block.one_row_check.status_add_in_one_row == False:
+                    try:
+                         self.rightside_block.calculate_coordinates_glands_two_row()
+                         if self.rightside_block.list_glands != []:
+                             QMessageBox.critical(self, "Справка",
+                                                  f"Невозможно добавить {[_.gland_russian_name for _ in self.rightside_block.list_glands]}",
+                                                  QMessageBox.Ok)
+                    except:
+                        QMessageBox.critical(self, "Справка",
+                                             f"Невозможно создать в два ряда",
                                              QMessageBox.Ok)
+                        self.sideBListWidget.clear()
                         self.glands_on_sides_dict['Б'].clear()
-                        # window_error.call_error()
-                        break
+                        self.rightside_block.glands_on_sides_dict['Б'].clear()
 
     @Qt.pyqtSlot()
     def add_gland_side_V(self):
@@ -588,17 +655,66 @@ class GlandInterface(shell_ui.ShellInterface):
                     self.add_options_to_gland()
                     self.gland.side = 'downside'
                     self.glands_on_sides_dict['В'].append(self.gland)
-                    if hasattr(self, 'downside_block'):
-                        self.downside_block.calculate_coordinate_glands_for_draw()
-                    if self.gland.status_add_to_possible_biggest_input != False:
-                        self.sideVListWidget.addItem(self.gland.gland_russian_name)
-                    else:
-                        QMessageBox.critical(self, "Ошибка",
-                                             f"{self.gland.gland_russian_name} не помещается кабельный ввод на сторону В",
+                    self.sideVListWidget.addItem(self.gland.gland_russian_name)
+
+    @Qt.pyqtSlot()
+    def check_to_add_biggest_gland_side_V(self):
+        if hasattr(self, 'downside_block'):
+            self.downside_block.set_dict_glands_all_sizes(self.glands_on_sides_dict)
+            if self.downside_block.check_possible_to_add_biggest_gland() == False:
+                biggest_cable_gland = self.glands_on_sides_dict['В'][0]
+                QMessageBox.critical(self, "Ошибка",
+                                     f"{biggest_cable_gland.gland_russian_name} не помещается кабельный ввод на сторону В",
+                                     QMessageBox.Ok)
+                self.sideVListWidget.clear()
+                self.glands_on_sides_dict['В'].clear()
+                self.downside_block.glands_on_sides_dict['В'].clear()
+
+    @Qt.pyqtSlot()
+    def check_to_add_all_area_glands_side_V(self):
+        if hasattr(self, 'downside_block'):
+            self.downside_block.set_dict_glands_all_sizes(self.glands_on_sides_dict)
+            if self.downside_block.check_possible_to_add_all_gland() == False:
+                QMessageBox.critical(self, "Ошибка",
+                                     f"Невозможно поместить эти кабельные вводы",
+                                     QMessageBox.Ok)
+                self.sideVListWidget.clear()
+                self.glands_on_sides_dict['В'].clear()
+                self.downside_block.glands_on_sides_dict['В'].clear()
+
+    @Qt.pyqtSlot()
+    def check_to_possible_to_create_all_glands_in_one_row_V(self):
+        if hasattr(self, 'downside_block'):
+            self.downside_block.set_dict_glands_all_sizes(self.glands_on_sides_dict)
+            if self.downside_block.check_possible_to_add_in_one_row() == False:
+                QMessageBox.critical(self, "Справка",
+                                     f"На сторону В в один ряд НЕ помещаются кабельные вводы",
+                                     QMessageBox.Ok)
+            else:
+                QMessageBox.information(self, "Справка",
+                                     f"На сторону В в один ряд ПОМЕЩАЮТСЯ кабельные вводы",
+                                     QMessageBox.Ok)
+
+    @Qt.pyqtSlot()
+    def check_to_possible_to_create_all_glands_in_two_row_V(self):
+        if hasattr(self, 'downside_block'):
+            self.downside_block.set_dict_glands_all_sizes(self.glands_on_sides_dict)
+            if hasattr(self.downside_block,'one_row_check'):
+                if self.downside_block.one_row_check.status_add_in_one_row == False:
+                    try:
+                         self.downside_block.calculate_coordinates_glands_two_row()
+                         if self.downside_block.list_glands != []:
+                             QMessageBox.critical(self, "Справка",
+                                                  f"Невозможно добавить {[_.gland_russian_name for _ in self.downside_block.list_glands]}",
+                                                  QMessageBox.Ok)
+                    except:
+                        QMessageBox.critical(self, "Справка",
+                                             f"Невозможно создать в два ряда",
                                              QMessageBox.Ok)
+                        self.sideVListWidget.clear()
                         self.glands_on_sides_dict['В'].clear()
-                        # window_error.call_error()
-                        break
+                        self.downside_block.glands_on_sides_dict['В'].clear()
+
 
     @Qt.pyqtSlot()
     def add_gland_side_G(self):
@@ -610,18 +726,65 @@ class GlandInterface(shell_ui.ShellInterface):
                     self.add_options_to_gland()
                     self.gland.side = 'leftside'
                     self.glands_on_sides_dict['Г'].append(self.gland)
-                    if hasattr(self, 'leftside_block'):
-                        self.leftside_block.calculate_coordinate_glands_for_draw()
-                    if self.gland.status_add_to_possible_biggest_input != False:
-                        self.glands_on_sides_dict['Г'].append(self.gland)
-                        self.sideGListWidget.addItem(self.gland.gland_russian_name)
-                    else:
-                        QMessageBox.critical(self, "Ошибка",
-                                             f"{self.gland.gland_russian_name} не помещается кабельный ввод на сторону Г",
+                    self.sideGListWidget.addItem(self.gland.gland_russian_name)
+
+    @Qt.pyqtSlot()
+    def check_to_add_biggest_gland_side_G(self):
+        if hasattr(self, 'leftside_block'):
+            self.leftside_block.set_dict_glands_all_sizes(self.glands_on_sides_dict)
+            if self.leftside_block.check_possible_to_add_biggest_gland() == False:
+                biggest_cable_gland = self.glands_on_sides_dict['Г'][0]
+                QMessageBox.critical(self, "Ошибка",
+                                     f"{biggest_cable_gland.gland_russian_name} не помещается кабельный ввод на сторону Г",
+                                     QMessageBox.Ok)
+                self.sideGListWidget.clear()
+                self.glands_on_sides_dict['Г'].clear()
+                self.leftside_block.glands_on_sides_dict['Г'].clear()
+
+    @Qt.pyqtSlot()
+    def check_to_add_all_area_glands_side_G(self):
+        if hasattr(self, 'leftside_block'):
+            self.leftside_block.set_dict_glands_all_sizes(self.glands_on_sides_dict)
+            if self.leftside_block.check_possible_to_add_all_gland() == False:
+                QMessageBox.critical(self, "Ошибка",
+                                     f"Невозможно поместить эти кабельные вводы",
+                                     QMessageBox.Ok)
+                self.sideGListWidget.clear()
+                self.glands_on_sides_dict['Г'].clear()
+                self.leftside_block.glands_on_sides_dict['Г'].clear()
+
+    @Qt.pyqtSlot()
+    def check_to_possible_to_create_all_glands_in_one_row_G(self):
+        if hasattr(self, 'leftside_block'):
+            self.leftside_block.set_dict_glands_all_sizes(self.glands_on_sides_dict)
+            if self.leftside_block.check_possible_to_add_in_one_row() == False:
+                QMessageBox.critical(self, "Справка",
+                                     f"На сторону Г в один ряд НЕ помещаются кабельные вводы",
+                                     QMessageBox.Ok)
+            else:
+                QMessageBox.information(self, "Справка",
+                                     f"На сторону Г в один ряд ПОМЕЩАЮТСЯ кабельные вводы",
+                                     QMessageBox.Ok)
+
+    @Qt.pyqtSlot()
+    def check_to_possible_to_create_all_glands_in_two_row_G(self):
+        if hasattr(self, 'leftside_block'):
+            self.leftside_block.set_dict_glands_all_sizes(self.glands_on_sides_dict)
+            if hasattr(self.leftside_block,'one_row_check'):
+                if self.leftside_block.one_row_check.status_add_in_one_row == False:
+                    try:
+                         self.leftside_block.calculate_coordinates_glands_two_row()
+                         if self.leftside_block.list_glands != []:
+                             QMessageBox.critical(self, "Справка",
+                                                  f"Невозможно добавить {[_.gland_russian_name for _ in self.leftside_block.list_glands]}",
+                                                  QMessageBox.Ok)
+                    except:
+                        QMessageBox.critical(self, "Справка",
+                                             f"Невозможно создать в два ряда",
                                              QMessageBox.Ok)
+                        self.sideGListWidget.clear()
                         self.glands_on_sides_dict['Г'].clear()
-                        # window_error.call_error()
-                        break
+                        self.leftside_block.glands_on_sides_dict['Г'].clear()
 
     @Qt.pyqtSlot()
     def add_gland_side_Cover(self):
@@ -634,6 +797,21 @@ class GlandInterface(shell_ui.ShellInterface):
                     self.gland.side = 'topside'
                     self.glands_on_sides_dict['Крышка'].append(self.gland)
                     self.CoverListWidget.addItem(self.gland.gland_russian_name)
+
+
+    @Qt.pyqtSlot()
+    def check_to_add_biggest_gland_side_Cover(self):
+        if hasattr(self, 'topside_block'):
+            self.topside_block.set_dict_glands_all_sizes(self.glands_on_sides_dict)
+            if self.topside_block.check_possible_to_add_biggest_gland() == False:
+                biggest_cable_gland = self.glands_on_sides_dict['Крышка'][0]
+                QMessageBox.critical(self, "Ошибка",
+                                     f"{biggest_cable_gland.gland_russian_name} не помещается кабельный ввод на сторону Крышка",
+                                     QMessageBox.Ok)
+                self.CoverListWidget.clear()
+                self.glands_on_sides_dict['Крышка'].clear()
+                self.upside_block.glands_on_sides_dict['Крышка'].clear()
+
 
     @Qt.pyqtSlot()
     def clear_ABVG_spinbox_afted_add_button(self):

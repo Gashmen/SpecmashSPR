@@ -3,6 +3,8 @@ import os
 import sys
 
 from PyQt5 import QtCore, QtGui, QtWidgets, Qt
+from PyQt5.QtWidgets import QMessageBox
+
 from src.interface_backend import dxf_base_ui #ПОМЕНЯТЬ НА ИТОГОВЫЙ ИНТЕРФЕЙСНЫЙ МОДУЛЬ В ОЧЕРЕДНОСТИ
 
 from config import dxf_config
@@ -28,11 +30,13 @@ class DxfShellQtCommunication(dxf_base_ui.DxfQtCommunication):
 
     @Qt.pyqtSlot()
     def set_shell_blocks(self):
-        self.set_shell_topside_block()
-        self.set_shell_downside_block()
-        self.set_shell_leftside_block()
-        self.set_shell_upside_block()
-        self.set_shell_rightside_block()
+        if hasattr(self,'possible_shell_draw'):
+            if self.possible_shell_draw:
+                self.set_shell_topside_block()
+                self.set_shell_downside_block()
+                self.set_shell_leftside_block()
+                self.set_shell_upside_block()
+                self.set_shell_rightside_block()
 
     @Qt.pyqtSlot()
     def check_possible_to_add_shell(self):
@@ -42,8 +46,9 @@ class DxfShellQtCommunication(dxf_base_ui.DxfQtCommunication):
             if hasattr(self, 'shell_base_dxf'):
                 self.possible_shell_draw = self.base_dxf.check_shell(shell_translite_name=self.shell_base_dxf.shell_translit_name)
                 if self.possible_shell_draw == False:
-                    window_shellerror = UI_BaseError.Ui_BaseError(text_base_error='НЕТ ДАННОЙ ОБОЛОЧКИ В БАЗЕ DXF')
-                    window_shellerror.call_error()
+                    QMessageBox.critical(self, "Ошибка",
+                                         f"В базе для отрисовки нет всех необходимых блоков для построения оболочки",
+                                         QMessageBox.Ok)
 
 
     def set_shell_topside_block(self):

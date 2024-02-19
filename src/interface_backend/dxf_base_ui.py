@@ -29,7 +29,8 @@ class DxfQtCommunication(gland_ui.GlandInterface):
     @Qt.pyqtSlot()
     def set_doc(self):
         if hasattr(self.smb_specmash,'dxf_base_path'):
-            self.base_dxf = base.DxfBase(dxf_base_path=self.smb_specmash.dxf_base_path)
+            self.base_dxf = base.DxfBase()
+            self.base_dxf.set_dxf_base_path(dxf_base_path=self.smb_specmash.dxf_base_path)
             self.base_dxf.set_doc_dxf()
             self.base_dxf.delete_all_entities()
             self.base_dxf.give_all_blocks()

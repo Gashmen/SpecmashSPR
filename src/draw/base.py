@@ -3,14 +3,13 @@ import ezdxf
 
 class DxfBase:
 
-    def __init__(self,dxf_base_path):
+    def set_dxf_base_path(self,dxf_base_path):
         self.dxf_base_path = dxf_base_path
-
     def set_doc_dxf(self):
         if self.dxf_base_path != '':
             self.doc_base = ezdxf.readfile(self.dxf_base_path)
 
-    def set_doc_existed(self,doc):
+    def set_doc_existed(self,doc_base):
         self.doc_base = doc_base
 
     def delete_all_entities(self):
@@ -29,7 +28,7 @@ class DxfBase:
 
             for block in self.block_not_used:
                 try:
-                    seld.doc_base.blocks.delete_block(name=block)
+                    self.doc_base.blocks.delete_block(name=block)
                 except:
                     continue
             return doc_dxfbase
@@ -56,14 +55,15 @@ class DxfBase:
             for side_name in shell_block_names:
                 block_name = shell_translite_name + '_' + side_name
                 if block_name in self.doc_dict_blocks:
-                    possible_to_draw_shell = True
+                    if 'DIN_' + shell_translite_name in self.doc_dict_blocks:
+                        possible_to_draw_shell = True
+                    else:
+                        possible_to_draw_shell = False
+                        break
                 else:
                     possible_to_draw_shell = False
                     break
-            if 'DIN_' + shell_translite_name in self.doc_dict_blocks:
-                possible_to_draw_shell = True
-            else:
-                False
+
         return possible_to_draw_shell
 
     def check_gland(self,gland_translite_name):
