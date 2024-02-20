@@ -64,12 +64,16 @@ class DxfShellQtCommunication(dxf_base_ui.DxfQtCommunication):
                 self.upside_block = dxf_shell.ShellUpSideBlock(translit_name=self.shell_base_dxf.shell_translit_name,
                                                                    doc_base=self.base_dxf.doc_base,
                                                                    glands_on_sides_dict=self.glands_on_sides_dict)
+                self.upside_block.define_extreme_lines()
+                self.scale_class.calculate_len1_y(upside_extreme_lines=self.upside_block.extreme_lines)
     def set_shell_downside_block(self):
         if hasattr(self,'shell_dict'):
             if hasattr(self,'shell_base_dxf'):
                 self.downside_block = dxf_shell.ShellDownSideBlock(translit_name=self.shell_base_dxf.shell_translit_name,
                                                                    doc_base=self.base_dxf.doc_base,
                                                                    glands_on_sides_dict=self.glands_on_sides_dict)
+                self.downside_block.define_extreme_lines()
+                # self.scale_class.calculate_len1_y()
 
     def draw_glands_in_downside(self):
         if hasattr(self,'downside_block'):
@@ -83,6 +87,8 @@ class DxfShellQtCommunication(dxf_base_ui.DxfQtCommunication):
                 self.leftside_block = dxf_shell.ShellLeftSideBlock(translit_name=self.shell_base_dxf.shell_translit_name,
                                                                    doc_base=self.base_dxf.doc_base,
                                                                    glands_on_sides_dict=self.glands_on_sides_dict)
+                self.leftside_block.define_extreme_lines()
+                self.scale_class.calculate_len5_x(leftside_extreme_lines=self.leftside_block.extreme_lines)
 
     def set_shell_rightside_block(self):
         if hasattr(self,'shell_dict'):
@@ -90,6 +96,8 @@ class DxfShellQtCommunication(dxf_base_ui.DxfQtCommunication):
                 self.rightside_block = dxf_shell.ShellRightSideBlock(translit_name=self.shell_base_dxf.shell_translit_name,
                                                                      doc_base=self.base_dxf.doc_base,
                                                                      glands_on_sides_dict=self.glands_on_sides_dict)
+                self.rightside_block.define_extreme_lines()
+                self.scale_class.calculate_len1_x(leftside_extreme_lines=self.rightside_block.extreme_lines)
 
 
 

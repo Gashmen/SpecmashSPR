@@ -8,8 +8,9 @@ from src.interface_backend import gland_ui #ПОМЕНЯТЬ НА ИТОГОВЫ
 from config import dxf_config
 from src.csv import gland_csv
 from src.Widgets_Custom import ExtendedCombobox
-from src.draw import base
+from src.draw import base,scale
 from src.draw.shell_side import dxf_shell
+
 
 
 class DxfQtCommunication(gland_ui.GlandInterface):
@@ -19,6 +20,7 @@ class DxfQtCommunication(gland_ui.GlandInterface):
         #ПОЛУЧЕНИЕ ПУТИ ДЛЯ БАЗЫ DXF
         self.connect_dxf_base()
         self.set_doc()
+        self.set_scale_dxf()
 
         '''СОMBOBOX SHELL'''
         self.sizeCombobox_shellpage.currentTextChanged.connect(self.set_shell_base_dxf)
@@ -41,6 +43,10 @@ class DxfQtCommunication(gland_ui.GlandInterface):
             self.shell_base_dxf = dxf_shell.ShellBaseDxf(shell_dict=self.shell_dict)
             self.shell_base_dxf.set_russian_name_shell()
             self.shell_base_dxf.set_translit_name()
+
+
+    def set_scale_dxf(self):
+        self.scale_class = scale.ScaleBorder()
 
 
 

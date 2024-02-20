@@ -278,7 +278,11 @@ class ShellTopSideBlock(ShellSideBlock):
         self.topside_insert = self.doc_base.modelspace().add_blockref(name=self.shell_topside_name,
                                                                       insert=(0,0))
 
-    # def draw_glands_around_topside(self, downside_block, leftside_block, rightside_block, upside_block):
+    # def draw_glands_around_topside(self):
+    #     for sides_rus_name in self.glands_on_sides_dict:
+    #         for gland in self.glands_on_sides_dict[sides_rus_name]:
+    #             if gland.side
+
 
 
 
