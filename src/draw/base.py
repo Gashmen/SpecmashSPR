@@ -9,6 +9,8 @@ class DxfBase:
         if self.dxf_base_path != '':
             self.doc_base = ezdxf.readfile(self.dxf_base_path)
 
+
+
     def set_doc_existed(self,doc_base):
         self.doc_base = doc_base
 

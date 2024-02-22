@@ -560,7 +560,7 @@ class GlandInterface(shell_ui.ShellInterface):
         if hasattr(self, 'upside_block'):
             self.upside_block.set_dict_glands_all_sizes(self.glands_on_sides_dict)
             if hasattr(self.upside_block,'one_row_check'):
-                if self.upside_block.one_row_check.status_add_in_one_row == False:
+                # if self.upside_block.one_row_check.status_add_in_one_row == False:
                     try:
                          self.upside_block.calculate_coordinates_glands_two_row()
                          if self.upside_block.list_glands != []:
@@ -630,7 +630,7 @@ class GlandInterface(shell_ui.ShellInterface):
         if hasattr(self, 'rightside_block'):
             self.rightside_block.set_dict_glands_all_sizes(self.glands_on_sides_dict)
             if hasattr(self.rightside_block,'one_row_check'):
-                if self.rightside_block.one_row_check.status_add_in_one_row == False:
+                # if self.rightside_block.one_row_check.status_add_in_one_row == False:
                     try:
                          self.rightside_block.calculate_coordinates_glands_two_row()
                          if self.rightside_block.list_glands != []:
@@ -700,7 +700,7 @@ class GlandInterface(shell_ui.ShellInterface):
         if hasattr(self, 'downside_block'):
             self.downside_block.set_dict_glands_all_sizes(self.glands_on_sides_dict)
             if hasattr(self.downside_block,'one_row_check'):
-                if self.downside_block.one_row_check.status_add_in_one_row == False:
+                # if self.downside_block.one_row_check.status_add_in_one_row == False:
                     try:
                          self.downside_block.calculate_coordinates_glands_two_row()
                          if self.downside_block.list_glands != []:
@@ -771,7 +771,7 @@ class GlandInterface(shell_ui.ShellInterface):
         if hasattr(self, 'leftside_block'):
             self.leftside_block.set_dict_glands_all_sizes(self.glands_on_sides_dict)
             if hasattr(self.leftside_block,'one_row_check'):
-                if self.leftside_block.one_row_check.status_add_in_one_row == False:
+                # if self.leftside_block.one_row_check.status_add_in_one_row == False:
                     try:
                          self.leftside_block.calculate_coordinates_glands_two_row()
                          if self.leftside_block.list_glands != []:

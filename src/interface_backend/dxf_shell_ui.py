@@ -37,6 +37,9 @@ class DxfShellQtCommunication(dxf_base_ui.DxfQtCommunication):
                 self.set_shell_leftside_block()
                 self.set_shell_upside_block()
                 self.set_shell_rightside_block()
+                self.set_shell_cutside_block()
+                self.set_shell_withoutcapside_block()
+                self.set_shell_installation_block()
 
     @Qt.pyqtSlot()
     def check_possible_to_add_shell(self):
@@ -57,6 +60,9 @@ class DxfShellQtCommunication(dxf_base_ui.DxfQtCommunication):
                 self.topside_block = dxf_shell.ShellTopSideBlock(translit_name=self.shell_base_dxf.shell_translit_name,
                                                                  doc_base=self.base_dxf.doc_base,
                                                                  glands_on_sides_dict=self.glands_on_sides_dict)
+                self.topside_block.define_extreme_lines()
+                self.scale_class.calculate_len3_x(topside_extreme_lines=self.topside_block.extreme_lines)
+                self.scale_class.calculate_len3_y(topside_extreme_lines=self.topside_block.extreme_lines)
 
     def set_shell_upside_block(self):
         if hasattr(self,'shell_dict'):
@@ -73,7 +79,7 @@ class DxfShellQtCommunication(dxf_base_ui.DxfQtCommunication):
                                                                    doc_base=self.base_dxf.doc_base,
                                                                    glands_on_sides_dict=self.glands_on_sides_dict)
                 self.downside_block.define_extreme_lines()
-                # self.scale_class.calculate_len1_y()
+
 
     def draw_glands_in_downside(self):
         if hasattr(self,'downside_block'):
@@ -97,8 +103,31 @@ class DxfShellQtCommunication(dxf_base_ui.DxfQtCommunication):
                                                                      doc_base=self.base_dxf.doc_base,
                                                                      glands_on_sides_dict=self.glands_on_sides_dict)
                 self.rightside_block.define_extreme_lines()
-                self.scale_class.calculate_len1_x(leftside_extreme_lines=self.rightside_block.extreme_lines)
+                self.scale_class.calculate_len1_x(rightside_extreme_lines=self.rightside_block.extreme_lines)
 
+    def set_shell_installation_block(self):
+        if hasattr(self,'shell_dict'):
+            if hasattr(self, 'shell_base_dxf'):
+                self.installation_block = dxf_shell.ShellInstallationBlock(translit_name=self.shell_base_dxf.shell_translit_name,
+                                                                           doc_base=self.base_dxf.doc_base)
+                self.installation_block.define_extreme_lines()
+                self.scale_class.calculate_len5_y(installation_extreme_lines=self.installation_block.extreme_lines)
+
+    def set_shell_cutside_block(self):
+        if hasattr(self,'shell_dict'):
+            if hasattr(self, 'shell_base_dxf'):
+                self.cutside_block = dxf_shell.ShellCutSideBlock(translit_name=self.shell_base_dxf.shell_translit_name,
+                                                                 doc_base=self.base_dxf.doc_base)
+                self.cutside_block.define_extreme_lines()
+                self.scale_class.calculate_len7_x()
+
+    def set_shell_withoutcapside_block(self):
+        if hasattr(self,'shell_dict'):
+            if hasattr(self,'shell_base_dxf'):
+                self.withoutcapside_block = dxf_shell.ShellWithoutcapsideBlock(translit_name=self.shell_base_dxf.shell_translit_name,
+                                                                               doc_base=self.base_dxf.doc_base)
+                self.withoutcapside_block.define_extreme_lines()
+                self.scale_class.calculate_len10_x()
 
 
 if __name__ == "__main__":
