@@ -5,7 +5,7 @@ def define_names_terminal(path_to_terminal_dxf = None):
     doc = ezdxf.readfile(path_to_terminal_dxf)
     names_of_terminal = list()
     for block in doc.blocks:
-        if 'screw' in block.dxf.name.lower() or 'spring' in block.dxf.name.lower():
+        if 'screw' in block.dxf.name.lower() or 'sparing' in block.dxf.name.lower():
             if '_'.join(block.dxf.name.split('_')[0:4]) not in names_of_terminal:
                 names_of_terminal.append(block.dxf.name)
     # names_of_terminal.append('SUPU')

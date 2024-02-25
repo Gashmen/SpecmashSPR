@@ -129,6 +129,427 @@ class DxfShellQtCommunication(dxf_base_ui.DxfQtCommunication):
                 self.withoutcapside_block.define_extreme_lines()
                 self.scale_class.calculate_len10_x()
 
+    def draw_rightside_insert(self):
+        x_coordinate_rightside = 0
+        if hasattr(self.scale_class,'free_space_x'):
+            x_coordinate_rightside += self.scale_class.free_space_x/6
+        if hasattr(self.scale_class,'len0_x') and hasattr(self.scale_class,'scale'):
+            x_coordinate_rightside += self.scale_class.len0_x /  self.scale_class.scale
+        if hasattr(self,'rightside_block'):
+            x_coordinate_rightside += self.rightside_block.extreme_lines['y_max'] / self.scale_class.scale
+
+        y_coordinate_rightside = 0
+        if hasattr(self.scale_class,'free_space_y'):
+            y_coordinate_rightside += self.scale_class.free_space_y/4
+        if hasattr(self.scale_class,'len0_y') and hasattr(self.scale_class,'scale'):
+            y_coordinate_rightside += self.scale_class.len0_y /self.scale_class.scale
+        if hasattr(self.scale_class,'len1_y') and hasattr(self.scale_class,'scale'):
+            y_coordinate_rightside += self.scale_class.len1_y / self.scale_class.scale
+        if hasattr(self.scale_class,'len2_y') and hasattr(self.scale_class,'scale'):
+            if int(self.scale_class.len2_y) != 0:
+                y_coordinate_rightside += 1.25 * self.scale_class.len2_y / self.scale_class.scale
+            else:
+                y_coordinate_rightside += 1.25 * max([self.scale_class.len2_y, self.scale_class.len4_y, self.scale_class.len2_x,self.scale_class.len4_x])/ self.scale_class.scale
+        if hasattr(self.scale_class, 'free_space_y'):
+            y_coordinate_rightside += self.scale_class.free_space_y / 4
+        if hasattr(self, 'rightside_block'):
+            y_coordinate_rightside += -self.rightside_block.extreme_lines['x_min'] / self.scale_class.scale
+
+        self.rightside_insert = self.base_dxf.doc_base.modelspace().add_blockref(name=self.rightside_block.shell_side_name,
+                                                                                    insert=(x_coordinate_rightside,
+                                                                                            y_coordinate_rightside))
+        self.rightside_insert.dxf.rotation = 90
+        self.rightside_insert.dxf.xscale = 1/ self.scale_class.scale
+        self.rightside_insert.dxf.yscale = 1 / self.scale_class.scale
+        self.rightside_insert.dxf.zscale = 1 / self.scale_class.scale
+
+    def draw_topside_insert(self):
+        x_coordinate_topside = 0
+        if hasattr(self.scale_class,'free_space_x'):
+            x_coordinate_topside += self.scale_class.free_space_x/6
+        if hasattr(self.scale_class,'len0_x') and hasattr(self.scale_class,'scale'):
+            x_coordinate_topside += self.scale_class.len0_x /  self.scale_class.scale
+        if hasattr(self.scale_class,'len1_x') and hasattr(self.scale_class,'scale'):
+            x_coordinate_topside += self.scale_class.len1_x /  self.scale_class.scale
+        if hasattr(self.scale_class,'free_space_x'):
+            x_coordinate_topside += self.scale_class.free_space_x/6
+        if hasattr(self.scale_class,'len2_x') and hasattr(self.scale_class,'scale'):
+            if int(self.scale_class.len2_x) != 0:
+                x_coordinate_topside += 1.25 * self.scale_class.len2_x /  self.scale_class.scale
+            else:
+                x_coordinate_topside += 1.25 * max([self.scale_class.len2_y, self.scale_class.len4_y, self.scale_class.len2_x,self.scale_class.len4_x])/ self.scale_class.scale
+        if hasattr(self,'topside_block'):
+            x_coordinate_topside += (-self.topside_block.extreme_lines['x_min']) / self.scale_class.scale
+
+        y_coordinate_topside = 0
+        if hasattr(self.scale_class,'free_space_y'):
+            y_coordinate_topside += self.scale_class.free_space_y/4
+        if hasattr(self.scale_class,'len0_y') and hasattr(self.scale_class,'scale'):
+            y_coordinate_topside += self.scale_class.len0_y /self.scale_class.scale
+        if hasattr(self.scale_class,'len1_y') and hasattr(self.scale_class,'scale'):
+            y_coordinate_topside += self.scale_class.len1_y / self.scale_class.scale
+        if hasattr(self.scale_class,'len2_y') and hasattr(self.scale_class,'scale'):
+            if int(self.scale_class.len2_y) != 0:
+                y_coordinate_topside += 1.25 * self.scale_class.len2_y / self.scale_class.scale
+            else:
+                y_coordinate_topside += 1.25 * max([self.scale_class.len2_y, self.scale_class.len4_y, self.scale_class.len2_x,self.scale_class.len4_x])/ self.scale_class.scale
+        if hasattr(self.scale_class, 'free_space_y'):
+            y_coordinate_topside += self.scale_class.free_space_y / 4
+        if hasattr(self, 'topside_block'):
+            y_coordinate_topside += (-self.topside_block.extreme_lines['y_min']) / self.scale_class.scale
+
+        self.topside_insert = self.base_dxf.doc_base.modelspace().add_blockref(name=self.topside_block.shell_side_name,
+                                                                                    insert=(x_coordinate_topside,
+                                                                                            y_coordinate_topside))
+        self.topside_insert.dxf.rotation = 0
+        self.topside_insert.dxf.xscale = 1/self.scale_class.scale
+        self.topside_insert.dxf.yscale = 1 / self.scale_class.scale
+        self.topside_insert.dxf.zscale = 1 / self.scale_class.scale
+
+    def draw_leftside_insert(self):
+        x_coordinate_leftside = 0
+        if hasattr(self.scale_class,'free_space_x'):
+            x_coordinate_leftside += self.scale_class.free_space_x/6
+        if hasattr(self.scale_class,'len0_x') and hasattr(self.scale_class,'scale'):
+            x_coordinate_leftside += self.scale_class.len0_x /  self.scale_class.scale
+        if hasattr(self.scale_class,'len1_x') and hasattr(self.scale_class,'scale'):
+            x_coordinate_leftside += self.scale_class.len1_x /  self.scale_class.scale
+        if hasattr(self.scale_class,'free_space_x'):
+            x_coordinate_leftside += self.scale_class.free_space_x/6
+        if hasattr(self.scale_class,'len2_x') and hasattr(self.scale_class,'scale'):
+            if int(self.scale_class.len2_x) != 0:
+                x_coordinate_leftside += 1.25 * self.scale_class.len2_x /  self.scale_class.scale
+            else:
+                x_coordinate_leftside += 1.25 * max([self.scale_class.len2_y, self.scale_class.len4_y, self.scale_class.len2_x,self.scale_class.len4_x])/ self.scale_class.scale
+        if hasattr(self.scale_class,'len3_x') and hasattr(self.scale_class,'scale'):
+            x_coordinate_leftside += self.scale_class.len3_x / self.scale_class.scale
+        if hasattr(self.scale_class,'len4_x') and hasattr(self.scale_class,'scale'):
+            x_coordinate_leftside += self.scale_class.len4_x / self.scale_class.scale
+        if hasattr(self.scale_class,'free_space_x'):
+            x_coordinate_leftside += self.scale_class.free_space_x/6
+        if hasattr(self,'leftside_block'):
+            x_coordinate_leftside += (-self.leftside_block.extreme_lines['y_min']) / self.scale_class.scale
+
+
+
+        y_coordinate_leftside = 0
+        if hasattr(self.scale_class,'free_space_y'):
+            y_coordinate_leftside += self.scale_class.free_space_y/4
+        if hasattr(self.scale_class,'len0_y') and hasattr(self.scale_class,'scale'):
+            y_coordinate_leftside += self.scale_class.len0_y /self.scale_class.scale
+        if hasattr(self.scale_class,'len1_y') and hasattr(self.scale_class,'scale'):
+            y_coordinate_leftside += self.scale_class.len1_y / self.scale_class.scale
+        if hasattr(self.scale_class,'len2_y') and hasattr(self.scale_class,'scale'):
+            if int(self.scale_class.len2_y) != 0:
+                y_coordinate_leftside += 1.25 * self.scale_class.len2_y / self.scale_class.scale
+            else:
+                y_coordinate_leftside += 1.25 * max([self.scale_class.len2_y, self.scale_class.len4_y, self.scale_class.len2_x,self.scale_class.len4_x])/ self.scale_class.scale
+        if hasattr(self.scale_class, 'free_space_y'):
+            y_coordinate_leftside += self.scale_class.free_space_y / 4
+        if hasattr(self, 'leftside_block'):
+            y_coordinate_leftside += self.leftside_block.extreme_lines['x_max'] / self.scale_class.scale
+
+        self.leftside_insert = self.base_dxf.doc_base.modelspace().add_blockref(name=self.leftside_block.shell_side_name,
+                                                                                    insert=(x_coordinate_leftside,
+                                                                                            y_coordinate_leftside))
+        self.leftside_insert.dxf.rotation = 270
+        self.leftside_insert.dxf.xscale = 1/ self.scale_class.scale
+        self.leftside_insert.dxf.yscale = 1 / self.scale_class.scale
+        self.leftside_insert.dxf.zscale = 1 / self.scale_class.scale
+
+
+    def draw_cutside_insert(self):
+        x_coordinate_cutside = 0
+        if hasattr(self.scale_class, 'free_space_x'):
+            x_coordinate_cutside += self.scale_class.free_space_x / 6
+        if hasattr(self.scale_class, 'len0_x') and hasattr(self.scale_class, 'scale'):
+            x_coordinate_cutside += self.scale_class.len0_x / self.scale_class.scale
+        if hasattr(self.scale_class, 'len1_x') and hasattr(self.scale_class, 'scale'):
+            x_coordinate_cutside += self.scale_class.len1_x / self.scale_class.scale
+        if hasattr(self.scale_class, 'free_space_x'):
+            x_coordinate_cutside += self.scale_class.free_space_x / 6
+        if hasattr(self.scale_class, 'len2_x') and hasattr(self.scale_class, 'scale'):
+            if int(self.scale_class.len2_x) != 0:
+                x_coordinate_cutside += 1.25 * self.scale_class.len2_x / self.scale_class.scale
+            else:
+                x_coordinate_cutside += 1.25 * max(
+                    [self.scale_class.len2_y, self.scale_class.len4_y, self.scale_class.len2_x,
+                     self.scale_class.len4_x]) / self.scale_class.scale
+        if hasattr(self.scale_class, 'len3_x') and hasattr(self.scale_class, 'scale'):
+            x_coordinate_cutside += self.scale_class.len3_x / self.scale_class.scale
+        if hasattr(self.scale_class, 'len4_x') and hasattr(self.scale_class, 'scale'):
+            x_coordinate_cutside += self.scale_class.len4_x / self.scale_class.scale
+        if hasattr(self.scale_class, 'free_space_x'):
+            x_coordinate_cutside += self.scale_class.free_space_x / 6
+        if hasattr(self.scale_class, 'len5_x') and hasattr(self.scale_class, 'scale'):
+            x_coordinate_cutside += self.scale_class.len5_x / self.scale_class.scale
+        if hasattr(self.scale_class, 'len6_x') and hasattr(self.scale_class, 'scale'):
+            x_coordinate_cutside += self.scale_class.len6_x / self.scale_class.scale
+        if hasattr(self.scale_class, 'free_space_x'):
+            x_coordinate_cutside += self.scale_class.free_space_x / 6
+        if hasattr(self, 'cutside_block'):
+            x_coordinate_cutside += (-self.cutside_block.extreme_lines['y_min']) / self.scale_class.scale
+
+        y_coordinate_cutside = 0
+        if hasattr(self.scale_class, 'free_space_y'):
+            y_coordinate_cutside += self.scale_class.free_space_y / 4
+        if hasattr(self.scale_class, 'len0_y') and hasattr(self.scale_class, 'scale'):
+            y_coordinate_cutside += self.scale_class.len0_y / self.scale_class.scale
+        if hasattr(self.scale_class, 'len1_y') and hasattr(self.scale_class, 'scale'):
+            y_coordinate_cutside += self.scale_class.len1_y / self.scale_class.scale
+        if hasattr(self.scale_class, 'len2_y') and hasattr(self.scale_class, 'scale'):
+            if int(self.scale_class.len2_y) != 0:
+                y_coordinate_cutside += 1.25 * self.scale_class.len2_y / self.scale_class.scale
+            else:
+                y_coordinate_cutside += 1.25 * max(
+                    [self.scale_class.len2_y, self.scale_class.len4_y, self.scale_class.len2_x,
+                     self.scale_class.len4_x]) / self.scale_class.scale
+        if hasattr(self.scale_class, 'free_space_y'):
+            y_coordinate_cutside += self.scale_class.free_space_y / 4
+
+        if hasattr(self, 'cutside_block'):
+            y_coordinate_cutside += self.cutside_block.extreme_lines['x_max'] / self.scale_class.scale
+
+        self.cutside_insert = self.base_dxf.doc_base.modelspace().add_blockref(
+            name=self.cutside_block.shell_side_name,
+            insert=(x_coordinate_cutside,
+                    y_coordinate_cutside))
+        self.cutside_insert.dxf.rotation = 270
+        self.cutside_insert.dxf.xscale = 1 / self.scale_class.scale
+        self.cutside_insert.dxf.yscale = 1 / self.scale_class.scale
+        self.cutside_insert.dxf.zscale = 1 / self.scale_class.scale
+
+    def draw_withoutcapside_insert(self):
+        x_coordinate_withoutcapside = 0
+        if hasattr(self.scale_class, 'free_space_x'):
+            x_coordinate_withoutcapside += self.scale_class.free_space_x / 6
+        if hasattr(self.scale_class, 'len0_x') and hasattr(self.scale_class, 'scale'):
+            x_coordinate_withoutcapside += self.scale_class.len0_x / self.scale_class.scale
+        if hasattr(self.scale_class, 'len1_x') and hasattr(self.scale_class, 'scale'):
+            x_coordinate_withoutcapside += self.scale_class.len1_x / self.scale_class.scale
+        if hasattr(self.scale_class, 'free_space_x'):
+            x_coordinate_withoutcapside += self.scale_class.free_space_x / 6
+        if hasattr(self.scale_class, 'len2_x') and hasattr(self.scale_class, 'scale'):
+            if int(self.scale_class.len2_x) != 0:
+                x_coordinate_withoutcapside += 1.25 * self.scale_class.len2_x / self.scale_class.scale
+            else:
+                x_coordinate_withoutcapside += 1.25 * max(
+                    [self.scale_class.len2_y, self.scale_class.len4_y, self.scale_class.len2_x,
+                     self.scale_class.len4_x]) / self.scale_class.scale
+        if hasattr(self.scale_class, 'len3_x') and hasattr(self.scale_class, 'scale'):
+            x_coordinate_withoutcapside += self.scale_class.len3_x / self.scale_class.scale
+        if hasattr(self.scale_class, 'len4_x') and hasattr(self.scale_class, 'scale'):
+            x_coordinate_withoutcapside += self.scale_class.len4_x / self.scale_class.scale
+        if hasattr(self.scale_class, 'free_space_x'):
+            x_coordinate_withoutcapside += self.scale_class.free_space_x / 6
+        if hasattr(self.scale_class, 'len5_x') and hasattr(self.scale_class, 'scale'):
+            x_coordinate_withoutcapside += self.scale_class.len5_x / self.scale_class.scale
+        if hasattr(self.scale_class, 'len6_x') and hasattr(self.scale_class, 'scale'):
+            x_coordinate_withoutcapside += self.scale_class.len6_x / self.scale_class.scale
+        if hasattr(self.scale_class, 'len7_x') and hasattr(self.scale_class, 'scale'):
+            x_coordinate_withoutcapside += self.scale_class.len7_x / self.scale_class.scale
+        if hasattr(self.scale_class, 'free_space_x'):
+            x_coordinate_withoutcapside += self.scale_class.free_space_x / 6
+        if hasattr(self.scale_class, 'len8_x') and hasattr(self.scale_class, 'scale'):
+            x_coordinate_withoutcapside += self.scale_class.len8_x / self.scale_class.scale
+        if hasattr(self.scale_class, 'len9_x') and hasattr(self.scale_class, 'scale'):
+            x_coordinate_withoutcapside += self.scale_class.len9_x / self.scale_class.scale
+        if hasattr(self.scale_class, 'free_space_x'):
+            x_coordinate_withoutcapside += self.scale_class.free_space_x / 6
+        if hasattr(self, 'withoutcapside_block'):
+            x_coordinate_withoutcapside += (-self.withoutcapside_block.extreme_lines['x_min']) / self.scale_class.scale
+
+        y_coordinate_withoutcapside = 0
+        if hasattr(self.scale_class, 'free_space_y'):
+            y_coordinate_withoutcapside += self.scale_class.free_space_y / 4
+        if hasattr(self.scale_class, 'len0_y') and hasattr(self.scale_class, 'scale'):
+            y_coordinate_withoutcapside += self.scale_class.len0_y / self.scale_class.scale
+        if hasattr(self.scale_class, 'len1_y') and hasattr(self.scale_class, 'scale'):
+            y_coordinate_withoutcapside += self.scale_class.len1_y / self.scale_class.scale
+        if hasattr(self.scale_class, 'len2_y') and hasattr(self.scale_class, 'scale'):
+            if int(self.scale_class.len2_y) != 0:
+                y_coordinate_withoutcapside += 1.25 * self.scale_class.len2_y / self.scale_class.scale
+            else:
+                y_coordinate_withoutcapside += 1.25 * max(
+                    [self.scale_class.len2_y, self.scale_class.len4_y, self.scale_class.len2_x,
+                     self.scale_class.len4_x]) / self.scale_class.scale
+        if hasattr(self.scale_class, 'free_space_y'):
+            y_coordinate_withoutcapside += self.scale_class.free_space_y / 4
+
+        if hasattr(self, 'withoutcapside_block'):
+            y_coordinate_withoutcapside += -self.withoutcapside_block.extreme_lines['y_min'] / self.scale_class.scale
+
+        self.withoutcapside_insert = self.base_dxf.doc_base.modelspace().add_blockref(
+            name=self.withoutcapside_block.shell_side_name,
+            insert=(x_coordinate_withoutcapside,
+                    y_coordinate_withoutcapside))
+        self.withoutcapside_insert.dxf.rotation = 0
+        self.withoutcapside_insert.dxf.xscale = 1 / self.scale_class.scale
+        self.withoutcapside_insert.dxf.yscale = 1 / self.scale_class.scale
+        self.withoutcapside_insert.dxf.zscale = 1 / self.scale_class.scale
+
+    def draw_upside_insert(self):
+        x_coordinate_upside = 0
+        if hasattr(self.scale_class,'free_space_x'):
+            x_coordinate_upside += self.scale_class.free_space_x/6
+        if hasattr(self.scale_class,'len0_x') and hasattr(self.scale_class,'scale'):
+            x_coordinate_upside += self.scale_class.len0_x /  self.scale_class.scale
+        if hasattr(self.scale_class,'len1_x') and hasattr(self.scale_class,'scale'):
+            x_coordinate_upside += self.scale_class.len1_x /self.scale_class.scale
+        if hasattr(self.scale_class,'free_space_x'):
+            x_coordinate_upside += self.scale_class.free_space_x/6
+        if hasattr(self.scale_class,'len2_x') and hasattr(self.scale_class,'scale'):
+            if int(self.scale_class.len2_x) != 0:
+                x_coordinate_upside += 1.25 * self.scale_class.len2_x /  self.scale_class.scale
+            else:
+                x_coordinate_upside += 1.25 * max([self.scale_class.len2_y, self.scale_class.len4_y, self.scale_class.len2_x,self.scale_class.len4_x])/ self.scale_class.scale
+        if hasattr(self,'upside_block'):
+            x_coordinate_upside += (self.upside_block.extreme_lines['x_max']) / self.scale_class.scale
+
+        y_coordinate_upside = 0
+        if hasattr(self.scale_class,'free_space_y'):
+            y_coordinate_upside += self.scale_class.free_space_y/4
+        if hasattr(self.scale_class,'len0_y') and hasattr(self.scale_class,'scale'):
+            y_coordinate_upside += self.scale_class.len0_y /self.scale_class.scale
+        if hasattr(self, 'upside_block'):
+            y_coordinate_upside += (self.upside_block.extreme_lines['y_max']) / self.scale_class.scale
+
+        self.upside_insert = self.base_dxf.doc_base.modelspace().add_blockref(name=self.upside_block.shell_side_name,
+                                                                                    insert=(x_coordinate_upside,
+                                                                                            y_coordinate_upside))
+        self.upside_insert.dxf.rotation = 180
+        self.upside_insert.dxf.xscale = 1/self.scale_class.scale
+        self.upside_insert.dxf.yscale = 1 / self.scale_class.scale
+        self.upside_insert.dxf.zscale = 1 / self.scale_class.scale
+
+    def draw_downside_insert(self):
+        x_coordinate_downside = 0
+        if hasattr(self.scale_class,'free_space_x'):
+            x_coordinate_downside += self.scale_class.free_space_x/6
+        if hasattr(self.scale_class,'len0_x') and hasattr(self.scale_class,'scale'):
+            x_coordinate_downside += self.scale_class.len0_x /  self.scale_class.scale
+        if hasattr(self.scale_class,'len1_x') and hasattr(self.scale_class,'scale'):
+            x_coordinate_downside += self.scale_class.len1_x /self.scale_class.scale
+        if hasattr(self.scale_class,'free_space_x'):
+            x_coordinate_downside += self.scale_class.free_space_x/6
+        if hasattr(self.scale_class,'len2_x') and hasattr(self.scale_class,'scale'):
+            if int(self.scale_class.len2_x) != 0:
+                x_coordinate_downside += 1.25 * self.scale_class.len2_x /  self.scale_class.scale
+            else:
+                x_coordinate_downside += 1.25 * max([self.scale_class.len2_y, self.scale_class.len4_y, self.scale_class.len2_x,self.scale_class.len4_x])/ self.scale_class.scale
+        if hasattr(self,'downside_block'):
+            x_coordinate_downside += (-self.downside_block.extreme_lines['x_min']) / self.scale_class.scale
+
+        y_coordinate_downside = 0
+        if hasattr(self.scale_class, 'free_space_y'):
+            y_coordinate_downside += self.scale_class.free_space_y / 4
+        if hasattr(self.scale_class, 'len0_y') and hasattr(self.scale_class, 'scale'):
+            y_coordinate_downside += self.scale_class.len0_y / self.scale_class.scale
+        if hasattr(self.scale_class, 'len1_y') and hasattr(self.scale_class, 'scale'):
+            y_coordinate_downside += self.scale_class.len1_y / self.scale_class.scale
+        if hasattr(self.scale_class, 'len2_y') and hasattr(self.scale_class, 'scale'):
+            if int(self.scale_class.len2_y) != 0:
+                y_coordinate_downside += 1.25 * self.scale_class.len2_y / self.scale_class.scale
+            else:
+                y_coordinate_downside += 1.25 * max(
+                    [self.scale_class.len2_y, self.scale_class.len4_y, self.scale_class.len2_x,
+                     self.scale_class.len4_x]) / self.scale_class.scale
+        if hasattr(self.scale_class, 'free_space_y'):
+            y_coordinate_downside += self.scale_class.free_space_y / 4
+        if hasattr(self.scale_class, 'len3_y') and hasattr(self.scale_class, 'scale'):
+            y_coordinate_downside += self.scale_class.len3_y / self.scale_class.scale
+        if hasattr(self.scale_class, 'len4_y') and hasattr(self.scale_class, 'scale'):
+            y_coordinate_downside += self.scale_class.len4_y / self.scale_class.scale
+        if hasattr(self.scale_class, 'free_space_y'):
+            y_coordinate_downside += self.scale_class.free_space_y / 4
+
+        if hasattr(self, 'downside_block'):
+            y_coordinate_downside += -self.downside_block.extreme_lines['y_min'] / self.scale_class.scale
+
+        self.downside_insert = self.base_dxf.doc_base.modelspace().add_blockref(name=self.downside_block.shell_side_name,
+                                                                                    insert=(x_coordinate_downside,
+                                                                                            y_coordinate_downside))
+        self.downside_insert.dxf.rotation = 0
+        self.downside_insert.dxf.xscale = 1/self.scale_class.scale
+        self.downside_insert.dxf.yscale = 1 / self.scale_class.scale
+        self.downside_insert.dxf.zscale = 1 / self.scale_class.scale
+
+    def draw_installation_insert(self):
+        x_coordinate_installation = 0
+        if hasattr(self.scale_class, 'free_space_x'):
+            x_coordinate_installation += self.scale_class.free_space_x / 6
+        if hasattr(self.scale_class, 'len0_x') and hasattr(self.scale_class, 'scale'):
+            x_coordinate_installation += self.scale_class.len0_x / self.scale_class.scale
+        if hasattr(self.scale_class, 'len1_x') and hasattr(self.scale_class, 'scale'):
+            x_coordinate_installation += self.scale_class.len1_x / self.scale_class.scale
+        if hasattr(self.scale_class, 'free_space_x'):
+            x_coordinate_installation += self.scale_class.free_space_x / 6
+        if hasattr(self.scale_class, 'len2_x') and hasattr(self.scale_class, 'scale'):
+            if int(self.scale_class.len2_x) != 0:
+                x_coordinate_installation += 1.25 * self.scale_class.len2_x / self.scale_class.scale
+            else:
+                x_coordinate_installation += 1.25 * max(
+                    [self.scale_class.len2_y, self.scale_class.len4_y, self.scale_class.len2_x,
+                     self.scale_class.len4_x]) / self.scale_class.scale
+        if hasattr(self.scale_class, 'len3_x') and hasattr(self.scale_class, 'scale'):
+            x_coordinate_installation += self.scale_class.len3_x / self.scale_class.scale
+        if hasattr(self.scale_class, 'len4_x') and hasattr(self.scale_class, 'scale'):
+            x_coordinate_installation += self.scale_class.len4_x / self.scale_class.scale
+        if hasattr(self.scale_class, 'free_space_x'):
+            x_coordinate_installation += self.scale_class.free_space_x / 6
+        if hasattr(self.scale_class, 'len5_x') and hasattr(self.scale_class, 'scale'):
+            x_coordinate_installation += self.scale_class.len5_x / self.scale_class.scale
+        if hasattr(self.scale_class, 'len6_x') and hasattr(self.scale_class, 'scale'):
+            x_coordinate_installation += self.scale_class.len6_x / self.scale_class.scale
+        if hasattr(self.scale_class, 'len7_x') and hasattr(self.scale_class, 'scale'):
+            x_coordinate_installation += self.scale_class.len7_x / self.scale_class.scale
+        if hasattr(self.scale_class, 'free_space_x'):
+            x_coordinate_installation += self.scale_class.free_space_x / 6
+        if hasattr(self.scale_class, 'len8_x') and hasattr(self.scale_class, 'scale'):
+            x_coordinate_installation += self.scale_class.len8_x / self.scale_class.scale
+        if hasattr(self.scale_class, 'len9_x') and hasattr(self.scale_class, 'scale'):
+            x_coordinate_installation += self.scale_class.len9_x / self.scale_class.scale
+        if hasattr(self.scale_class, 'free_space_x'):
+            x_coordinate_installation += self.scale_class.free_space_x / 6
+        if hasattr(self, 'withoutcapside_block'):
+            x_coordinate_installation += (-self.withoutcapside_block.extreme_lines['x_min']) / self.scale_class.scale
+
+        y_coordinate_installation = 0
+        if hasattr(self.scale_class, 'free_space_y'):
+            y_coordinate_installation += self.scale_class.free_space_y / 4
+        if hasattr(self.scale_class, 'len0_y') and hasattr(self.scale_class, 'scale'):
+            y_coordinate_installation += self.scale_class.len0_y / self.scale_class.scale
+        if hasattr(self.scale_class, 'len1_y') and hasattr(self.scale_class, 'scale'):
+            y_coordinate_installation += self.scale_class.len1_y / self.scale_class.scale
+        if hasattr(self.scale_class, 'len2_y') and hasattr(self.scale_class, 'scale'):
+            if int(self.scale_class.len2_y) != 0:
+                y_coordinate_installation += 1.25 * self.scale_class.len2_y / self.scale_class.scale
+            else:
+                y_coordinate_installation += 1.25 * max(
+                    [self.scale_class.len2_y, self.scale_class.len4_y, self.scale_class.len2_x,
+                     self.scale_class.len4_x]) / self.scale_class.scale
+        if hasattr(self.scale_class, 'free_space_y'):
+            y_coordinate_installation += self.scale_class.free_space_y / 4
+        if hasattr(self.scale_class, 'len3_y') and hasattr(self.scale_class, 'scale'):
+            y_coordinate_installation += self.scale_class.len3_y / self.scale_class.scale
+        if hasattr(self.scale_class, 'len4_y') and hasattr(self.scale_class, 'scale'):
+            y_coordinate_installation += self.scale_class.len4_y / self.scale_class.scale
+        if hasattr(self.scale_class, 'free_space_y'):
+            y_coordinate_installation += self.scale_class.free_space_y / 4
+
+        if hasattr(self, 'installation_block'):
+            y_coordinate_installation += -self.installation_block.extreme_lines['y_min'] / self.scale_class.scale
+
+        self.installation_insert = self.base_dxf.doc_base.modelspace().add_blockref(
+            name=self.installation_block.shell_side_name,
+            insert=(x_coordinate_installation,
+                    y_coordinate_installation))
+        self.installation_insert.dxf.rotation = 0
+        self.installation_insert.dxf.xscale = 1 / self.scale_class.scale
+        self.installation_insert.dxf.yscale = 1 / self.scale_class.scale
+        self.installation_insert.dxf.zscale = 1 / self.scale_class.scale
+
+
 
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)

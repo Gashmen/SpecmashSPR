@@ -142,6 +142,12 @@ class GlandInterface(shell_ui.ShellInterface):
         self.sideGdeleteButton.clicked.connect(self.click_delete_button_G)
         self.CoverdeleteButton.clicked.connect(self.click_delete_button_cover)
 
+
+    def add_manufacturer_inputs_combobox(self):
+        '''Пока поставим производителя только ВЗОР'''
+        self.manufacturerInputsComboBox.clear()
+        self.manufacturerInputsComboBox.addItems(csv_config.GLAND_MANUFACTURER)
+
     def improve_choose_widget(self):
         '''ИЗМЕНЕНИЕ КЛАССА COMBOBOX WIDGET'''
         self.vzorglandcomboBox.deleteLater()

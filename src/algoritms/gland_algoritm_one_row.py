@@ -180,9 +180,8 @@ class TwoRowGlandChecker(GlandAlgoritmChecker):
                                           (self.width_for_cut -
                                           clearens * (len(self.level_dict[max(list(self.level_dict.keys()))]['list_cable_glands'])-1))/2 #2x = free_space - clearens * (len(gland)-1) Нужно найти икс и прибавить к y_start
                                 for gland_two_row in self.level_dict[max(list(self.level_dict.keys()))]['list_cable_glands']:
-                                    gland_y_coordinate = y_start + gland_two_row.diametr/2
-                                    y_start = gland_y_coordinate + gland_two_row.diametr/2 + clearens
-                                    gland_two_row.set_y_coordinate(y_coordinate=gland_y_coordinate)
+                                    gland_y_coordinate = y_start + gland_two_row.diametr/2 + clearens
+                                    y_start = gland_y_coordinate + gland_two_row.diametr/2
                             self.width_for_cut = self.min_size
                     else:
                         if self.level_dict == dict():
@@ -318,7 +317,6 @@ class TwoRowGlandChecker(GlandAlgoritmChecker):
 
         self.gland_x_coordinate = x_insert_coordinate
         self.gland_y_coordinate = self.y_end_rectangle * (1/2*(1 - (-1)**number_gland_level)) + ((level_main_diametr/2)*(-1)**number_gland_level)
-        self.list_glands[0].set_y_coordinate(y_coordinate=self.gland_y_coordinate)
 
         self.level_dict[number_gland_level] = dict_for_level_dict
 
@@ -395,10 +393,12 @@ class TwoRowGlandChecker(GlandAlgoritmChecker):
 
                 for current_level in self.level_dict:
                     level_current_dict = self.level_dict[current_level]
-                    level_current_dict['x_insert_coordinate'] += (current_level +1) * (free_space/(len(list(self.level_dict.keys()))+1))
+                    level_current_dict['x_insert_coordinate'] += free_space / (len(list(self.level_dict.keys()))+1)
                     if len(level_current_dict['list_cable_glands']) > 0:
                         for cable_gland in level_current_dict['list_cable_glands']:
                             cable_gland.set_x_coordinate(x_coordinate=level_current_dict['x_insert_coordinate'])
+
+
 
 
 class OneRowChecker(GlandAlgoritmChecker):

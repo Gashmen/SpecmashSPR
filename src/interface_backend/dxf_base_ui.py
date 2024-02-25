@@ -37,6 +37,8 @@ class DxfQtCommunication(gland_ui.GlandInterface):
             self.base_dxf.delete_all_entities()
             self.base_dxf.give_all_blocks()
 
+
+
     @Qt.pyqtSlot()
     def set_shell_base_dxf(self):
         if hasattr(self,'shell_dict'):

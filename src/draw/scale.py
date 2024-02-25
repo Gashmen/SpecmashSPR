@@ -168,7 +168,7 @@ class ScaleBorder:
         needed_parametrs = [self.len0_x,self.len1_x,self.len2_x,self.len3_x,self.len4_x,
                             self.len5_x,self.len6_x,self.len7_x,self.len8_x,self.len9_x,
                             self.len10_x,self.len11_x]
-        sum_len_x_top = sum(needed_parametrs) + 0.25*max(self.len2_y,self.len2_x,self.len4_y,self.len4_x)#для вставки размера
+        sum_len_x_top = sum(needed_parametrs) + 0.25*max([self.len2_y,self.len2_x,self.len4_y,self.len4_x])#для вставки размера
         self.scale_len_x_top = math.floor(sum_len_x_top / scale_gost)
         if self.scale_len_x_top <= len_x_top:
             return True
@@ -205,6 +205,8 @@ class ScaleBorder:
                 self.calculate_len_y_left(len_y_left=boundaries['LEN_Y_ЛЕВАЯ_ГРАНИЦА'],scale_gost=self.scale),
                 self.calculate_len_y_right(len_y_right=boundaries['LEN_Y_ПРАВАЯ_ГРАНИЦА'],scale_gost=self.scale)
             ])
+            self.calculate_free_space()
+
 
     def calculate_free_space(self,boundaries:dict = BOUNDARIES.A3_BOUNDARIES):
         self.free_space_x = boundaries['LEN_X_ВЕРХНЯЯ_ГРАНИЦА'] - self.scale_len_x_top

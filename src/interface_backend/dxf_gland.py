@@ -33,6 +33,14 @@ class DxfGlandQtCommunication(dxf_shell_ui.DxfShellQtCommunication):
         self.addButton_2.clicked.connect(self.cutside_draw_glands)
         self.addButton_2.clicked.connect(self.rightside_draw_glands)
         self.addButton_2.clicked.connect(self.withoutcapside_draw_glands)
+        self.addButton_2.clicked.connect(self.draw_rightside_insert)
+        self.addButton_2.clicked.connect(self.draw_topside_insert)
+        self.addButton_2.clicked.connect(self.draw_leftside_insert)
+        self.addButton_2.clicked.connect(self.draw_cutside_insert)
+        self.addButton_2.clicked.connect(self.draw_withoutcapside_insert)
+        self.addButton_2.clicked.connect(self.draw_upside_insert)
+        self.addButton_2.clicked.connect(self.draw_downside_insert)
+        self.addButton_2.clicked.connect(self.draw_installation_insert)
 
 
         self.Autohelper.clicked.connect(self.save_doc)#Тест, потом удалить
@@ -149,7 +157,7 @@ class DxfGlandQtCommunication(dxf_shell_ui.DxfShellQtCommunication):
 
 
     def save_doc(self):#тест, потом удалить
-        self.base_dxf.doc_base.saveas('C:\\Users\\g.zubkov\\PycharmProjects\\SpecmashSPR\\check.dxf')
+        self.base_dxf.doc_base.saveas('check.dxf')
 
 
 if __name__ == "__main__":
