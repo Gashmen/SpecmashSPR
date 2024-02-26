@@ -5,7 +5,7 @@ import sys
 from PyQt5 import QtCore, QtGui, QtWidgets, Qt
 from PyQt5.QtWidgets import QMessageBox
 
-from src.interface_backend import dxf_base_ui #ПОМЕНЯТЬ НА ИТОГОВЫЙ ИНТЕРФЕЙСНЫЙ МОДУЛЬ В ОЧЕРЕДНОСТИ
+from src.interface_backend import terminal_ui #ПОМЕНЯТЬ НА ИТОГОВЫЙ ИНТЕРФЕЙСНЫЙ МОДУЛЬ В ОЧЕРЕДНОСТИ
 
 from config import dxf_config
 from src.csv import gland_csv
@@ -13,7 +13,7 @@ from src.Widgets_Custom import ExtendedCombobox,UI_BaseError
 from src.draw import base
 from src.draw.shell_side import dxf_shell
 
-class DxfShellQtCommunication(dxf_base_ui.DxfQtCommunication):
+class DxfShellQtCommunication(terminal_ui.TerminalUi):
 
     def __init__(self):
 
@@ -147,9 +147,9 @@ class DxfShellQtCommunication(dxf_base_ui.DxfQtCommunication):
             y_coordinate_rightside += self.scale_class.len1_y / self.scale_class.scale
         if hasattr(self.scale_class,'len2_y') and hasattr(self.scale_class,'scale'):
             if int(self.scale_class.len2_y) != 0:
-                y_coordinate_rightside += 1.25 * self.scale_class.len2_y / self.scale_class.scale
+                y_coordinate_rightside += 1.5 * self.scale_class.len2_y / self.scale_class.scale
             else:
-                y_coordinate_rightside += 1.25 * max([self.scale_class.len2_y, self.scale_class.len4_y, self.scale_class.len2_x,self.scale_class.len4_x])/ self.scale_class.scale
+                y_coordinate_rightside += 1.5 * max([self.scale_class.len2_y, self.scale_class.len4_y, self.scale_class.len2_x,self.scale_class.len4_x])/ self.scale_class.scale
         if hasattr(self.scale_class, 'free_space_y'):
             y_coordinate_rightside += self.scale_class.free_space_y / 4
         if hasattr(self, 'rightside_block'):
@@ -175,9 +175,9 @@ class DxfShellQtCommunication(dxf_base_ui.DxfQtCommunication):
             x_coordinate_topside += self.scale_class.free_space_x/6
         if hasattr(self.scale_class,'len2_x') and hasattr(self.scale_class,'scale'):
             if int(self.scale_class.len2_x) != 0:
-                x_coordinate_topside += 1.25 * self.scale_class.len2_x /  self.scale_class.scale
+                x_coordinate_topside += 1.5 * self.scale_class.len2_x /  self.scale_class.scale
             else:
-                x_coordinate_topside += 1.25 * max([self.scale_class.len2_y, self.scale_class.len4_y, self.scale_class.len2_x,self.scale_class.len4_x])/ self.scale_class.scale
+                x_coordinate_topside += 1.5 * max([self.scale_class.len2_y, self.scale_class.len4_y, self.scale_class.len2_x,self.scale_class.len4_x])/ self.scale_class.scale
         if hasattr(self,'topside_block'):
             x_coordinate_topside += (-self.topside_block.extreme_lines['x_min']) / self.scale_class.scale
 
@@ -190,9 +190,9 @@ class DxfShellQtCommunication(dxf_base_ui.DxfQtCommunication):
             y_coordinate_topside += self.scale_class.len1_y / self.scale_class.scale
         if hasattr(self.scale_class,'len2_y') and hasattr(self.scale_class,'scale'):
             if int(self.scale_class.len2_y) != 0:
-                y_coordinate_topside += 1.25 * self.scale_class.len2_y / self.scale_class.scale
+                y_coordinate_topside += 1.5 * self.scale_class.len2_y / self.scale_class.scale
             else:
-                y_coordinate_topside += 1.25 * max([self.scale_class.len2_y, self.scale_class.len4_y, self.scale_class.len2_x,self.scale_class.len4_x])/ self.scale_class.scale
+                y_coordinate_topside += 1.5 * max([self.scale_class.len2_y, self.scale_class.len4_y, self.scale_class.len2_x,self.scale_class.len4_x])/ self.scale_class.scale
         if hasattr(self.scale_class, 'free_space_y'):
             y_coordinate_topside += self.scale_class.free_space_y / 4
         if hasattr(self, 'topside_block'):
@@ -218,9 +218,9 @@ class DxfShellQtCommunication(dxf_base_ui.DxfQtCommunication):
             x_coordinate_leftside += self.scale_class.free_space_x/6
         if hasattr(self.scale_class,'len2_x') and hasattr(self.scale_class,'scale'):
             if int(self.scale_class.len2_x) != 0:
-                x_coordinate_leftside += 1.25 * self.scale_class.len2_x /  self.scale_class.scale
+                x_coordinate_leftside += 1.5 * self.scale_class.len2_x /  self.scale_class.scale
             else:
-                x_coordinate_leftside += 1.25 * max([self.scale_class.len2_y, self.scale_class.len4_y, self.scale_class.len2_x,self.scale_class.len4_x])/ self.scale_class.scale
+                x_coordinate_leftside += 1.5 * max([self.scale_class.len2_y, self.scale_class.len4_y, self.scale_class.len2_x,self.scale_class.len4_x])/ self.scale_class.scale
         if hasattr(self.scale_class,'len3_x') and hasattr(self.scale_class,'scale'):
             x_coordinate_leftside += self.scale_class.len3_x / self.scale_class.scale
         if hasattr(self.scale_class,'len4_x') and hasattr(self.scale_class,'scale'):
@@ -241,9 +241,9 @@ class DxfShellQtCommunication(dxf_base_ui.DxfQtCommunication):
             y_coordinate_leftside += self.scale_class.len1_y / self.scale_class.scale
         if hasattr(self.scale_class,'len2_y') and hasattr(self.scale_class,'scale'):
             if int(self.scale_class.len2_y) != 0:
-                y_coordinate_leftside += 1.25 * self.scale_class.len2_y / self.scale_class.scale
+                y_coordinate_leftside += 1.5 * self.scale_class.len2_y / self.scale_class.scale
             else:
-                y_coordinate_leftside += 1.25 * max([self.scale_class.len2_y, self.scale_class.len4_y, self.scale_class.len2_x,self.scale_class.len4_x])/ self.scale_class.scale
+                y_coordinate_leftside += 1.5 * max([self.scale_class.len2_y, self.scale_class.len4_y, self.scale_class.len2_x,self.scale_class.len4_x])/ self.scale_class.scale
         if hasattr(self.scale_class, 'free_space_y'):
             y_coordinate_leftside += self.scale_class.free_space_y / 4
         if hasattr(self, 'leftside_block'):
@@ -270,9 +270,9 @@ class DxfShellQtCommunication(dxf_base_ui.DxfQtCommunication):
             x_coordinate_cutside += self.scale_class.free_space_x / 6
         if hasattr(self.scale_class, 'len2_x') and hasattr(self.scale_class, 'scale'):
             if int(self.scale_class.len2_x) != 0:
-                x_coordinate_cutside += 1.25 * self.scale_class.len2_x / self.scale_class.scale
+                x_coordinate_cutside += 1.5 * self.scale_class.len2_x / self.scale_class.scale
             else:
-                x_coordinate_cutside += 1.25 * max(
+                x_coordinate_cutside += 1.5 * max(
                     [self.scale_class.len2_y, self.scale_class.len4_y, self.scale_class.len2_x,
                      self.scale_class.len4_x]) / self.scale_class.scale
         if hasattr(self.scale_class, 'len3_x') and hasattr(self.scale_class, 'scale'):
@@ -299,9 +299,9 @@ class DxfShellQtCommunication(dxf_base_ui.DxfQtCommunication):
             y_coordinate_cutside += self.scale_class.len1_y / self.scale_class.scale
         if hasattr(self.scale_class, 'len2_y') and hasattr(self.scale_class, 'scale'):
             if int(self.scale_class.len2_y) != 0:
-                y_coordinate_cutside += 1.25 * self.scale_class.len2_y / self.scale_class.scale
+                y_coordinate_cutside += 1.5 * self.scale_class.len2_y / self.scale_class.scale
             else:
-                y_coordinate_cutside += 1.25 * max(
+                y_coordinate_cutside += 1.5 * max(
                     [self.scale_class.len2_y, self.scale_class.len4_y, self.scale_class.len2_x,
                      self.scale_class.len4_x]) / self.scale_class.scale
         if hasattr(self.scale_class, 'free_space_y'):
@@ -331,9 +331,9 @@ class DxfShellQtCommunication(dxf_base_ui.DxfQtCommunication):
             x_coordinate_withoutcapside += self.scale_class.free_space_x / 6
         if hasattr(self.scale_class, 'len2_x') and hasattr(self.scale_class, 'scale'):
             if int(self.scale_class.len2_x) != 0:
-                x_coordinate_withoutcapside += 1.25 * self.scale_class.len2_x / self.scale_class.scale
+                x_coordinate_withoutcapside += 1.5 * self.scale_class.len2_x / self.scale_class.scale
             else:
-                x_coordinate_withoutcapside += 1.25 * max(
+                x_coordinate_withoutcapside += 1.5 * max(
                     [self.scale_class.len2_y, self.scale_class.len4_y, self.scale_class.len2_x,
                      self.scale_class.len4_x]) / self.scale_class.scale
         if hasattr(self.scale_class, 'len3_x') and hasattr(self.scale_class, 'scale'):
@@ -368,9 +368,9 @@ class DxfShellQtCommunication(dxf_base_ui.DxfQtCommunication):
             y_coordinate_withoutcapside += self.scale_class.len1_y / self.scale_class.scale
         if hasattr(self.scale_class, 'len2_y') and hasattr(self.scale_class, 'scale'):
             if int(self.scale_class.len2_y) != 0:
-                y_coordinate_withoutcapside += 1.25 * self.scale_class.len2_y / self.scale_class.scale
+                y_coordinate_withoutcapside += 1.5 * self.scale_class.len2_y / self.scale_class.scale
             else:
-                y_coordinate_withoutcapside += 1.25 * max(
+                y_coordinate_withoutcapside += 1.5 * max(
                     [self.scale_class.len2_y, self.scale_class.len4_y, self.scale_class.len2_x,
                      self.scale_class.len4_x]) / self.scale_class.scale
         if hasattr(self.scale_class, 'free_space_y'):
@@ -400,9 +400,9 @@ class DxfShellQtCommunication(dxf_base_ui.DxfQtCommunication):
             x_coordinate_upside += self.scale_class.free_space_x/6
         if hasattr(self.scale_class,'len2_x') and hasattr(self.scale_class,'scale'):
             if int(self.scale_class.len2_x) != 0:
-                x_coordinate_upside += 1.25 * self.scale_class.len2_x /  self.scale_class.scale
+                x_coordinate_upside += 1.5 * self.scale_class.len2_x /  self.scale_class.scale
             else:
-                x_coordinate_upside += 1.25 * max([self.scale_class.len2_y, self.scale_class.len4_y, self.scale_class.len2_x,self.scale_class.len4_x])/ self.scale_class.scale
+                x_coordinate_upside += 1.5 * max([self.scale_class.len2_y, self.scale_class.len4_y, self.scale_class.len2_x,self.scale_class.len4_x])/ self.scale_class.scale
         if hasattr(self,'upside_block'):
             x_coordinate_upside += (self.upside_block.extreme_lines['x_max']) / self.scale_class.scale
 
@@ -434,9 +434,9 @@ class DxfShellQtCommunication(dxf_base_ui.DxfQtCommunication):
             x_coordinate_downside += self.scale_class.free_space_x/6
         if hasattr(self.scale_class,'len2_x') and hasattr(self.scale_class,'scale'):
             if int(self.scale_class.len2_x) != 0:
-                x_coordinate_downside += 1.25 * self.scale_class.len2_x /  self.scale_class.scale
+                x_coordinate_downside += 1.5 * self.scale_class.len2_x /  self.scale_class.scale
             else:
-                x_coordinate_downside += 1.25 * max([self.scale_class.len2_y, self.scale_class.len4_y, self.scale_class.len2_x,self.scale_class.len4_x])/ self.scale_class.scale
+                x_coordinate_downside += 1.5 * max([self.scale_class.len2_y, self.scale_class.len4_y, self.scale_class.len2_x,self.scale_class.len4_x])/ self.scale_class.scale
         if hasattr(self,'downside_block'):
             x_coordinate_downside += (-self.downside_block.extreme_lines['x_min']) / self.scale_class.scale
 
@@ -449,9 +449,9 @@ class DxfShellQtCommunication(dxf_base_ui.DxfQtCommunication):
             y_coordinate_downside += self.scale_class.len1_y / self.scale_class.scale
         if hasattr(self.scale_class, 'len2_y') and hasattr(self.scale_class, 'scale'):
             if int(self.scale_class.len2_y) != 0:
-                y_coordinate_downside += 1.25 * self.scale_class.len2_y / self.scale_class.scale
+                y_coordinate_downside += 1.5 * self.scale_class.len2_y / self.scale_class.scale
             else:
-                y_coordinate_downside += 1.25 * max(
+                y_coordinate_downside += 1.5 * max(
                     [self.scale_class.len2_y, self.scale_class.len4_y, self.scale_class.len2_x,
                      self.scale_class.len4_x]) / self.scale_class.scale
         if hasattr(self.scale_class, 'free_space_y'):
@@ -486,9 +486,9 @@ class DxfShellQtCommunication(dxf_base_ui.DxfQtCommunication):
             x_coordinate_installation += self.scale_class.free_space_x / 6
         if hasattr(self.scale_class, 'len2_x') and hasattr(self.scale_class, 'scale'):
             if int(self.scale_class.len2_x) != 0:
-                x_coordinate_installation += 1.25 * self.scale_class.len2_x / self.scale_class.scale
+                x_coordinate_installation += 1.50 * self.scale_class.len2_x / self.scale_class.scale
             else:
-                x_coordinate_installation += 1.25 * max(
+                x_coordinate_installation += 1.50 * max(
                     [self.scale_class.len2_y, self.scale_class.len4_y, self.scale_class.len2_x,
                      self.scale_class.len4_x]) / self.scale_class.scale
         if hasattr(self.scale_class, 'len3_x') and hasattr(self.scale_class, 'scale'):
@@ -523,9 +523,9 @@ class DxfShellQtCommunication(dxf_base_ui.DxfQtCommunication):
             y_coordinate_installation += self.scale_class.len1_y / self.scale_class.scale
         if hasattr(self.scale_class, 'len2_y') and hasattr(self.scale_class, 'scale'):
             if int(self.scale_class.len2_y) != 0:
-                y_coordinate_installation += 1.25 * self.scale_class.len2_y / self.scale_class.scale
+                y_coordinate_installation += 1.5 * self.scale_class.len2_y / self.scale_class.scale
             else:
-                y_coordinate_installation += 1.25 * max(
+                y_coordinate_installation += 1.5 * max(
                     [self.scale_class.len2_y, self.scale_class.len4_y, self.scale_class.len2_x,
                      self.scale_class.len4_x]) / self.scale_class.scale
         if hasattr(self.scale_class, 'free_space_y'):

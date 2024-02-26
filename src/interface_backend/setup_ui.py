@@ -90,6 +90,7 @@ class SetupInterface(QtWidgets.QMainWindow, mainver03.Ui_MainWindow):
             self.stackedWidget.setCurrentIndex(3)
 
 
+
 if __name__ == '__main__':
     app = QtWidgets.QApplication(sys.argv)
     welcome_window = SetupInterface()

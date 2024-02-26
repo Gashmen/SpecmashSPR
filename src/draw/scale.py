@@ -157,7 +157,7 @@ class ScaleBorder:
 
     def calculate_len_x_bottom(self,len_x_bottom,scale_gost=1):
         needed_parametrs = [self.len0_x, self.len1_x,self.len2_x,self.len3_x,self.len4_x]
-        sum_len_x_bottom = sum(needed_parametrs) + 0.25*max(self.len2_y,self.len2_x,self.len4_y,self.len4_x)#для вставки размера
+        sum_len_x_bottom = sum(needed_parametrs) + 0.5*max(self.len2_y,self.len2_x,self.len4_y,self.len4_x)#для вставки размера
         self.scale_len_x_bottom = math.floor(sum_len_x_bottom/scale_gost)
         if self.scale_len_x_bottom <= len_x_bottom:
             return True
@@ -168,8 +168,8 @@ class ScaleBorder:
         needed_parametrs = [self.len0_x,self.len1_x,self.len2_x,self.len3_x,self.len4_x,
                             self.len5_x,self.len6_x,self.len7_x,self.len8_x,self.len9_x,
                             self.len10_x,self.len11_x]
-        sum_len_x_top = sum(needed_parametrs) + 0.25*max([self.len2_y,self.len2_x,self.len4_y,self.len4_x])#для вставки размера
-        self.scale_len_x_top = math.floor(sum_len_x_top / scale_gost)
+        sum_len_x_top = sum(needed_parametrs) + 0.5*max([self.len2_y,self.len2_x,self.len4_y,self.len4_x])#для вставки размера
+        self.scale_len_x_top = math.floor(sum_len_x_top / scale_gost)+1
         if self.scale_len_x_top <= len_x_top:
             return True
         else:
@@ -177,7 +177,7 @@ class ScaleBorder:
 
     def calculate_len_y_left(self,len_y_left,scale_gost=1):
         needed_parametrs = [self.len0_y,self.len1_y,self.len2_y,self.len3_y,self.len4_y,self.len5_y,self.len6_y]
-        sum_len_y_left = sum(needed_parametrs) + 0.5*max(self.len2_y,self.len2_x,self.len4_y,self.len4_x)#для вставки размера
+        sum_len_y_left = sum(needed_parametrs) + 1*max(self.len2_y,self.len2_x,self.len4_y,self.len4_x)#для вставки размера
         self.scale_len_y_left = math.floor(sum_len_y_left / scale_gost)
         if self.scale_len_y_left <= len_y_left:
             return True
@@ -211,19 +211,5 @@ class ScaleBorder:
     def calculate_free_space(self,boundaries:dict = BOUNDARIES.A3_BOUNDARIES):
         self.free_space_x = boundaries['LEN_X_ВЕРХНЯЯ_ГРАНИЦА'] - self.scale_len_x_top
         self.free_space_y = boundaries['LEN_Y_ЛЕВАЯ_ГРАНИЦА'] - self.scale_len_y_left
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 

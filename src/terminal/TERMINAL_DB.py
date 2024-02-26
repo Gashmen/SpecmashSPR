@@ -1,17 +1,17 @@
 import ezdxf
 
-def define_names_terminal( doc_dict_blocks:dict):
+def define_names_terminal(doc_dict_blocks:dict):
     '''
     self.doc_dict_blocks = {block.dxf.name: block for block in self.doc_base.blocks
                         if '*' not in block.dxf.name}
     :param doc_dict_blocks:
     :return:
     '''
-
-    for block in doc_dict_blocks.keys():
-        if 'screw' in block.dxf.name.lower() or 'sparing' in block.dxf.name.lower():
-            if '_'.join(block.dxf.name.split('_')[0:4]) not in names_of_terminal:
-                names_of_terminal.append(block.dxf.name)
+    names_of_terminal = list()
+    for block_name in doc_dict_blocks.keys():
+        if 'screw' in block_name.lower() or 'sparing' in block_name.lower():
+            if '_'.join(block_name.split('_')[0:4]) not in names_of_terminal:
+                names_of_terminal.append(block_name)
     # names_of_terminal.append('SUPU')
     return names_of_terminal
 
@@ -70,6 +70,40 @@ def define_name_of_terminal(name_from_qt:str):
     TYPEOFTERMINAL = 'SCREW' if name_from_qt.split('_')[1] == 'Винтовые' else 'SPRING'
     APPOINMENT = 'WHITE' if name_from_qt.split('_')[2] == 'L' else 'BLUE' if name_from_qt.split('_')[2] == 'N' else 'GREEN'
     return '_'.join([name_from_qt.split('_')[0],TYPEOFTERMINAL,APPOINMENT,name_from_qt.split('_')[3] ])
+
+def change_name_from_to(name:str):
+    '''
+    Смена имени для клеммы с английского на русский и наоборот по структуре на 06.02.23
+    '''
+    const_names = {'Концевой стопор':'Terminal_end_stop_frontside',
+                   'Концевая пластина':'Terminal_end_plate_frontside_2.5'}
+    if name in list(const_names.keys()):
+        return const_names[name]
+
+
+    return_name = name
+    rus_language = 'абвгдеёжзийклмнопрстуфхцчшщъыьэюя'
+    #Проверка если есть русские буквы в строке, то значит это приход
+    dict_translator = {'Винтовые':'SCREW','Пружинные':'SPRING', 'PE':'GREEN','L':'WHITE','N':'BLUE',
+                       }
+    rus = None
+    for letter in name.lower():
+        if letter in rus_language:
+            rus = True
+            break
+    if rus == None:
+        dict_eng = {eng_word:rus_word for rus_word,eng_word in dict_translator}
+        for word_eng in dict_eng.keys():
+            if word_eng in return_name:
+                return_name.replace(word_eng,dict_eng[word_eng])
+    else:
+        return_name = return_name.split('_')
+        for word_rus in dict_translator:
+            if word_rus in return_name:
+                return_name[return_name.index(word_rus)] = dict_translator[word_rus]
+        return_name = '_'.join(return_name)
+    return return_name
+
 
 
 if __name__ == '__main__':

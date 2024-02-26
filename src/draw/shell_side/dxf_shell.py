@@ -139,7 +139,6 @@ class ShellSideBlock(DxfBase):
                 return self.biggest_check.status_add_to_possible_biggest_input
 
 
-
     def check_possible_to_add_in_one_row(self):
         '''Проверка на помещение самого большого кабельного ввода на сторону'''
         if hasattr(self,'side_russian_name'):
@@ -617,6 +616,18 @@ class ShellWithoutcapsideBlock(ShellSideBlock):
                     insert=(gland.x_coordinate - downside_extreme_lines['x_min'] + self.extreme_lines['x_min'],
                             self.extreme_lines['y_min']))
                 gland_insert.dxf.rotation = 0
+
+    def draw_din(self):
+        din_base = DxfBase()
+        din_base.doc_base = self.doc_base
+        din_base.get_block(block_name='DIN_' + self.shell_side_name.split('_')[0])
+        din_base.define_extreme_lines()
+        self.din_length = din_base.extreme_lines['x_max'] - din_base.extreme_lines['x_min']
+
+        din = self.doc_base.blocks[self.shell_side_name].add_blockref(
+            name = 'DIN_' + self.shell_side_name.split('_')[0],
+            insert=(0,0))
+        din.dxf.rotation = 0
 
 
 class ShellInstallationBlock(ShellSideBlock):

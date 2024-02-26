@@ -32,6 +32,7 @@ class DxfGlandQtCommunication(dxf_shell_ui.DxfShellQtCommunication):
         self.addButton_2.clicked.connect(self.leftside_draw_glands)
         self.addButton_2.clicked.connect(self.cutside_draw_glands)
         self.addButton_2.clicked.connect(self.rightside_draw_glands)
+        self.addButton_2.clicked.connect(self.withoutcapside_din)
         self.addButton_2.clicked.connect(self.withoutcapside_draw_glands)
         self.addButton_2.clicked.connect(self.draw_rightside_insert)
         self.addButton_2.clicked.connect(self.draw_topside_insert)
@@ -41,9 +42,6 @@ class DxfGlandQtCommunication(dxf_shell_ui.DxfShellQtCommunication):
         self.addButton_2.clicked.connect(self.draw_upside_insert)
         self.addButton_2.clicked.connect(self.draw_downside_insert)
         self.addButton_2.clicked.connect(self.draw_installation_insert)
-
-
-        self.Autohelper.clicked.connect(self.save_doc)#Тест, потом удалить
 
 
     def set_dict_dxf_glands(self):
@@ -143,6 +141,10 @@ class DxfGlandQtCommunication(dxf_shell_ui.DxfShellQtCommunication):
             if hasattr(self, 'topside_block'):
                 self.cutside_block.draw_topside_glands(topside_extreme_lines=self.topside_block.extreme_lines)
 
+    def withoutcapside_din(self):
+        if hasattr(self, 'withoutcapside_block'):
+            self.withoutcapside_block.draw_din()
+
     def withoutcapside_draw_glands(self):
         if hasattr(self,'withoutcapside_block'):
             self.withoutcapside_block.set_dict_glands_all_sizes(glands_on_sides_dict=self.glands_on_sides_dict)
@@ -154,6 +156,7 @@ class DxfGlandQtCommunication(dxf_shell_ui.DxfShellQtCommunication):
                 self.withoutcapside_block.draw_upside_glands(upside_extreme_lines=self.upside_block.extreme_lines)
             if hasattr(self,'downside_block'):
                 self.withoutcapside_block.draw_downside_glands(downside_extreme_lines=self.downside_block.extreme_lines)
+
 
 
     def save_doc(self):#тест, потом удалить
