@@ -393,11 +393,10 @@ class TwoRowGlandChecker(GlandAlgoritmChecker):
 
                 for current_level in self.level_dict:
                     level_current_dict = self.level_dict[current_level]
-                    level_current_dict['x_insert_coordinate'] += free_space / (len(list(self.level_dict.keys()))+1)
+                    level_current_dict['x_insert_coordinate'] += (current_level +1) * free_space / (len(list(self.level_dict.keys()))+1)
                     if len(level_current_dict['list_cable_glands']) > 0:
                         for cable_gland in level_current_dict['list_cable_glands']:
                             cable_gland.set_x_coordinate(x_coordinate=level_current_dict['x_insert_coordinate'])
-
 
 
 
