@@ -24,6 +24,13 @@ class MainPageDxfQtCommunication(dxf_terminal_ui.DxfTerminalQtCommunication):
                                                                               insert=(0,0))
         self.border_insert.add_auto_attribs(values)
 
+    def create_dimension(self):
+        '''Создаем размер'''
+
+
+
+
+
 
 
 if __name__ == "__main__":
