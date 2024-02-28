@@ -89,7 +89,7 @@ class MainPageDxfQtCommunication(dxf_terminal_ui.DxfTerminalQtCommunication):
                           (self.upside_insert.dxf.insert[1] - self.rightside_block.extreme_lines['y_min']/self.scale_class.scale + y_bottom)/2),
                     p1=tuple([x_leftest,y_leftest]),
                     p2=tuple([x_rightest,y_rightest]),
-                    text=f'{round((y_rightest - y_leftest) * self.scale_class.scale, 0)}',
+                    text=f'{round((x_rightest - x_leftest) * self.scale_class.scale, 0)}',
                     dimstyle='EZDXF').render()
 
 

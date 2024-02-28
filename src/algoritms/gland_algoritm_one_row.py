@@ -157,7 +157,6 @@ class TwoRowGlandChecker(GlandAlgoritmChecker):
                             self.list_glands[0].set_property_tworow_algoritm()
                             self.list_glands.pop(0)
                             self.list_diam.pop(0)
-
                             while self.width_for_cut >= 0:
                                 if self.search_inputs_can_insert_in_level() == True:
                                     self.add_in_current_level()
@@ -182,6 +181,7 @@ class TwoRowGlandChecker(GlandAlgoritmChecker):
                                 for gland_two_row in self.level_dict[max(list(self.level_dict.keys()))]['list_cable_glands']:
                                     gland_y_coordinate = y_start + gland_two_row.diametr/2 + clearens
                                     y_start = gland_y_coordinate + gland_two_row.diametr/2
+                                    gland_two_row.set_y_coordinate(y_coordinate=gland_y_coordinate)
                             self.width_for_cut = self.min_size
                     else:
                         if self.level_dict == dict():

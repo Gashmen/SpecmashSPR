@@ -2,7 +2,7 @@ import pandas as pd
 import openpyxl
 
 
-gland_csv_path = 'Кабельные вводы ВЗОР (рев.5).csv'
+gland_csv_path = 'Кабельные вводы ВЗОР (рев.6).csv'
 
 def set_correct_number(number:str):
     '''Удаление запятой или еще чего из числа'''

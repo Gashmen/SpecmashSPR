@@ -347,18 +347,22 @@ class CableGlandInformation:
         self.gland_dict = gland_dict
 
     def create_name(self):
+
         self.gland_russian_name = ''
-        if hasattr(self,'material_gland'):
-            self.gland_russian_name += self.material_gland + '-' + self.cable_type + self.cable_type_size #Добавляем материал + тип кабеля
+        if str(self.gland_dict['Полное наименование']) != 'nan' and  str(self.gland_dict['Полное наименование']) !='' and  str(self.gland_dict['Полное наименование']) !='ФОРМУЛА!!!!':
+            self.gland_russian_name +=str(self.gland_dict['Полное наименование'])
+        else:
+            if hasattr(self,'material_gland'):
+                self.gland_russian_name += self.material_gland + '-' + self.cable_type + self.cable_type_size #Добавляем материал + тип кабеля
 
-            if self.tube_type != None:
-                if hasattr(self,'internal_tube_size'):
-                    self.gland_russian_name += '-' + 'Т' + self.internal_tube_size + self.internal_tube_status + '(В)'
-                elif hasattr(self,'external_tube_status'):
-                    self.gland_russian_name += '-' + 'Т' + self.external_tube_size + self.external_tube_status + '(Н)'
+                if self.tube_type != None:
+                    if hasattr(self,'internal_tube_size'):
+                        self.gland_russian_name += '-' + 'Т' + self.internal_tube_size + self.internal_tube_status + '(В)'
+                    elif hasattr(self,'external_tube_status'):
+                        self.gland_russian_name += '-' + 'Т' + self.external_tube_size + self.external_tube_status + '(Н)'
 
-            if self.metalhose != None:
-                self.gland_russian_name += '-' + self.metalhose
+                if self.metalhose != None:
+                    self.gland_russian_name += '-' + self.metalhose
 
     def create_dxf_name(self):
         if hasattr(self,'gland_russian_name'):

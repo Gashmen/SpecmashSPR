@@ -45,7 +45,10 @@ class DxfGlandQtCommunication(dxf_shell_ui.DxfShellQtCommunication):
 
 
     def set_dict_dxf_glands(self):
-        if hasattr(self.upside_block,'two_row_calculate'):
+        if hasattr(self.upside_block,'two_row_calculate') or\
+                hasattr(self.rightside_block,'two_row_calculate') or\
+                hasattr(self.leftside_block,'two_row_calculate') or\
+                hasattr(self.downside_block,'two_row_calculate'):
             self.glands_on_sides_dxf_dict = dict()
             for side_rus_name in self.glands_on_sides_dict:
                 self.glands_on_sides_dxf_dict[side_rus_name] = list()
@@ -80,13 +83,17 @@ class DxfGlandQtCommunication(dxf_shell_ui.DxfShellQtCommunication):
         if hasattr(self, 'topside_block'):
             self.topside_block.draw_topside_exe_glands()
             if hasattr(self, 'rightside_block'):
-                self.topside_block.draw_rightside_glands(rightside_extreme_lines=self.rightside_block.extreme_lines)
+                self.topside_block.draw_rightside_glands(rightside_extreme_lines=self.rightside_block.extreme_lines,
+                                                         added_gland_dxf_name='_topside')
             if hasattr(self, 'leftside_block'):
-                self.topside_block.draw_leftside_glands(leftside_extreme_lines=self.leftside_block.extreme_lines)
+                self.topside_block.draw_leftside_glands(leftside_extreme_lines=self.leftside_block.extreme_lines,
+                                                         added_gland_dxf_name='_topside')
             if hasattr(self,'upside_block'):
-                self.topside_block.draw_upside_glands(upside_extreme_lines=self.upside_block.extreme_lines)
+                self.topside_block.draw_upside_glands(upside_extreme_lines=self.upside_block.extreme_lines,
+                                                         added_gland_dxf_name='_topside')
             if hasattr(self,'downside_block'):
-                self.topside_block.draw_downside_glands(downside_extreme_lines=self.downside_block.extreme_lines)
+                self.topside_block.draw_downside_glands(downside_extreme_lines=self.downside_block.extreme_lines,
+                                                         added_gland_dxf_name='_topside')
     def upside_draw_glands(self):
         if hasattr(self,'upside_block'):
             # self.rightside_block.draw_glands_in_block()
