@@ -20,30 +20,26 @@ class ShellInterface(setup_ui.SetupInterface):
         self.install_shell_csv()
         self.install_enabled_widgets()
 
-
         '''Добавление производителя'''
         self.add_manufacturer_shell_combobox()
         '''Добавление взрывозащиты'''
         self.add_explosion_protections_shell()
-
         '''КНОПКИ'''
         self.shellButton_leftMenu.clicked.connect(self.set_shell_page)
+
+
+
+
 
 
         '''COMBOBOXES'''
         '''ПРОИЗВОДИТЕЛЬ'''
 
-        self.manufactureComboboxWidget_shellpage.currentTextChanged.connect(self.set_shell_manufacturer)
-        self.manufactureComboboxWidget_shellpage.currentTextChanged.connect(self.install_enabled_serial)
-        self.manufactureComboboxWidget_shellpage.currentTextChanged.connect(self.give_serial_type)
-
+        self.manufactureComboboxWidget_shellpage.currentTextChanged.connect(self.install_shell_manufacturer_combobox)
 
         '''ТИП ВЗРЫВОЗАЩИТЫ'''
 
-        self.safefactortypeCombobox_shellpage.currentTextChanged.connect(self.set_explosion_protection)
-        self.safefactortypeCombobox_shellpage.currentTextChanged.connect(self.install_enabled_serial)
-        self.safefactortypeCombobox_shellpage.currentTextChanged.connect(self.give_serial_type)
-
+        self.safefactortypeCombobox_shellpage.currentTextChanged.connect(self.install_shell_explosion_protection_combobox)
 
         '''СЕРИЯ'''
         self.serialCombobox_shellpage.currentTextChanged.connect(self.set_shell_series)
@@ -92,6 +88,7 @@ class ShellInterface(setup_ui.SetupInterface):
         self.ore_mark_RadioButton_shellpage.setEnabled(False)
         self.temperature_class_comboBox_shellpage.setEnabled(False)
 
+
     @Qt.pyqtSlot()
     def set_shell_page(self):
         '''Устанавливает при запуске всегда первую страницу StackedWidget '''
@@ -109,16 +106,17 @@ class ShellInterface(setup_ui.SetupInterface):
         self.safefactortypeCombobox_shellpage.addItems(['', *csv_config.EXPLOSION_PROTECTION])
 
     @Qt.pyqtSlot()
+    def install_shell_manufacturer_combobox(self):
+        self.set_shell_manufacturer()
+        if hasattr(self,'shell_manufacturer') and hasattr(self,'shell_explosion_protection'):
+            if self.shell_manufacturer != '' and self.shell_explosion_protection != '':
+                self.install_enabled_serial()
+                self.give_serial_type()
+
+
     def set_shell_manufacturer(self):
         self.shell_manufacturer = self.manufactureComboboxWidget_shellpage.currentText()
         self.shell_information.set_manufacturer(manufacturer=self.shell_manufacturer)
-
-    @Qt.pyqtSlot()
-    def set_explosion_protection(self):
-        self.shell_explosion_protection = self.safefactortypeCombobox_shellpage.currentText()
-        self.shell_information.set_explosion_protection(explosion_protection=self.shell_explosion_protection)
-
-    @Qt.pyqtSlot()
     def install_enabled_serial(self):
         # self.serialCombobox_shellpage.clear()
         if hasattr(self, 'shell_manufacturer') and hasattr(self, 'shell_explosion_protection'):
@@ -128,19 +126,26 @@ class ShellInterface(setup_ui.SetupInterface):
                 self.serialCombobox_shellpage.setEnabled(False)
         else:
             self.serialCombobox_shellpage.setEnabled(False)
-
-    @Qt.pyqtSlot()
     def give_serial_type(self):
         '''
         Добавляет виды оболочек
         '''
         self.serialCombobox_shellpage.clear()
-        if hasattr(self,'shell_manufacturer') and hasattr(self,'shell_explosion_protection'):
-            if self.shell_manufacturer != '' and self.shell_explosion_protection != '':
-                self.shell_information.get_unique_series()
-                self.serialCombobox_shellpage.addItems(['',*self.shell_information.unique_series])
+        self.shell_information.get_unique_series()
+        self.serialCombobox_shellpage.addItems(['',*self.shell_information.unique_series])
 
     @Qt.pyqtSlot()
+    def install_shell_explosion_protection_combobox(self):
+        self.set_explosion_protection()
+        if hasattr(self, 'shell_manufacturer') and hasattr(self, 'shell_explosion_protection'):
+            if self.shell_manufacturer != '' and self.shell_explosion_protection != '':
+                self.install_enabled_serial()
+                self.give_serial_type()
+
+    def set_explosion_protection(self):
+        self.shell_explosion_protection = self.safefactortypeCombobox_shellpage.currentText()
+        self.shell_information.set_explosion_protection(explosion_protection=self.shell_explosion_protection)
+
     def set_shell_series(self):
         self.shell_series = self.serialCombobox_shellpage.currentText()
         self.shell_information.set_series(shell_series=self.shell_series)

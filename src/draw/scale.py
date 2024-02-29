@@ -193,23 +193,43 @@ class ScaleBorder:
         else:
             return False
 
+
     def calculate_scale(self,boundaries:dict = BOUNDARIES.A3_BOUNDARIES):
-        conditions = False
-        i=0
-        while conditions == False:
-            self.scale = SCALE.SCALE_GOST[i]
-            i += 1
-            conditions = all([
-                self.calculate_len_x_bottom(len_x_bottom=boundaries['LEN_X_НИЖНЯЯ_ГРАНИЦА'],scale_gost=self.scale),
-                self.calculate_len_x_top(len_x_top=boundaries['LEN_X_ВЕРХНЯЯ_ГРАНИЦА'],scale_gost=self.scale),
-                self.calculate_len_y_left(len_y_left=boundaries['LEN_Y_ЛЕВАЯ_ГРАНИЦА'],scale_gost=self.scale),
-                self.calculate_len_y_right(len_y_right=boundaries['LEN_Y_ПРАВАЯ_ГРАНИЦА'],scale_gost=self.scale)
-            ])
-            self.calculate_free_space()
+        if hasattr(self,'len1_x'):
+            conditions = False
+            i=0
+            while conditions == False:
+                self.scale = SCALE.SCALE_GOST[i]
+                i += 1
+                conditions = all([
+                    self.calculate_len_x_bottom(len_x_bottom=boundaries['LEN_X_НИЖНЯЯ_ГРАНИЦА'],scale_gost=self.scale),
+                    self.calculate_len_x_top(len_x_top=boundaries['LEN_X_ВЕРХНЯЯ_ГРАНИЦА'],scale_gost=self.scale),
+                    self.calculate_len_y_left(len_y_left=boundaries['LEN_Y_ЛЕВАЯ_ГРАНИЦА'],scale_gost=self.scale),
+                    self.calculate_len_y_right(len_y_right=boundaries['LEN_Y_ПРАВАЯ_ГРАНИЦА'],scale_gost=self.scale)
+                ])
+                self.calculate_free_space()
 
 
     def calculate_free_space(self,boundaries:dict = BOUNDARIES.A3_BOUNDARIES):
         self.free_space_x = boundaries['LEN_X_ВЕРХНЯЯ_ГРАНИЦА'] - self.scale_len_x_top
         self.free_space_y = boundaries['LEN_Y_ЛЕВАЯ_ГРАНИЦА'] - self.scale_len_y_left
+
+
+    def set_zero_len_without_glands(self):
+        self.len0_x = 0
+        self.len2_x = 0
+        self.len4_x = 0
+        self.len6_x = 0
+        self.len8_x = 0
+        self.len9_x = 0
+        self.len11_x = 0
+
+        self.len0_y = 0
+        self.len2_y = 0
+        self.len4_y = 0
+        self.len6_y = 0
+
+
+
 
 

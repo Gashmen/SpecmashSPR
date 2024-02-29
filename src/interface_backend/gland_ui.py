@@ -24,9 +24,9 @@ class GlandInterface(shell_ui.ShellInterface):
         self.install_gland_csv()
         self.gland_information.set_main_dict(main_path=self.gland_information.gland_csv_path)
 
-        '''Установка разрежения видимости'''
+        '''Установка разрешения видимости'''
         self.set_gland_enabled()
-        '''ОБНОВЛЕНИЕ ВИДЖЕТОВ'''
+        '''ОБНОВЛЕНИЕ ВИДЖЕТОВ, УСТАНОВКА НОВОГО COMBOBOX WIDGET'''
         self.improve_choose_widget()
 
         '''RADIO BUTTONS'''

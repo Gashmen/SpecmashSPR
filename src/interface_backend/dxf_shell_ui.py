@@ -22,24 +22,39 @@ class DxfShellQtCommunication(terminal_ui.TerminalUi):
 
 
         '''COMBOBOX'''
+        self.sizeCombobox_shellpage.currentTextChanged.connect(self.set_shell_base_dxf)
         self.sizeCombobox_shellpage.currentTextChanged.connect(self.check_possible_to_add_shell)
+        self.sizeCombobox_shellpage.currentTextChanged.connect(self.scale_class.set_zero_len_without_glands)
+
         self.sizeCombobox_shellpage.currentTextChanged.connect(self.set_shell_blocks)
+        self.sizeCombobox_shellpage.currentTextChanged.connect(self.calculate_scale_shell)
+        self.sizeCombobox_shellpage.currentTextChanged.connect(self.draw_shells_inserts)
 
         # self.sideVListWidget.model().rowsInserted.connect(self.draw_glands_in_downside)
         # self.sideVListWidget.model().rowsRemoved.connect(self.draw_glands_in_downside)
 
+
+    @Qt.pyqtSlot()
+    def set_shell_base_dxf(self):
+        if hasattr(self,'shell_dict'):
+            self.shell_base_dxf = dxf_shell.ShellBaseDxf(shell_dict=self.shell_dict)
+            self.shell_base_dxf.set_russian_name_shell()
+            self.shell_base_dxf.set_translit_name()
+
     @Qt.pyqtSlot()
     def set_shell_blocks(self):
-        if hasattr(self,'possible_shell_draw'):
-            if self.possible_shell_draw:
-                self.set_shell_topside_block()
-                self.set_shell_downside_block()
-                self.set_shell_leftside_block()
-                self.set_shell_upside_block()
-                self.set_shell_rightside_block()
-                self.set_shell_cutside_block()
-                self.set_shell_withoutcapside_block()
-                self.set_shell_installation_block()
+        if hasattr(self, 'shell_dict'):
+            if hasattr(self, 'shell_base_dxf'):
+                if hasattr(self,'possible_shell_draw'):
+                    if self.possible_shell_draw == True:
+                        self.set_shell_topside_block()
+                        self.set_shell_downside_block()
+                        self.set_shell_leftside_block()
+                        self.set_shell_upside_block()
+                        self.set_shell_rightside_block()
+                        self.set_shell_cutside_block()
+                        self.set_shell_withoutcapside_block()
+                        self.set_shell_installation_block()
 
     @Qt.pyqtSlot()
     def check_possible_to_add_shell(self):
@@ -52,6 +67,7 @@ class DxfShellQtCommunication(terminal_ui.TerminalUi):
                     QMessageBox.critical(self, "Ошибка",
                                          f"В базе для отрисовки нет всех необходимых блоков для построения оболочки",
                                          QMessageBox.Ok)
+                    self.sizeCombobox_shellpage.setCurrentIndex(0)
 
 
     def set_shell_topside_block(self):
@@ -134,7 +150,7 @@ class DxfShellQtCommunication(terminal_ui.TerminalUi):
         if hasattr(self.scale_class,'free_space_x'):
             x_coordinate_rightside += self.scale_class.free_space_x/6
         if hasattr(self.scale_class,'len0_x') and hasattr(self.scale_class,'scale'):
-            x_coordinate_rightside += self.scale_class.len0_x /  self.scale_class.scale
+            x_coordinate_rightside += self.scale_class.len0_x / self.scale_class.scale
         if hasattr(self,'rightside_block'):
             x_coordinate_rightside += self.rightside_block.extreme_lines['y_max'] / self.scale_class.scale
 
@@ -229,8 +245,6 @@ class DxfShellQtCommunication(terminal_ui.TerminalUi):
             x_coordinate_leftside += self.scale_class.free_space_x/6
         if hasattr(self,'leftside_block'):
             x_coordinate_leftside += (-self.leftside_block.extreme_lines['y_min']) / self.scale_class.scale
-
-
 
         y_coordinate_leftside = 0
         if hasattr(self.scale_class,'free_space_y'):
@@ -549,7 +563,23 @@ class DxfShellQtCommunication(terminal_ui.TerminalUi):
         self.installation_insert.dxf.yscale = 1 / self.scale_class.scale
         self.installation_insert.dxf.zscale = 1 / self.scale_class.scale
 
+    @Qt.pyqtSlot()
+    def draw_shells_inserts(self):
+        self.base_dxf.doc_base.modelspace().delete_all_entities()
+        if hasattr(self, 'shell_dict'):
+            if hasattr(self, 'shell_base_dxf'):
+                    self.base_dxf.doc_base.modelspace().delete_all_entities()
+                    self.draw_rightside_insert()
+                    self.draw_topside_insert()
+                    self.draw_leftside_insert()
+                    self.draw_cutside_insert()
+                    self.draw_withoutcapside_insert()
+                    self.draw_upside_insert()
+                    self.draw_downside_insert()
+                    self.draw_installation_insert()
 
+    def calculate_scale_shell(self):
+        self.scale_class.calculate_scale()
 
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)

@@ -26,30 +26,15 @@ class DxfGlandQtCommunication(dxf_shell_ui.DxfShellQtCommunication):
         self.addButton_2.clicked.connect(self.set_dict_dxf_glands)
         self.addButton_2.clicked.connect(self.calculate_max_length_glands)
         self.addButton_2.clicked.connect(self.calculate_scale)
-        self.addButton_2.clicked.connect(self.topside_draw_glands)
-        self.addButton_2.clicked.connect(self.upside_draw_glands)
-        self.addButton_2.clicked.connect(self.downside_draw_glands)
-        self.addButton_2.clicked.connect(self.leftside_draw_glands)
-        self.addButton_2.clicked.connect(self.cutside_draw_glands)
-        self.addButton_2.clicked.connect(self.rightside_draw_glands)
-        self.addButton_2.clicked.connect(self.withoutcapside_din)
-        self.addButton_2.clicked.connect(self.withoutcapside_draw_glands)
-        self.addButton_2.clicked.connect(self.draw_rightside_insert)
-        self.addButton_2.clicked.connect(self.draw_topside_insert)
-        self.addButton_2.clicked.connect(self.draw_leftside_insert)
-        self.addButton_2.clicked.connect(self.draw_cutside_insert)
-        self.addButton_2.clicked.connect(self.draw_withoutcapside_insert)
-        self.addButton_2.clicked.connect(self.draw_upside_insert)
-        self.addButton_2.clicked.connect(self.draw_downside_insert)
-        self.addButton_2.clicked.connect(self.draw_installation_insert)
-
+        self.addButton_2.clicked.connect(self.draw_glands_in_sides)
+        self.addButton_2.clicked.connect(self.draw_shells_inserts)
 
     def set_dict_dxf_glands(self):
+        self.glands_on_sides_dxf_dict = dict()
         if hasattr(self.upside_block,'two_row_calculate') or\
                 hasattr(self.rightside_block,'two_row_calculate') or\
                 hasattr(self.leftside_block,'two_row_calculate') or\
                 hasattr(self.downside_block,'two_row_calculate'):
-            self.glands_on_sides_dxf_dict = dict()
             for side_rus_name in self.glands_on_sides_dict:
                 self.glands_on_sides_dxf_dict[side_rus_name] = list()
                 for gland_csv_current in self.glands_on_sides_dict[side_rus_name]:
@@ -62,6 +47,7 @@ class DxfGlandQtCommunication(dxf_shell_ui.DxfShellQtCommunication):
 
     def calculate_max_length_glands(self):
         if hasattr(self,'glands_on_sides_dxf_dict'):
+
             self.scale_class.calculate_len0_x(glands_on_sides_dxf_dict=self.glands_on_sides_dxf_dict)
             self.scale_class.calculate_len2_x(glands_on_sides_dxf_dict=self.glands_on_sides_dxf_dict)
             self.scale_class.calculate_len4_x(glands_on_sides_dxf_dict=self.glands_on_sides_dxf_dict)
@@ -74,10 +60,13 @@ class DxfGlandQtCommunication(dxf_shell_ui.DxfShellQtCommunication):
             self.scale_class.calculate_len2_y(glands_on_sides_dxf_dict=self.glands_on_sides_dxf_dict)
             self.scale_class.calculate_len4_y(glands_on_sides_dxf_dict=self.glands_on_sides_dxf_dict)
             self.scale_class.calculate_len6_y()
+        else:
+            self.scale_class.set_zero_len_without_glands()
 
     def calculate_scale(self):
         if hasattr(self,'scale_class'):
-            self.scale_class.calculate_scale()
+            if hasattr(self,'shell_dict'):
+                self.scale_class.calculate_scale()
 
     def topside_draw_glands(self):
         if hasattr(self, 'topside_block'):
@@ -164,7 +153,15 @@ class DxfGlandQtCommunication(dxf_shell_ui.DxfShellQtCommunication):
             if hasattr(self,'downside_block'):
                 self.withoutcapside_block.draw_downside_glands(downside_extreme_lines=self.downside_block.extreme_lines)
 
-
+    def draw_glands_in_sides(self):
+        self.topside_draw_glands()
+        self.upside_draw_glands()
+        self.downside_draw_glands()
+        self.leftside_draw_glands()
+        self.cutside_draw_glands()
+        self.rightside_draw_glands()
+        self.withoutcapside_din()
+        self.withoutcapside_draw_glands()
 
     def save_doc(self):#тест, потом удалить
         self.base_dxf.doc_base.saveas('check.dxf')
