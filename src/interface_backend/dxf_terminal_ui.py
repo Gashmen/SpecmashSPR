@@ -47,16 +47,24 @@ class DxfTerminalQtCommunication(dxf_gland.DxfGlandQtCommunication):
                                          f"Не поместяться все клеммы",
                                          QMessageBox.Ok)
 
-
+    def delete_terminal_in_withoutcapside(self):
+        if len(self.list_used_blocks_terminals) >0:
+            for terminal_insert in self.list_used_blocks_terminals:
+                self.base_dxf.doc_base.blocks[self.withoutcapside_block.shell_side_name].delete_entity(terminal_insert)
+            self.list_used_blocks_terminals.clear()
 
     def create_terminals_dxf_after_DIN_REYKA(self):
         if hasattr(self,'list_terminal_dxf'):
             if len(self.list_terminal_dxf) >0:
+
                 summary_terminal_len = dxf_terminal.define_len_terminals(list_terminal_dxf=self.list_terminal_dxf)
                 if summary_terminal_len <= 0.95 * self.withoutcapside_block.din_length:
+
                     din_reyka_insert_coordinate = [0,0]
                     x_first_coordinate = din_reyka_insert_coordinate[0] - summary_terminal_len/2
                     y_first_coordinate = din_reyka_insert_coordinate[1]
+
+                    self.delete_terminal_in_withoutcapside()
 
                     for terminal_dxf in self.list_terminal_dxf:
                         # Работаем с hatch
@@ -66,10 +74,11 @@ class DxfTerminalQtCommunication(dxf_gland.DxfGlandQtCommunication):
                         len_terminal = terminal_dxf.horizontal_length
                         x_insert = x_first_coordinate + len_terminal / 2
                         y_insert = y_first_coordinate
-                        self.base_dxf.doc_base.blocks[self.withoutcapside_block.shell_side_name].add_blockref(
+                        terminal_insert = self.base_dxf.doc_base.blocks[self.withoutcapside_block.shell_side_name].add_blockref(
                                                                          name = terminal_dxf.terminal_dxf_name,
                                                                          insert=(x_insert, y_insert))
                         x_first_coordinate += len_terminal
+                        self.list_used_blocks_terminals.append(terminal_insert)
 
 
 if __name__ == "__main__":

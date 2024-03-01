@@ -317,6 +317,7 @@ class TwoRowGlandChecker(GlandAlgoritmChecker):
 
         self.gland_x_coordinate = x_insert_coordinate
         self.gland_y_coordinate = self.y_end_rectangle * (1/2*(1 - (-1)**number_gland_level)) + ((level_main_diametr/2)*(-1)**number_gland_level)
+        self.list_glands[0].set_y_coordinate(y_coordinate=self.gland_y_coordinate)
 
         self.level_dict[number_gland_level] = dict_for_level_dict
 

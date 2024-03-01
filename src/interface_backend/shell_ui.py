@@ -27,11 +27,6 @@ class ShellInterface(setup_ui.SetupInterface):
         '''КНОПКИ'''
         self.shellButton_leftMenu.clicked.connect(self.set_shell_page)
 
-
-
-
-
-
         '''COMBOBOXES'''
         '''ПРОИЗВОДИТЕЛЬ'''
 

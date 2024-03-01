@@ -7,15 +7,19 @@ from PyQt5.QtWidgets import QMessageBox
 
 from src.interface_backend import dxf_terminal_ui #ПОМЕНЯТЬ НА ИТОГОВЫЙ ИНТЕРФЕЙСНЫЙ МОДУЛЬ В ОЧЕРЕДНОСТИ
 
-
 class MainPageDxfQtCommunication(dxf_terminal_ui.DxfTerminalQtCommunication):
 
     def __init__(self):
         '''БАЗА ПРИ ЗАПУСКЕ'''
         super().__init__()
+
+        self.sizeCombobox_shellpage.currentTextChanged.connect(self.actions_shell)
+
         self.Autohelper.clicked.connect(self.create_border)
         self.Autohelper.clicked.connect(self.create_dimension)
         self.Autohelper.clicked.connect(self.save_doc)
+
+
 
     def create_border(self):
         '''Создает рамку относительно '''

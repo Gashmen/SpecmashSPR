@@ -30,7 +30,7 @@ class DxfGlandQtCommunication(dxf_shell_ui.DxfShellQtCommunication):
         self.addButton_2.clicked.connect(self.draw_shells_inserts)
 
     def set_dict_dxf_glands(self):
-        self.glands_on_sides_dxf_dict = dict()
+        self.glands_on_sides_dxf_dict = {"А": [], "Б": [], 'В': [], "Г": [], "Крышка": []}
         if hasattr(self.upside_block,'two_row_calculate') or\
                 hasattr(self.rightside_block,'two_row_calculate') or\
                 hasattr(self.leftside_block,'two_row_calculate') or\
@@ -160,7 +160,6 @@ class DxfGlandQtCommunication(dxf_shell_ui.DxfShellQtCommunication):
         self.leftside_draw_glands()
         self.cutside_draw_glands()
         self.rightside_draw_glands()
-        self.withoutcapside_din()
         self.withoutcapside_draw_glands()
 
     def save_doc(self):#тест, потом удалить

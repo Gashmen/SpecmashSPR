@@ -243,7 +243,9 @@ class ShellSideBlock(DxfBase):
     #             if hasattr(self,'two_row_calculate'):
 
 
-
+    def delete_inserts(self):
+        for insert in self.doc_base.blocks[self.shell_side_name].query('INSERT'):
+            self.doc_base.blocks[self.shell_side_name].delete_entity(insert)
 
 class ShellTopSideBlock(ShellSideBlock):
 
@@ -277,6 +279,7 @@ class ShellTopSideBlock(ShellSideBlock):
                                                                       insert=(0,0))
 
     def draw_topside_exe_glands(self):
+        self.delete_inserts()
         if self.glands_on_sides_dict[self.side_russian_name] != list():
             for gland in self.glands_on_sides_dict[self.side_russian_name]:
                 gland_insert = self.doc_base.blocks[self.shell_side_name].add_blockref(
@@ -339,6 +342,7 @@ class ShellDownSideBlock(ShellSideBlock):
         self.set_status_painting_side()
         self.search_polyline()
     def draw_downside_exe_glands(self):
+        self.delete_inserts()
         if self.glands_on_sides_dict[self.side_russian_name] != list():
             for gland in self.glands_on_sides_dict[self.side_russian_name]:
                 gland_insert = self.doc_base.blocks[self.shell_side_name].add_blockref(
@@ -391,12 +395,14 @@ class ShellUpSideBlock(ShellSideBlock):
         self.search_polyline()
 
     def draw_upside_exe_glands(self):
+        self.delete_inserts()
         if self.glands_on_sides_dict[self.side_russian_name] != list():
             for gland in self.glands_on_sides_dict[self.side_russian_name]:
                 gland_insert = self.doc_base.blocks[self.shell_side_name].add_blockref(
                     name=gland.gland_dxf_name + '_exe',
                     insert=(gland.x_coordinate,
                             gland.y_coordinate))
+
 
     def draw_leftside_glands(self, leftside_extreme_lines):
         if self.glands_on_sides_dict['Г'] != list():
@@ -443,6 +449,7 @@ class ShellLeftSideBlock(ShellSideBlock):
         self.search_polyline()
 
     def draw_leftside_exe_glands(self):
+        self.delete_inserts()
         if self.glands_on_sides_dict[self.side_russian_name] != list():
             for gland in self.glands_on_sides_dict[self.side_russian_name]:
                 gland_insert = self.doc_base.blocks[self.shell_side_name].add_blockref(
@@ -495,6 +502,7 @@ class ShellRightSideBlock(ShellSideBlock):
         self.search_polyline()
 
     def draw_rightside_exe_glands(self):
+        self.delete_inserts()
         for gland in self.glands_on_sides_dict[self.side_russian_name]:
             gland_insert = self.doc_base.blocks[self.shell_side_name].add_blockref(
                                                                     name=gland.gland_dxf_name + '_exe',
@@ -537,6 +545,7 @@ class ShellCutSideBlock(ShellSideBlock):
         self.set_block_from_dxf_base()
 
     def draw_upside_glands(self, upside_extreme_lines):
+        self.delete_inserts()
         if self.glands_on_sides_dict['А'] != list():
             for gland in sorted(self.glands_on_sides_dict['А'], key=lambda x: x.x_coordinate, reverse=False):
                 if gland.x_coordinate <= (upside_extreme_lines['x_max'] + upside_extreme_lines['x_min'])/2:
@@ -581,6 +590,7 @@ class ShellWithoutcapsideBlock(ShellSideBlock):
         self.set_block_from_dxf_base()
 
     def draw_leftside_glands(self, leftside_extreme_lines):
+        self.delete_inserts()
         if self.glands_on_sides_dict['Г'] != list():
             for gland in sorted(self.glands_on_sides_dict['Г'], key=lambda x: x.y_coordinate, reverse=True):
                 gland_insert = self.doc_base.blocks[self.shell_side_name].add_blockref(
@@ -624,10 +634,10 @@ class ShellWithoutcapsideBlock(ShellSideBlock):
         din_base.define_extreme_lines()
         self.din_length = din_base.extreme_lines['x_max'] - din_base.extreme_lines['x_min']
 
-        din = self.doc_base.blocks[self.shell_side_name].add_blockref(
+        self.din_insert = self.doc_base.blocks[self.shell_side_name].add_blockref(
             name = 'DIN_' + self.shell_side_name.split('_')[0],
             insert=(0,0))
-        din.dxf.rotation = 0
+        self.din_insert.dxf.rotation = 0
 
 
 class ShellInstallationBlock(ShellSideBlock):
