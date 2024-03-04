@@ -282,6 +282,7 @@ class ShellTopSideBlock(ShellSideBlock):
 
     def draw_topside_exe_glands(self):
         self.delete_inserts()
+
         if self.glands_on_sides_dict[self.side_russian_name] != list():
             for gland in self.glands_on_sides_dict[self.side_russian_name]:
                 gland_insert = self.doc_base.blocks[self.shell_side_name].add_blockref(

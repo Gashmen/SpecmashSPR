@@ -11,6 +11,7 @@ import tempfile
 from src.ldap_auth import frontend_auth
 from src.ldap_auth import ldap_auth
 from src.scripts import scripts_start
+from src.interface_backend import dxf_result_main_page
 
 class AuthWindow(QtWidgets.QMainWindow, frontend_auth.Ui_WelcomeWindow):
 
@@ -81,7 +82,11 @@ class AuthWindow(QtWidgets.QMainWindow, frontend_auth.Ui_WelcomeWindow):
         self.scripts_window.show()
 
     def show_jb_qt(self):
-        pass
+        self.jb_window = dxf_result_main_page.MainPageDxfQtCommunication()
+
+        self.close()
+        self.jb_window.show()
+
 
 
 if __name__ == '__main__':
