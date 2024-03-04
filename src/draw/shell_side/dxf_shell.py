@@ -245,7 +245,9 @@ class ShellSideBlock(DxfBase):
 
     def delete_inserts(self):
         for insert in self.doc_base.blocks[self.shell_side_name].query('INSERT'):
-            self.doc_base.blocks[self.shell_side_name].delete_entity(insert)
+            if insert.dxf.name != '35_DIN_CUTSIDE':
+                self.doc_base.blocks[self.shell_side_name].delete_entity(insert)
+
 
 class ShellTopSideBlock(ShellSideBlock):
 
@@ -373,7 +375,7 @@ class ShellDownSideBlock(ShellSideBlock):
             for gland in sorted(self.glands_on_sides_dict['Крышка'], key=lambda x: x.x_coordinate, reverse=True):
                 gland_insert = self.doc_base.blocks[self.shell_side_name].add_blockref(
                     name=gland.gland_dxf_name + '_topside',
-                    insert=(gland.y_coordinate - topside_extreme_lines['y_min'] - self.extreme_lines['x_min'],
+                    insert=(self.extreme_lines['x_min'] - topside_extreme_lines['x_min'] + gland.x_coordinate,
                             self.extreme_lines['y_max']))
                 gland_insert.dxf.rotation = 180
 
@@ -403,7 +405,6 @@ class ShellUpSideBlock(ShellSideBlock):
                     insert=(gland.x_coordinate,
                             gland.y_coordinate))
 
-
     def draw_leftside_glands(self, leftside_extreme_lines):
         if self.glands_on_sides_dict['Г'] != list():
             for gland in sorted(self.glands_on_sides_dict['Г'], key=lambda x: x.x_coordinate, reverse=True):
@@ -427,7 +428,7 @@ class ShellUpSideBlock(ShellSideBlock):
             for gland in sorted(self.glands_on_sides_dict['Крышка'], key=lambda x: x.x_coordinate, reverse=True):
                 gland_insert = self.doc_base.blocks[self.shell_side_name].add_blockref(
                     name=gland.gland_dxf_name + '_topside',
-                    insert=(gland.y_coordinate - topside_extreme_lines['y_min'] - self.extreme_lines['x_min'],
+                    insert=(self.extreme_lines['x_min'] + topside_extreme_lines['x_max'] - gland.x_coordinate,
                             self.extreme_lines['y_max']))
                 gland_insert.dxf.rotation = 180
 
@@ -480,7 +481,7 @@ class ShellLeftSideBlock(ShellSideBlock):
             for gland in sorted(self.glands_on_sides_dict['Крышка'], key=lambda x: x.x_coordinate, reverse=True):
                 gland_insert = self.doc_base.blocks[self.shell_side_name].add_blockref(
                     name=gland.gland_dxf_name + '_topside',
-                    insert=(gland.y_coordinate - topside_extreme_lines['y_min'] - self.extreme_lines['x_min'],
+                    insert=(self.extreme_lines['x_min'] + topside_extreme_lines['y_max'] - gland.y_coordinate,
                             self.extreme_lines['y_max']))
                 gland_insert.dxf.rotation = 180
 
@@ -523,10 +524,10 @@ class ShellRightSideBlock(ShellSideBlock):
             gland_insert.dxf.rotation = 270
 
     def draw_topside_glands(self,topside_extreme_lines):
-        for gland in sorted(self.glands_on_sides_dict['Крышка'], key=lambda x:x.x_coordinate, reverse=True):
+        for gland in sorted(self.glands_on_sides_dict['Крышка'], key=lambda x:x.x_coordinate, reverse=False):
             gland_insert = self.doc_base.blocks[self.shell_side_name].add_blockref(
                                name=gland.gland_dxf_name + '_topside',
-                               insert=(gland.y_coordinate - topside_extreme_lines['y_min'] - self.extreme_lines['x_min'],
+                               insert=(self.extreme_lines['x_min'] - topside_extreme_lines['y_min'] + gland.y_coordinate,
                                        self.extreme_lines['y_max']))
             gland_insert.dxf.rotation = 180
 
@@ -571,7 +572,7 @@ class ShellCutSideBlock(ShellSideBlock):
                     if gland.x_coordinate >= (topside_extreme_lines['x_max'] + topside_extreme_lines['x_min']) / 2:
                         gland_insert = self.doc_base.blocks[self.shell_side_name].add_blockref(
                             name=gland.gland_dxf_name + '_topside',
-                            insert=(gland.y_coordinate - topside_extreme_lines['y_min'] - self.extreme_lines['x_min'],
+                            insert=(self.extreme_lines['x_min'] + topside_extreme_lines['y_max'] - gland.y_coordinate,
                                     self.extreme_lines['y_max']))
                         gland_insert.dxf.rotation = 180
 

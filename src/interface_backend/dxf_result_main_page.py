@@ -4,7 +4,7 @@ import sys
 
 from PyQt5 import QtCore, QtGui, QtWidgets, Qt
 from PyQt5.QtWidgets import QMessageBox
-
+import time
 from src.interface_backend import dxf_terminal_ui #ПОМЕНЯТЬ НА ИТОГОВЫЙ ИНТЕРФЕЙСНЫЙ МОДУЛЬ В ОЧЕРЕДНОСТИ
 
 class MainPageDxfQtCommunication(dxf_terminal_ui.DxfTerminalQtCommunication):
@@ -17,9 +17,8 @@ class MainPageDxfQtCommunication(dxf_terminal_ui.DxfTerminalQtCommunication):
 
         self.Autohelper.clicked.connect(self.create_border)
         self.Autohelper.clicked.connect(self.create_dimension)
+        # self.Autohelper.clicked.connect(self.delete_block_before_save)
         self.Autohelper.clicked.connect(self.save_doc)
-
-
 
     def create_border(self):
         '''Создает рамку относительно '''
@@ -69,14 +68,14 @@ class MainPageDxfQtCommunication(dxf_terminal_ui.DxfTerminalQtCommunication):
                 y_rightest += (-self.rightside_block.extreme_lines['x_min'] + biggest_leftest_gland.gland_csv.x_coordinate) / self.scale_class.scale
 
         x_for_leftside_dim = self.rightside_insert.dxf.insert[0] - self.rightside_block.extreme_lines['y_max']/self.scale_class.scale
-        y_for_leftside_dim = self.rightside_insert.dxf.insert[1] + self.rightside_block.extreme_lines['x_max']/self.scale_class.scale
+        y_for_leftside_dim = self.rightside_insert.dxf.insert[1] + self.rightside_block.extreme_lines['x_min']/self.scale_class.scale
         if hasattr(self, 'glands_on_sides_dxf_dict'):
             if len(self.glands_on_sides_dxf_dict['Крышка']) > 0:
                 x_for_leftside_dim -= self.scale_class.len0_x / self.scale_class.scale
                 biggest_leftest_gland = \
                     sorted([i for i in self.glands_on_sides_dxf_dict['Крышка'] if self.scale_class.len0_x == i.gland_length_dxf],
-                           key=lambda x: x.gland_csv.x_coordinate, reverse=False)[0]
-                y_for_leftside_dim -= (self.topside_insert.dxf.insert[1] + self.topside_block.extreme_lines['y_max'] / self.scale_class.scale - biggest_leftest_gland.gland_csv.y_coordinate) / self.scale_class.scale
+                           key=lambda x: x.gland_csv.y_coordinate, reverse=True)[0]
+                y_for_leftside_dim += ((-self.topside_block.extreme_lines['y_min'] + biggest_leftest_gland.gland_csv.y_coordinate)/ self.scale_class.scale)
 
         dim = self.base_dxf.doc_base.modelspace().add_linear_dim(
             angle=90,
@@ -110,6 +109,20 @@ class MainPageDxfQtCommunication(dxf_terminal_ui.DxfTerminalQtCommunication):
                           (y_upper + self.downside_insert.dxf.insert[1] + self.downside_block.extreme_lines['y_min'])/2 ),
                     text = f'{round((self.rightside_insert.dxf.insert[0] - self.rightside_block.extreme_lines["y_min"]/self.scale_class.scale - x_for_leftside_dim)  * self.scale_class.scale, 0)}'
                 ).render()
+
+    def delete_block_before_save(self):
+        time1 = time.time()
+        for block_name in list(self.base_dxf.doc_dict_blocks.keys()):
+            if block_name not in ['BOM_FIRST','BOM_SECOND','Border_A3',
+                                  'cut_name_bottom','cut_name_main','cut_name_top'] and\
+                    '*' not in block_name:
+                try:
+                    self.base_dxf.doc_base.blocks.delete_block(name=block_name)
+                except:
+                    continue
+        time1 = time.time() - time1
+        print(time1)
+
 
 
 if __name__ == "__main__":

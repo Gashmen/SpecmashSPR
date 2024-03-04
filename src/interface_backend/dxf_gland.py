@@ -1,3 +1,5 @@
+import time
+
 import ezdxf
 import os
 import sys
@@ -34,7 +36,8 @@ class DxfGlandQtCommunication(dxf_shell_ui.DxfShellQtCommunication):
         if hasattr(self.upside_block,'two_row_calculate') or\
                 hasattr(self.rightside_block,'two_row_calculate') or\
                 hasattr(self.leftside_block,'two_row_calculate') or\
-                hasattr(self.downside_block,'two_row_calculate'):
+                hasattr(self.downside_block,'two_row_calculate') or \
+                hasattr(self.topside_block, 'two_row_calculate'):
             for side_rus_name in self.glands_on_sides_dict:
                 self.glands_on_sides_dxf_dict[side_rus_name] = list()
                 for gland_csv_current in self.glands_on_sides_dict[side_rus_name]:
@@ -70,6 +73,7 @@ class DxfGlandQtCommunication(dxf_shell_ui.DxfShellQtCommunication):
 
     def topside_draw_glands(self):
         if hasattr(self, 'topside_block'):
+            self.topside_block.set_dict_glands_all_sizes(self.glands_on_sides_dict)
             self.topside_block.draw_topside_exe_glands()
             if hasattr(self, 'rightside_block'):
                 self.topside_block.draw_rightside_glands(rightside_extreme_lines=self.rightside_block.extreme_lines,
@@ -85,6 +89,7 @@ class DxfGlandQtCommunication(dxf_shell_ui.DxfShellQtCommunication):
                                                          added_gland_dxf_name='_topside')
     def upside_draw_glands(self):
         if hasattr(self,'upside_block'):
+            self.upside_block.set_dict_glands_all_sizes(self.glands_on_sides_dict)
             # self.rightside_block.draw_glands_in_block()
             self.upside_block.draw_upside_exe_glands()
             if hasattr(self,'rightside_block'):
@@ -96,6 +101,7 @@ class DxfGlandQtCommunication(dxf_shell_ui.DxfShellQtCommunication):
 
     def downside_draw_glands(self):
         if hasattr(self,'downside_block'):
+            self.downside_block.set_dict_glands_all_sizes(self.glands_on_sides_dict)
             # self.rightside_block.draw_glands_in_block()
             self.downside_block.draw_downside_exe_glands()
             if hasattr(self,'rightside_block'):
@@ -107,6 +113,7 @@ class DxfGlandQtCommunication(dxf_shell_ui.DxfShellQtCommunication):
 
     def rightside_draw_glands(self):
         if hasattr(self,'rightside_block'):
+            self.rightside_block.set_dict_glands_all_sizes(self.glands_on_sides_dict)
             # self.rightside_block.draw_glands_in_block()
             self.rightside_block.draw_rightside_exe_glands()
             if hasattr(self,'upside_block'):
@@ -118,6 +125,7 @@ class DxfGlandQtCommunication(dxf_shell_ui.DxfShellQtCommunication):
 
     def leftside_draw_glands(self):
         if hasattr(self, 'leftside_block'):
+            self.leftside_block.set_dict_glands_all_sizes(self.glands_on_sides_dict)
             # self.rightside_block.draw_glands_in_block()
             self.leftside_block.draw_leftside_exe_glands()
             if hasattr(self, 'upside_block'):
@@ -143,6 +151,7 @@ class DxfGlandQtCommunication(dxf_shell_ui.DxfShellQtCommunication):
 
     def withoutcapside_draw_glands(self):
         if hasattr(self,'withoutcapside_block'):
+            self.withoutcapside_block.set_dict_glands_all_sizes(self.glands_on_sides_dict)
             self.withoutcapside_block.set_dict_glands_all_sizes(glands_on_sides_dict=self.glands_on_sides_dict)
             if hasattr(self, 'rightside_block'):
                 self.withoutcapside_block.draw_rightside_glands(rightside_extreme_lines=self.rightside_block.extreme_lines)
@@ -162,8 +171,11 @@ class DxfGlandQtCommunication(dxf_shell_ui.DxfShellQtCommunication):
         self.rightside_draw_glands()
         self.withoutcapside_draw_glands()
 
+
     def save_doc(self):#тест, потом удалить
+        time2 = time.time()
         self.base_dxf.doc_base.saveas('check.dxf')
+        print(time.time()-time2)
 
 
 if __name__ == "__main__":

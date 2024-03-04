@@ -351,6 +351,9 @@ class CableGlandInformation:
         self.gland_russian_name = ''
         if str(self.gland_dict['Полное наименование']) != 'nan' and  str(self.gland_dict['Полное наименование']) !='' and  str(self.gland_dict['Полное наименование']) !='ФОРМУЛА!!!!':
             self.gland_russian_name +=str(self.gland_dict['Полное наименование'])
+
+
+
         else:
             if hasattr(self,'material_gland'):
                 self.gland_russian_name += self.material_gland + '-' + self.cable_type + self.cable_type_size #Добавляем материал + тип кабеля
@@ -364,12 +367,14 @@ class CableGlandInformation:
                 if self.metalhose != None:
                     self.gland_russian_name += '-' + self.metalhose
 
+        if self.gland_russian_name.lower() in ['устройство заземления']:
+            self.gland_russian_name = 'ground'
+
     def create_dxf_name(self):
         if hasattr(self,'gland_russian_name'):
             self.gland_dxf_name = transliterate.translit(self.gland_russian_name, language_code='ru', reversed=True)
             if '/' in self.gland_dxf_name:
                 self.gland_dxf_name = self.gland_dxf_name.replace('/','')
-
 
     def set_properties(self):
         self.set_material()

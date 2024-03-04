@@ -66,10 +66,13 @@ class DxfTerminalQtCommunication(dxf_gland.DxfGlandQtCommunication):
 
                     self.delete_terminal_in_withoutcapside()
 
-                    for terminal_dxf in self.list_terminal_dxf:
+                    for count,terminal_dxf in enumerate(self.list_terminal_dxf):
                         # Работаем с hatch
                         # block_terminal = doc_after_import.blocks[terminal_name]
                         # set_hatch_before_entity(block=block_terminal)
+
+                        din_reyka_cutside_insert = [insert for insert in self.base_dxf.doc_base.blocks[self.cutside_block.shell_side_name].query('INSERT')
+                                                    if insert.dxf.name == '35_DIN_CUTSIDE'][0].dxf.insert
 
                         len_terminal = terminal_dxf.horizontal_length
                         x_insert = x_first_coordinate + len_terminal / 2
@@ -77,8 +80,18 @@ class DxfTerminalQtCommunication(dxf_gland.DxfGlandQtCommunication):
                         terminal_insert = self.base_dxf.doc_base.blocks[self.withoutcapside_block.shell_side_name].add_blockref(
                                                                          name = terminal_dxf.terminal_dxf_name,
                                                                          insert=(x_insert, y_insert))
+                        if count >= len(self.list_terminal_dxf)/2:
+
+                            terminal_cutside_insert = self.base_dxf.doc_base.blocks[self.cutside_block.shell_side_name].add_blockref(
+                                name=terminal_dxf.terminal_dxf_name + '_viewside',
+                                insert=(din_reyka_cutside_insert[0],din_reyka_cutside_insert[1] + 7.2826))
+                            terminal_cutside_insert.dxf.rotation = 90
+
                         x_first_coordinate += len_terminal
                         self.list_used_blocks_terminals.append(terminal_insert)
+
+
+
 
 
 if __name__ == "__main__":
