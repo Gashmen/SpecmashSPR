@@ -53,6 +53,7 @@ class DxfShellQtCommunication(terminal_ui.TerminalUi):
                         self.set_shell_rightside_block()
                         self.set_shell_cutside_block()
                         self.set_shell_withoutcapside_block()
+                        self.withoutcapside_din()
                         self.set_shell_installation_block()
 
     @Qt.pyqtSlot()
@@ -138,6 +139,7 @@ class DxfShellQtCommunication(terminal_ui.TerminalUi):
                                                                                doc_base=self.base_dxf.doc_base)
                 self.withoutcapside_block.define_extreme_lines()
                 self.scale_class.calculate_len10_x()
+                # self.withoutcapside_din()
 
     def draw_rightside_insert(self):
         x_coordinate_rightside = 0
@@ -587,7 +589,6 @@ class DxfShellQtCommunication(terminal_ui.TerminalUi):
                         self.draw_topside_insert()
                         self.draw_leftside_insert()
                         self.draw_cutside_insert()
-                        self.withoutcapside_din()
                         self.draw_withoutcapside_insert()
                         self.draw_upside_insert()
                         self.draw_downside_insert()

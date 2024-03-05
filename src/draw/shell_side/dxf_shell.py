@@ -245,7 +245,7 @@ class ShellSideBlock(DxfBase):
 
     def delete_inserts(self):
         for insert in self.doc_base.blocks[self.shell_side_name].query('INSERT'):
-            if insert.dxf.name != '35_DIN_CUTSIDE':
+            if 'DIN' not in insert.dxf.name:
                 self.doc_base.blocks[self.shell_side_name].delete_entity(insert)
 
 
@@ -592,7 +592,7 @@ class ShellWithoutcapsideBlock(ShellSideBlock):
         self.set_block_from_dxf_base()
 
     def draw_leftside_glands(self, leftside_extreme_lines):
-        self.delete_inserts()
+
         if self.glands_on_sides_dict['Г'] != list():
             for gland in sorted(self.glands_on_sides_dict['Г'], key=lambda x: x.y_coordinate, reverse=True):
                 gland_insert = self.doc_base.blocks[self.shell_side_name].add_blockref(
@@ -603,6 +603,7 @@ class ShellWithoutcapsideBlock(ShellSideBlock):
                 gland_insert.dxf.rotation = 270
 
     def draw_rightside_glands(self, rightside_extreme_lines):
+        self.delete_inserts()
         if self.glands_on_sides_dict['Б'] != list():
             for gland in sorted(self.glands_on_sides_dict['Б'], key=lambda x: x.y_coordinate, reverse=True):
                 gland_insert = self.doc_base.blocks[self.shell_side_name].add_blockref(

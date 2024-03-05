@@ -22,6 +22,7 @@ class AuthWindow(QtWidgets.QMainWindow, frontend_auth.Ui_WelcomeWindow):
         self.setupUi(self)
         self.authorization()
 
+
         '''PUSH BUTTONS ACTION'''
         self.junction_boxes_pushButton.clicked.connect(self.show_jb_qt)
         self.scripts_pushButton.clicked.connect(self.show_window_scripts)
@@ -83,10 +84,12 @@ class AuthWindow(QtWidgets.QMainWindow, frontend_auth.Ui_WelcomeWindow):
 
     def show_jb_qt(self):
         self.jb_window = dxf_result_main_page.MainPageDxfQtCommunication()
-
+        self.jb_window.designer_name = self.return_username()
+        self.jb_window.task_number = self.return_task_number()
+        self.jb_window.position_number = self.return_position_number()
+        self.jb_window.label.setText(f'{self.jb_window.designer_name}    {self.jb_window.task_number}')
         self.close()
         self.jb_window.show()
-
 
 
 if __name__ == '__main__':

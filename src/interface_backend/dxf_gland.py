@@ -1,22 +1,14 @@
-import time
 
 import ezdxf
-import os
+import time
+from ezdxf.addons import Importer
+
 import sys
 
 from PyQt5 import QtCore, QtGui, QtWidgets, Qt
-from PyQt5.QtWidgets import QMessageBox
 
 from src.interface_backend import dxf_shell_ui #ПОМЕНЯТЬ НА ИТОГОВЫЙ ИНТЕРФЕЙСНЫЙ МОДУЛЬ В ОЧЕРЕДНОСТИ
 from src.draw.gland import dxf_gland
-
-
-
-from config import dxf_config
-from src.csv import gland_csv
-from src.Widgets_Custom import ExtendedCombobox,UI_BaseError
-from src.draw import base
-from src.draw.shell_side import dxf_shell
 
 
 class DxfGlandQtCommunication(dxf_shell_ui.DxfShellQtCommunication):
@@ -151,8 +143,9 @@ class DxfGlandQtCommunication(dxf_shell_ui.DxfShellQtCommunication):
 
     def withoutcapside_draw_glands(self):
         if hasattr(self,'withoutcapside_block'):
+
             self.withoutcapside_block.set_dict_glands_all_sizes(self.glands_on_sides_dict)
-            self.withoutcapside_block.set_dict_glands_all_sizes(glands_on_sides_dict=self.glands_on_sides_dict)
+            # self.withoutcapside_block.set_dict_glands_all_sizes(glands_on_sides_dict=self.glands_on_sides_dict)
             if hasattr(self, 'rightside_block'):
                 self.withoutcapside_block.draw_rightside_glands(rightside_extreme_lines=self.rightside_block.extreme_lines)
             if hasattr(self, 'leftside_block'):
@@ -174,6 +167,7 @@ class DxfGlandQtCommunication(dxf_shell_ui.DxfShellQtCommunication):
 
     def save_doc(self):#тест, потом удалить
         time2 = time.time()
+        # self.base_dxf.doc_base=
         self.base_dxf.doc_base.saveas('check.dxf')
         print(time.time()-time2)
 

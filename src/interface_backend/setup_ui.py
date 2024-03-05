@@ -9,6 +9,7 @@ from config import csv_config
 from src.gui.py_ui import mainver03
 from src.Widgets_Custom.Error import Ui_WidgetError
 from src.smbconnect import smbconnect
+from src.ldap_auth import backend_auth
 
 class SetupInterface(QtWidgets.QMainWindow, mainver03.Ui_MainWindow):
 
@@ -21,6 +22,11 @@ class SetupInterface(QtWidgets.QMainWindow, mainver03.Ui_MainWindow):
 
         self.setupUi(self)
 
+        '''Заполнение штампов'''
+        self.task_number = ''      #Номер заявки
+        self.position_number = ''  #Номер позиции
+        self.designer_name = ''    #Имя разработчика
+
         self.stackedWidget.setCurrentIndex(0) #Устанавливает на оболочках stackedWidget
         self.set_manufacturers()
 
@@ -32,6 +38,7 @@ class SetupInterface(QtWidgets.QMainWindow, mainver03.Ui_MainWindow):
         self.optionsButton_leftMenu.clicked.connect(self.set_options_page)
 
         self.pushButton_2.clicked.connect(self.error_window.call_error)
+        self.welcomewindowButton.clicked.connect(self.home_window)
 
     def qt_message_handler(self,mode, context, message):
         if mode == 4:
@@ -88,6 +95,14 @@ class SetupInterface(QtWidgets.QMainWindow, mainver03.Ui_MainWindow):
         '''Устанавливает 3 индекс у SHELL PAGE, если он не установлен'''
         if self.stackedWidget.count() != 3:
             self.stackedWidget.setCurrentIndex(3)
+
+    def home_window(self):
+        '''открытие окна дом'''
+        self.home_window = backend_auth.AuthWindow()
+        self.home_window.set_task_number(self.task_number)
+        self.home_window.set_position_number(self.position_number)
+        self.close()
+        self.home_window.show()
 
 
 
