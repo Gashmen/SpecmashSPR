@@ -64,6 +64,5 @@ if __name__ == '__main__':
     auth = LDAP_AUTH()
     auth.connect()
     auth.give_employees_information()
-    print(auth.authorization_information)
 
 

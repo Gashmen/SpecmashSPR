@@ -212,7 +212,7 @@ class TwoRowGlandChecker(GlandAlgoritmChecker):
 
         # self.status_possible_to_create_input_all_inputs_after_algoritms = False
         self.final_calculate()
-        print(self.level_dict)
+        # print(self.level_dict)
 
     def check_possible_to_add_all_inputs_in_one_row(self,clearens=5):
         '''

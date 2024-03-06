@@ -22,7 +22,9 @@ class DxfQtCommunication(gland_ui.GlandInterface):
         super(DxfQtCommunication, self).__init__()
         #ПОЛУЧЕНИЕ ПУТИ ДЛЯ БАЗЫ DXF
         self.connect_dxf_base()
+        time_setdoc = time.time()
         self.set_doc()
+        print('self.set_doc: ', time_setdoc - time.time())
         self.set_scale_dxf()
 
         #УСТАНОВКА ХЭШ СЛОВАРЕЙ ДЛЯ ПОТОМ УДАЛЕНИЯ БЛОКОВ ИЗ ОБЩЕЙ БАЗЫ И ИЗ БЛОКОВ

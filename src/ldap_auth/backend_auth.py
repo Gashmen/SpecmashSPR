@@ -40,7 +40,7 @@ class AuthWindow(QtWidgets.QMainWindow, frontend_auth.Ui_WelcomeWindow):
         self.ldap_auth.connect()
         self.ldap_auth.give_employees_information()
         ### Для получения словаря с пользователями self.ldap_auth.authorization_information
-        print(self.ldap_auth.authorization_information)
+        # print(self.ldap_auth.authorization_information)
 
     def set_username(self):
         '''Устанавливаем того, кто использует программу'''
@@ -91,6 +91,11 @@ class AuthWindow(QtWidgets.QMainWindow, frontend_auth.Ui_WelcomeWindow):
         self.close()
         self.jb_window.show()
 
+def run_app():
+    app = QtWidgets.QApplication(sys.argv)
+    authWindow = AuthWindow()
+    authWindow.show()
+    sys.exit(app.exec_())
 
 if __name__ == '__main__':
     app = QtWidgets.QApplication(sys.argv)
