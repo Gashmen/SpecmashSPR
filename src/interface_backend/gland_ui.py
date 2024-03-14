@@ -39,36 +39,15 @@ class GlandInterface(shell_ui.ShellInterface):
         self.inputsButton_leftMenu.clicked.connect(self.set_gland_page)
 
         # Добавление имен в siteA
-
-        self.addButton_2.clicked.connect(self.add_gland_side_A)
-        self.addButton_2.clicked.connect(self.check_to_add_biggest_gland_side_A)
-        self.addButton_2.clicked.connect(self.check_to_add_all_area_glands_side_A)
-        self.addButton_2.clicked.connect(self.check_to_possible_to_create_all_glands_in_one_row_A)
-        self.addButton_2.clicked.connect(self.check_to_possible_to_create_all_glands_in_two_row_A)
+        self.addButton_2.clicked.connect(self.setup_gland_sideA)
         # Добавление имен в siteB
-        self.addButton_2.clicked.connect(self.add_gland_side_B)
-        self.addButton_2.clicked.connect(self.check_to_add_biggest_gland_side_B)
-        self.addButton_2.clicked.connect(self.check_to_add_all_area_glands_side_B)
-        self.addButton_2.clicked.connect(self.check_to_possible_to_create_all_glands_in_one_row_B)
-        self.addButton_2.clicked.connect(self.check_to_possible_to_create_all_glands_in_two_row_B)
+        self.addButton_2.clicked.connect(self.setup_gland_sideB)
         # Добавление имен в siteV
-        self.addButton_2.clicked.connect(self.add_gland_side_V)
-        self.addButton_2.clicked.connect(self.check_to_add_biggest_gland_side_V)
-        self.addButton_2.clicked.connect(self.check_to_add_all_area_glands_side_V)
-        self.addButton_2.clicked.connect(self.check_to_possible_to_create_all_glands_in_one_row_V)
-        self.addButton_2.clicked.connect(self.check_to_possible_to_create_all_glands_in_two_row_V)
+        self.addButton_2.clicked.connect(self.setup_gland_sideV)
         # Добавление имен в siteG
-        self.addButton_2.clicked.connect(self.add_gland_side_G)
-        self.addButton_2.clicked.connect(self.check_to_add_biggest_gland_side_G)
-        self.addButton_2.clicked.connect(self.check_to_add_all_area_glands_side_G)
-        self.addButton_2.clicked.connect(self.check_to_possible_to_create_all_glands_in_one_row_G)
-        self.addButton_2.clicked.connect(self.check_to_possible_to_create_all_glands_in_two_row_G)
+        self.addButton_2.clicked.connect(self.setup_gland_sideG)
         # Добавление имен в Cover
-        self.addButton_2.clicked.connect(self.add_gland_side_Cover)
-        self.addButton_2.clicked.connect(self.check_to_add_biggest_gland_side_Cover)
-        self.addButton_2.clicked.connect(self.check_to_add_all_area_glands_side_Cover)
-        self.addButton_2.clicked.connect(self.check_to_possible_to_create_all_glands_in_one_row_Cover)
-        self.addButton_2.clicked.connect(self.check_to_possible_to_create_all_glands_in_two_row_Cover)
+        self.addButton_2.clicked.connect(self.setup_gland_sideCover)
         # Обнуление SpinBox
         self.addButton_2.clicked.connect(self.clear_ABVG_spinbox_afted_add_button)
 
@@ -142,6 +121,48 @@ class GlandInterface(shell_ui.ShellInterface):
         self.sideVdeleteButton.clicked.connect(self.click_delete_button_V)
         self.sideGdeleteButton.clicked.connect(self.click_delete_button_G)
         self.CoverdeleteButton.clicked.connect(self.click_delete_button_cover)
+
+
+    @Qt.pyqtSlot()
+    def setup_gland_sideA(self):
+        self.add_gland_side_A()
+        self.check_to_add_biggest_gland_side_A()
+        self.check_to_add_all_area_glands_side_A()
+        self.check_to_possible_to_create_all_glands_in_one_row_A()
+        self.check_to_possible_to_create_all_glands_in_two_row_A()
+
+    @Qt.pyqtSlot()
+    def setup_gland_sideB(self):
+        self.add_gland_side_B()
+        self.check_to_add_biggest_gland_side_B()
+        self.check_to_add_all_area_glands_side_B()
+        self.check_to_possible_to_create_all_glands_in_one_row_B()
+        self.check_to_possible_to_create_all_glands_in_two_row_B()
+
+    @Qt.pyqtSlot()
+    def setup_gland_sideV(self):
+        self.add_gland_side_V()
+        self.check_to_add_biggest_gland_side_V()
+        self.check_to_add_all_area_glands_side_V()
+        self.check_to_possible_to_create_all_glands_in_one_row_V()
+        self.check_to_possible_to_create_all_glands_in_two_row_V()
+    @Qt.pyqtSlot()
+    def setup_gland_sideG(self):
+        self.add_gland_side_G()
+        self.check_to_add_biggest_gland_side_G()
+        self.check_to_add_all_area_glands_side_G()
+        self.check_to_possible_to_create_all_glands_in_one_row_G()
+        self.check_to_possible_to_create_all_glands_in_two_row_G()
+
+    @Qt.pyqtSlot()
+    def setup_gland_sideCover(self):
+        self.add_gland_side_Cover()
+        self.check_to_add_biggest_gland_side_Cover()
+        self.check_to_add_all_area_glands_side_Cover()
+        self.check_to_possible_to_create_all_glands_in_one_row_Cover()
+        self.check_to_possible_to_create_all_glands_in_two_row_Cover()
+
+
 
 
     def add_manufacturer_inputs_combobox(self):
@@ -530,7 +551,7 @@ class GlandInterface(shell_ui.ShellInterface):
     @Qt.pyqtSlot()
     def check_to_add_biggest_gland_side_A(self):
         if hasattr(self, 'upside_block'):
-            if self.siteASpinBox_2.text() != '0':
+            # if self.siteASpinBox_2.text() != '0':
                 if self.sideAListWidget.count() !=0:
                     if self.sideA_possible_to_add_gland == True:
                         self.upside_block.set_dict_glands_all_sizes(self.glands_on_sides_dict)
@@ -548,7 +569,7 @@ class GlandInterface(shell_ui.ShellInterface):
     @Qt.pyqtSlot()
     def check_to_add_all_area_glands_side_A(self):
         if hasattr(self, 'upside_block'):
-            if self.siteASpinBox_2.text() != '0':
+            # if self.siteASpinBox_2.text() != '0':
                 if self.sideAListWidget.count() != 0:
                     self.upside_block.set_dict_glands_all_sizes(self.glands_on_sides_dict)
                     if self.upside_block.check_possible_to_add_all_gland() == False:
@@ -563,7 +584,7 @@ class GlandInterface(shell_ui.ShellInterface):
     @Qt.pyqtSlot()
     def check_to_possible_to_create_all_glands_in_one_row_A(self):
         if hasattr(self, 'upside_block'):
-            if self.siteASpinBox_2.text() != '0':
+            # if self.siteASpinBox_2.text() != '0':
                 if self.sideAListWidget.count() != 0:
                     self.upside_block.set_dict_glands_all_sizes(self.glands_on_sides_dict)
                     if self.upside_block.check_possible_to_add_in_one_row() == False:
@@ -582,7 +603,7 @@ class GlandInterface(shell_ui.ShellInterface):
     @Qt.pyqtSlot()
     def check_to_possible_to_create_all_glands_in_two_row_A(self):
         if hasattr(self, 'upside_block'):
-            if self.siteASpinBox_2.text() != '0':
+            # if self.siteASpinBox_2.text() != '0':
                 if self.sideAListWidget.count() != 0:
                     self.upside_block.set_dict_glands_all_sizes(self.glands_on_sides_dict)
                     if hasattr(self.upside_block,'one_row_check'):
@@ -632,7 +653,7 @@ class GlandInterface(shell_ui.ShellInterface):
     @Qt.pyqtSlot()
     def check_to_add_biggest_gland_side_B(self):
         if hasattr(self, 'rightside_block'):
-            if self.siteBSpinBox_2.text() != '0':
+            # if self.siteBSpinBox_2.text() != '0':
                 if self.sideBListWidget.count() !=0:
                     if self.sideB_possible_to_add_gland == True:
                         self.rightside_block.set_dict_glands_all_sizes(self.glands_on_sides_dict)
@@ -649,7 +670,7 @@ class GlandInterface(shell_ui.ShellInterface):
     @Qt.pyqtSlot()
     def check_to_add_all_area_glands_side_B(self):
         if hasattr(self, 'rightside_block'):
-            if self.siteBSpinBox_2.text() != '0':
+            # if self.siteBSpinBox_2.text() != '0':
                 if self.sideBListWidget.count() !=0:
                     self.rightside_block.set_dict_glands_all_sizes(self.glands_on_sides_dict)
                     if self.rightside_block.check_possible_to_add_all_gland() == False:
@@ -664,7 +685,7 @@ class GlandInterface(shell_ui.ShellInterface):
     @Qt.pyqtSlot()
     def check_to_possible_to_create_all_glands_in_one_row_B(self):
         if hasattr(self, 'rightside_block'):
-            if self.siteBSpinBox_2.text() != '0':
+            # if self.siteBSpinBox_2.text() != '0':
                 if self.sideBListWidget.count() != 0:
                     self.rightside_block.set_dict_glands_all_sizes(self.glands_on_sides_dict)
                     if self.rightside_block.check_possible_to_add_in_one_row() == False:
@@ -679,7 +700,7 @@ class GlandInterface(shell_ui.ShellInterface):
     @Qt.pyqtSlot()
     def check_to_possible_to_create_all_glands_in_two_row_B(self):
         if hasattr(self, 'rightside_block'):
-            if self.siteBSpinBox_2.text() != '0':
+            # if self.siteBSpinBox_2.text() != '0':
                 if self.sideBListWidget.count() != 0:
                     self.rightside_block.set_dict_glands_all_sizes(self.glands_on_sides_dict)
                     if hasattr(self.rightside_block,'one_row_check'):
@@ -727,7 +748,7 @@ class GlandInterface(shell_ui.ShellInterface):
 
     @Qt.pyqtSlot()
     def check_to_add_biggest_gland_side_V(self):
-        if self.siteVSpinBox_2.text() != '0':
+        # if self.siteVSpinBox_2.text() != '0':
             if hasattr(self, 'downside_block'):
                 if self.sideVListWidget.count() !=0:
                     if self.sideV_possible_to_add_gland == True:
@@ -746,7 +767,7 @@ class GlandInterface(shell_ui.ShellInterface):
     @Qt.pyqtSlot()
     def check_to_add_all_area_glands_side_V(self):
         if hasattr(self, 'downside_block'):
-            if self.siteVSpinBox_2.text() != '0':
+            # if self.siteVSpinBox_2.text() != '0':
                 if self.sideVListWidget.count() != 0:
                     self.downside_block.set_dict_glands_all_sizes(self.glands_on_sides_dict)
                     if self.downside_block.check_possible_to_add_all_gland() == False:
@@ -762,7 +783,7 @@ class GlandInterface(shell_ui.ShellInterface):
     def check_to_possible_to_create_all_glands_in_one_row_V(self):
 
         if hasattr(self, 'downside_block'):
-            if self.siteVSpinBox_2.text() != '0':
+            # if self.siteVSpinBox_2.text() != '0':
                 if self.sideVListWidget.count() != 0:
                     self.downside_block.set_dict_glands_all_sizes(self.glands_on_sides_dict)
                     if self.downside_block.check_possible_to_add_in_one_row() == False:
@@ -777,7 +798,7 @@ class GlandInterface(shell_ui.ShellInterface):
     @Qt.pyqtSlot()
     def check_to_possible_to_create_all_glands_in_two_row_V(self):
         if hasattr(self, 'downside_block'):
-            if self.siteVSpinBox_2.text() != '0':
+            # if self.siteVSpinBox_2.text() != '0':
                 if self.sideVListWidget.count() != 0:
                     self.downside_block.set_dict_glands_all_sizes(self.glands_on_sides_dict)
                     if hasattr(self.downside_block,'one_row_check'):
@@ -828,7 +849,7 @@ class GlandInterface(shell_ui.ShellInterface):
     @Qt.pyqtSlot()
     def check_to_add_biggest_gland_side_G(self):
         if hasattr(self, 'leftside_block'):
-            if self.siteGSpinBox_2.text() != '0':
+            # if self.siteGSpinBox_2.text() != '0':
                 if self.sideGListWidget.count() !=0:
                     if self.sideG_possible_to_add_gland == True:
                         self.leftside_block.set_dict_glands_all_sizes(self.glands_on_sides_dict)
@@ -844,7 +865,7 @@ class GlandInterface(shell_ui.ShellInterface):
     @Qt.pyqtSlot()
     def check_to_add_all_area_glands_side_G(self):
         if hasattr(self, 'leftside_block'):
-            if self.siteGSpinBox_2.text() != '0':
+            # if self.siteGSpinBox_2.text() != '0':
                 if self.sideGListWidget.count() != 0:
                     self.leftside_block.set_dict_glands_all_sizes(self.glands_on_sides_dict)
                     if self.leftside_block.check_possible_to_add_all_gland() == False:
@@ -858,7 +879,7 @@ class GlandInterface(shell_ui.ShellInterface):
     @Qt.pyqtSlot()
     def check_to_possible_to_create_all_glands_in_one_row_G(self):
         if hasattr(self, 'leftside_block'):
-            if self.siteGSpinBox_2.text() != '0':
+            # if self.siteGSpinBox_2.text() != '0':
                 if self.sideGListWidget.count() != 0:
                     self.leftside_block.set_dict_glands_all_sizes(self.glands_on_sides_dict)
                     if self.leftside_block.check_possible_to_add_in_one_row() == False:
@@ -873,7 +894,7 @@ class GlandInterface(shell_ui.ShellInterface):
     @Qt.pyqtSlot()
     def check_to_possible_to_create_all_glands_in_two_row_G(self):
         if hasattr(self, 'leftside_block'):
-            if self.siteGSpinBox_2.text() != '0':
+            # if self.siteGSpinBox_2.text() != '0':
                 if self.sideGListWidget.count() != 0:
                     self.leftside_block.set_dict_glands_all_sizes(self.glands_on_sides_dict)
                     if hasattr(self.leftside_block,'one_row_check'):
@@ -921,7 +942,7 @@ class GlandInterface(shell_ui.ShellInterface):
     @Qt.pyqtSlot()
     def check_to_add_biggest_gland_side_Cover(self):
         if hasattr(self, 'topside_block'):
-            if self.siteCoverSpinBox.text() != '0':
+            # if self.siteCoverSpinBox.text() != '0':
                 if self.CoverListWidget.count() !=0:
                     if self.sideCover_possible_to_add_gland == True:
                         self.topside_block.set_dict_glands_all_sizes(self.glands_on_sides_dict)
@@ -937,7 +958,7 @@ class GlandInterface(shell_ui.ShellInterface):
 
     def check_to_add_all_area_glands_side_Cover(self):
         if hasattr(self, 'topside_block'):
-            if self.siteCoverSpinBox.text() != '0':
+            # if self.siteCoverSpinBox.text() != '0':
                 if self.CoverListWidget.count() != 0:
                     self.topside_block.set_dict_glands_all_sizes(self.glands_on_sides_dict)
                     if self.topside_block.check_possible_to_add_all_gland() == False:
@@ -950,7 +971,7 @@ class GlandInterface(shell_ui.ShellInterface):
     @Qt.pyqtSlot()
     def check_to_possible_to_create_all_glands_in_one_row_Cover(self):
         if hasattr(self, 'topside_block'):
-            if self.siteCoverSpinBox.text() != '0':
+            # if self.siteCoverSpinBox.text() != '0':
                 if self.CoverListWidget.count() != 0:
                     self.topside_block.set_dict_glands_all_sizes(self.glands_on_sides_dict)
                     if self.topside_block.check_possible_to_add_in_one_row() == False:
@@ -965,7 +986,7 @@ class GlandInterface(shell_ui.ShellInterface):
     @Qt.pyqtSlot()
     def check_to_possible_to_create_all_glands_in_two_row_Cover(self):
         if hasattr(self, 'topside_block'):
-            if self.siteCoverSpinBox.text() != '0':
+            # if self.siteCoverSpinBox.text() != '0':
                 if self.CoverListWidget.count() != 0:
                     self.topside_block.set_dict_glands_all_sizes(self.glands_on_sides_dict)
                     if hasattr(self.topside_block,'one_row_check'):

@@ -177,7 +177,7 @@ class ScaleBorder:
 
     def calculate_len_y_left(self,len_y_left,scale_gost=1):
         needed_parametrs = [self.len0_y,self.len1_y,self.len2_y,self.len3_y,self.len4_y,self.len5_y,self.len6_y]
-        sum_len_y_left = sum(needed_parametrs) + 1*max(self.len2_y,self.len2_x,self.len4_y,self.len4_x)#для вставки размера
+        sum_len_y_left = sum(needed_parametrs) + 1.5*max(self.len2_y,self.len2_x,self.len4_y,self.len4_x)#для вставки размера
         self.scale_len_y_left = math.floor(sum_len_y_left / scale_gost)
         if self.scale_len_y_left <= len_y_left:
             return True

@@ -137,6 +137,9 @@ class TwoRowGlandChecker(GlandAlgoritmChecker):
                 # Всегда проверка одного ряда, каждое обновление
                 if self.check_possible_to_add_all_inputs_in_one_row() and (self.width_for_cut == self.min_size):
                     if self.x_start_rectangle + min(self.list_diam) <= self.x_end_rectangle:
+                        if self.level_dict != {}:
+                            if self.level_dict[max(list(self.level_dict.keys()))]['list_cable_glands'][0].property_snake_algoritm == True:
+                                self.x_start_rectangle +=4
                         self.create_level()
                         # self.calculate_x_one_row()
                         self.calculate_y_one_row()
@@ -221,8 +224,15 @@ class TwoRowGlandChecker(GlandAlgoritmChecker):
         :param length_clearens: вот этот клириэнс между вводами, по дефолту = 5
         :return: True or False
         '''
-        self.len_cable_glands = sum(self.list_diam) + clearens * (len(self.list_diam) - 1) #т.к. self.max будет меняться и может y стать максом
-        if self.x_end_rectangle - self.x_start_rectangle >= self.len_cable_glands:
+        extra_length = 0
+        if self.level_dict != {}:
+            if self.level_dict[max(list(self.level_dict.keys()))]['list_cable_glands'][0].property_snake_algoritm == True:
+                extra_length = 4
+
+
+        self.len_cable_glands = sum(self.list_diam) + clearens * (len(self.list_diam) - 1)
+        #т.к. self.max будет меняться и может y стать максом
+        if self.x_end_rectangle - self.x_start_rectangle - extra_length >= self.len_cable_glands:
             return True
         else:
             return False

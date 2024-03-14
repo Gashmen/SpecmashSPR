@@ -245,7 +245,7 @@ class ShellSideBlock(DxfBase):
 
     def delete_inserts(self):
         for insert in self.doc_base.blocks[self.shell_side_name].query('INSERT'):
-            if 'DIN' not in insert.dxf.name:
+            if 'DIN' not in insert.dxf.name and 'KREPEG' not in insert.dxf.name:
                 self.doc_base.blocks[self.shell_side_name].delete_entity(insert)
 
 
@@ -633,7 +633,21 @@ class ShellWithoutcapsideBlock(ShellSideBlock):
     def draw_din(self):
         din_base = DxfBase()
         din_base.doc_base = self.doc_base
+
         din_base.get_block(block_name='DIN_' + self.shell_side_name.split('_')[0])
+
+        # Create a dictionary of entity_handle and sort_handle pairs using a dictionary comprehension
+        handles = {}
+        sort_handle = 1  # Start with a lower sort handle for other inserts
+        for solid in self.doc_base.blocks['DIN_' + self.shell_side_name.split('_')[0]]:
+            if solid.dxftype() == 'HATCH':
+                handles[solid.dxf.handle] = '99999'  # Set sort handle 'A' for inserts with 'withoutcapside' in their names
+            else:
+                handles[solid.dxf.handle] = str(sort_handle)  # Set a unique sort handle for other inserts
+                sort_handle += 1  # Increment the sort handle for other inserts
+
+        self.doc_base.blocks['DIN_' + self.shell_side_name.split('_')[0]].set_redraw_order(handles)
+
         din_base.define_extreme_lines()
         self.din_length = din_base.extreme_lines['x_max'] - din_base.extreme_lines['x_min']
 
@@ -655,8 +669,6 @@ class ShellInstallationBlock(ShellSideBlock):
         self.set_shell_side_name(translit_name=translit_name,
                                  side_dxf_name='installation_dimensions')
         self.set_block_from_dxf_base()
-
-
 
 
 class PolylineSurfaceOnSideDxf:

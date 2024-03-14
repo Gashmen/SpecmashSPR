@@ -23,10 +23,34 @@ class MainPageDxfQtCommunication(dxf_terminal_ui.DxfTerminalQtCommunication):
         self.Autohelper.clicked.connect(self.create_importer)
         self.Autohelper.clicked.connect(self.create_dimension)
         self.Autohelper.clicked.connect(self.redraw_withoutcapside)
+        self.Autohelper.clicked.connect(self.redraw_dinreyka)
+        self.Autohelper.clicked.connect(self.redraw_nameplate)
         # self.Autohelper.clicked.connect(self.delete_block_before_save)
         self.Autohelper.clicked.connect(self.save_doc)
         self.Autohelper.clicked.connect(self.save_pdf)
         print(time.time()-time_pusk)
+
+    @Qt.pyqtSlot()
+    def actions_shell(self):
+        # self.create_doc_copy()
+        self.set_shell_base_dxf()#Установка класса ShellBaseDxf в переменную shell_base_dxf
+        self.check_possible_to_add_shell()
+
+        self.set_zero_max_glands_length()
+
+        self.set_shell_blocks()
+        self.calculate_scale_shell()
+        self.setup_gland_sideA()
+        self.setup_gland_sideB()
+        self.setup_gland_sideV()
+        self.setup_gland_sideG()
+        self.setup_gland_sideCover()
+        if hasattr(self,'glands_on_sides_dxf_dict'):
+            if self.glands_on_sides_dxf_dict != {"А": [], "Б": [], 'В': [], "Г": [], "Крышка": []}:
+
+                self.setup_glands()
+        self.draw_shells_inserts()
+
     def create_border(self):
         '''Создает рамку относительно '''
         block_border = self.base_dxf.doc_base.blocks['Border_A3']
@@ -162,6 +186,7 @@ class MainPageDxfQtCommunication(dxf_terminal_ui.DxfTerminalQtCommunication):
         print(time1)
 
     def create_nameplate(self):
+
         if self.glands_on_sides_dict['Крышка'] ==[]:
             self.nameplate_insert = nameplate.create_nameplate_doc(doc_base=self.base_dxf.doc_base,
                                                                    scale=self.scale_class.scale,
@@ -195,7 +220,7 @@ class MainPageDxfQtCommunication(dxf_terminal_ui.DxfTerminalQtCommunication):
             name='nameplate',
             insert=(self.withoutcapside_insert.dxf.insert[0],
                     (self.withoutcapside_insert.dxf.insert[1] +
-                        (self.withoutcapside_block.extreme_lines['y_max']-8)/(2*self.scale_class.scale))))
+                        (self.withoutcapside_block.extreme_lines['y_max']-8)/(3*self.scale_class.scale))))
         self.nameplate_insert_withoutcapside.dxf.xscale = 1 / self.scale_class.scale
         self.nameplate_insert_withoutcapside.dxf.yscale = 1 / self.scale_class.scale
         self.nameplate_insert_withoutcapside.dxf.zscale = 1 / self.scale_class.scale
@@ -236,8 +261,35 @@ class MainPageDxfQtCommunication(dxf_terminal_ui.DxfTerminalQtCommunication):
                     handles[solid.dxf.handle] = str(sort_handle)  # Set a unique sort handle for other inserts
                     sort_handle += 1  # Increment the sort handle for other inserts
 
-
         self.base_dxf.doc_for_save.modelspace().set_redraw_order(handles)
+
+    def redraw_dinreyka(self):
+        # Create a dictionary of entity_handle and sort_handle pairs using a dictionary comprehension
+        handles = {}
+        sort_handle = 1  # Start with a lower sort handle for other inserts
+        for solid in self.base_dxf.doc_for_save.blocks[self.withoutcapside_block.din_insert.dxf.name].query():
+            if solid.dxftype() != 'HATCH':
+                handles[solid.dxf.handle] = 0  # Set sort handle 'A' for inserts with 'withoutcapside' in their names
+            else:
+                handles[solid.dxf.handle] = str(sort_handle)  # Set a unique sort handle for other inserts
+                sort_handle += 1  # Increment the sort handle for other inserts
+
+        self.base_dxf.doc_for_save.blocks[self.withoutcapside_block.din_insert.dxf.name].set_redraw_order(handles)
+
+    def redraw_nameplate(self):
+        # Create a dictionary of entity_handle and sort_handle pairs using a dictionary comprehension
+        handles = {}
+        sort_handle = 1  # Start with a lower sort handle for other inserts
+        for solid in self.base_dxf.doc_for_save.blocks['nameplate']:
+            if solid.dxftype() == 'ATTDEF':
+                handles[solid.dxf.handle] = 0
+            if solid.dxftype() != 'HATCH':
+                handles[solid.dxf.handle] = 0  # Set sort handle 'A' for inserts with 'withoutcapside' in their names
+            else:
+                handles[solid.dxf.handle] = str(len(list(self.base_dxf.doc_for_save.blocks['nameplate'].query())))  # Set a unique sort handle for other inserts
+                sort_handle += 1  # Increment the sort handle for other inserts
+
+        self.base_dxf.doc_for_save.blocks['nameplate'].set_redraw_order(handles)
 
 
 if __name__ == "__main__":

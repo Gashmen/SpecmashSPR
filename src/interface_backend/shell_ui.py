@@ -8,6 +8,7 @@ from config import csv_config
 from src.gui.py_ui import mainver02
 from src.Widgets_Custom.Error import Ui_WidgetError
 from src.csv import shell_csv
+from src.draw import BOM
 
 class ShellInterface(setup_ui.SetupInterface):
 
@@ -44,6 +45,7 @@ class ShellInterface(setup_ui.SetupInterface):
         '''РАЗМЕР'''
         self.sizeCombobox_shellpage.currentTextChanged.connect(self.set_shell_size)
         self.sizeCombobox_shellpage.currentTextChanged.connect(self.set_dict_shell_information)
+        self.sizeCombobox_shellpage.currentTextChanged.connect(self.set_dict_shell_BOM)
         self.sizeCombobox_shellpage.currentTextChanged.connect(self.install_enabled_marking_explosion)
         self.sizeCombobox_shellpage.currentTextChanged.connect(self.define_all_marking_explosion_protection)
         self.sizeCombobox_shellpage.currentTextChanged.connect(self.install_enabled_gas_mark)
@@ -180,6 +182,21 @@ class ShellInterface(setup_ui.SetupInterface):
                     self.shell_dict = self.shell_information.shell_dict
 
     @Qt.pyqtSlot()
+    def set_dict_shell_BOM(self):
+        if hasattr(self,'shell_size'):
+            if self.shell_size != '':
+                self.shell_information.set_shell_dict()
+                if hasattr(self.shell_information,'shell_dict'):
+                    self.shell_information.set_BOM_shell(BOM_CLASS=BOM.BOM_SHELL)
+                    self.shell_information.BOM_shell.get_shell_information(shell_dict=self.shell_dict)
+                    self.shell_information.BOM_shell.set_vrpt_name()
+                    self.shell_information.BOM_shell.set_fullname()
+                    self.shell_information.BOM_shell.set_property()
+                    self.shell_information.BOM_shell.set_production_cost()
+                    self.shell_information.BOM_shell.set_work_cost()
+                    self.shell_information.BOM_shell.give_bom_dict()
+
+    @Qt.pyqtSlot()
     def define_all_marking_explosion_protection(self):
         if hasattr(self,'shell_dict'):
             self.shell_information.define_marking_explosion_protections()
@@ -202,8 +219,10 @@ class ShellInterface(setup_ui.SetupInterface):
                 if len(self.marking_explosion_dict['gas']) >0:
                     self.gas_mark_RadioButton_shellpage.setEnabled(True)
                 else:
+                    self.gas_mark_RadioButton_shellpage.setChecked(False)
                     self.gas_mark_RadioButton_shellpage.setEnabled(False)
             else:
+                self.gas_mark_RadioButton_shellpage.setChecked(False)
                 self.gas_mark_RadioButton_shellpage.setEnabled(False)
 
     @Qt.pyqtSlot()
@@ -213,8 +232,10 @@ class ShellInterface(setup_ui.SetupInterface):
                 if len(self.marking_explosion_dict['dust']) > 0:
                     self.dust_mark_RadioButton_shellpage.setEnabled(True)
                 else:
+                    self.dust_mark_RadioButton_shellpage.setChecked(False)
                     self.dust_mark_RadioButton_shellpage.setEnabled(False)
             else:
+                self.dust_mark_RadioButton_shellpage.setChecked(False)
                 self.dust_mark_RadioButton_shellpage.setEnabled(False)
 
     @Qt.pyqtSlot()
@@ -224,8 +245,10 @@ class ShellInterface(setup_ui.SetupInterface):
                 if len(self.marking_explosion_dict['ore']) > 0:
                     self.ore_mark_RadioButton_shellpage.setEnabled(True)
                 else:
+                    self.ore_mark_RadioButton_shellpage.setChecked(False)
                     self.ore_mark_RadioButton_shellpage.setEnabled(False)
             else:
+                self.ore_mark_RadioButton_shellpage.setChecked(False)
                 self.ore_mark_RadioButton_shellpage.setEnabled(False)
 
     @Qt.pyqtSlot()

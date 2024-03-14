@@ -26,11 +26,16 @@ class DxfGlandQtCommunication(dxf_shell_ui.DxfShellQtCommunication):
         '''БАЗА ПРИ ЗАПУСКЕ'''
         super().__init__()
 
-        self.addButton_2.clicked.connect(self.set_dict_dxf_glands)
-        self.addButton_2.clicked.connect(self.calculate_max_length_glands)
-        self.addButton_2.clicked.connect(self.calculate_scale)
-        self.addButton_2.clicked.connect(self.draw_glands_in_sides)
-        self.addButton_2.clicked.connect(self.draw_shells_inserts)
+        self.addButton_2.clicked.connect(self.setup_glands)
+
+    @Qt.pyqtSlot()
+    def setup_glands(self):
+        self.set_dict_dxf_glands()
+        self.calculate_max_length_glands()
+        self.calculate_scale()
+        self.draw_glands_in_sides()
+        self.draw_shells_inserts()
+
 
     def set_dict_dxf_glands(self):
         self.glands_on_sides_dxf_dict = {"А": [], "Б": [], 'В': [], "Г": [], "Крышка": []}
@@ -183,6 +188,7 @@ class DxfGlandQtCommunication(dxf_shell_ui.DxfShellQtCommunication):
     def save_pdf(self):
 
         time2 = time.time()
+
         try:
             doc, auditor = recover.readfile('check.dxf')
         except IOError:
@@ -191,8 +197,9 @@ class DxfGlandQtCommunication(dxf_shell_ui.DxfShellQtCommunication):
         except ezdxf.DXFStructureError:
             print(f'Invalid or corrupted DXF file.')
             sys.exit(2)
-
+        # doc.save()
         if not auditor.has_errors:
+
             try:
                 # matplotlib.qsave(doc.modelspace(), 'your.png',bg='#FFFFFFFF',size_inches=(800,600))
                 ezdxf.addons.drawing.properties.MODEL_SPACE_BG_COLOR = '#FFFFFF'
@@ -207,6 +214,7 @@ class DxfGlandQtCommunication(dxf_shell_ui.DxfShellQtCommunication):
                     min_lineweight=0.05,  # in 1/300 inch: 1 mm = 1mm / 25.4 * 300
                     lineweight_scaling=0.1
                 )
+
                 ctx.set_current_layout(doc.modelspace())
                 ctx.current_layout_properties.set_colors(bg='#FFFFFF')
 

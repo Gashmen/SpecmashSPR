@@ -148,6 +148,10 @@ class Shell_csv:
     def set_plus_temperature(self,plus_temperature):
         self.plus_temperature = plus_temperature
 
+    def set_BOM_shell(self,BOM_CLASS):
+        self.BOM_shell = BOM_CLASS
+
+
 
 if __name__ == '__main__':
     main_dict = get_main_dict(main_path)#Его нужно оставить в памяти, при смене каких либо позиций, чтобы не подключаться заново к smb

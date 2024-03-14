@@ -60,11 +60,8 @@ class SMBCONNECT_SPECMASH_SERVER:
                 self.file_obj_BASE_DXF = tempfile.NamedTemporaryFile(delete=False)
                 self.dxf_base_path = self.file_obj_BASE_DXF.name
                 filelist = self.conn.listShares(timeout=30)
-
                 file_attributes, filesize = self.conn.retrieveFile\
                     ('Docs',smb_config.DXF_BASE_PATH,self.file_obj_BASE_DXF)
                 self.file_obj_BASE_DXF.close()
         else:
             self.dxf_base_path = 'D:\\Работа\\SpecmashSPR\\information_for_testing\\DXF_BASE.dxf'
-
-

@@ -21,18 +21,6 @@ class DxfShellQtCommunication(terminal_ui.TerminalUi):
         super().__init__()
 
 
-        '''COMBOBOX'''
-        # self.sizeCombobox_shellpage.currentTextChanged.connect(self.set_shell_base_dxf)
-        # self.sizeCombobox_shellpage.currentTextChanged.connect(self.check_possible_to_add_shell)
-        # self.sizeCombobox_shellpage.currentTextChanged.connect(self.scale_class.set_zero_len_without_glands)
-        #
-        # self.sizeCombobox_shellpage.currentTextChanged.connect(self.set_shell_blocks)
-        # self.sizeCombobox_shellpage.currentTextChanged.connect(self.calculate_scale_shell)
-        # self.sizeCombobox_shellpage.currentTextChanged.connect(self.draw_shells_inserts)
-        # self.sizeCombobox_shellpage.currentTextChanged.connect(self.draw_shells_inserts)
-
-
-
     @Qt.pyqtSlot()
     def set_shell_base_dxf(self):
         if hasattr(self,'shell_dict'):
@@ -606,15 +594,7 @@ class DxfShellQtCommunication(terminal_ui.TerminalUi):
                 self.CoverListWidget.count()==0:
                     self.scale_class.set_zero_len_without_glands()
 
-    @Qt.pyqtSlot()
-    def actions_shell(self):
-        # self.create_doc_copy()
-        self.set_shell_base_dxf()#Установка класса ShellBaseDxf в переменную shell_base_dxf
-        self.check_possible_to_add_shell()
-        self.set_zero_max_glands_length()
-        self.set_shell_blocks()
-        self.calculate_scale_shell()
-        self.draw_shells_inserts()
+
 
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
