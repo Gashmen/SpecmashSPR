@@ -179,12 +179,13 @@ class TwoRowGlandChecker(GlandAlgoritmChecker):
                                         y_start = gland_y_coordinate + gland_two_row.diametr/2
                                         gland_two_row.set_y_coordinate(y_coordinate=gland_y_coordinate)
                                 else:
-                                    y_start = self.y_start_rectangle + \
-                                              (self.width_for_cut -
-                                              clearens * (len(self.level_dict[max(list(self.level_dict.keys()))]['list_cable_glands'])-1))/4 #2x = free_space - clearens * (len(gland)-1) Нужно найти икс и прибавить к y_start
+                                    y_start = self.y_start_rectangle + ((self.width_for_cut - clearens * (len(self.level_dict[max(list(self.level_dict.keys()))]['list_cable_glands']) - 1)) / 2)
+                                    #2x = free_space - clearens * (len(gland)-1) Нужно найти икс и прибавить к y_start
                                     for gland_two_row in self.level_dict[max(list(self.level_dict.keys()))]['list_cable_glands']:
-                                        gland_y_coordinate = y_start + gland_two_row.diametr/2 + clearens
-                                        y_start = gland_y_coordinate + gland_two_row.diametr/2
+                                        gland_y_coordinate = y_start +\
+                                                             gland_two_row.diametr/2
+
+                                        y_start = gland_y_coordinate + gland_two_row.diametr/2 + clearens
                                         gland_two_row.set_y_coordinate(y_coordinate=gland_y_coordinate)
                                 self.width_for_cut = self.min_size
                         else:
@@ -367,7 +368,6 @@ class TwoRowGlandChecker(GlandAlgoritmChecker):
                         search_gland_success = True
                         return search_gland_success
         return search_gland_success
-
 
 
     def calculate_x_one_row(self):

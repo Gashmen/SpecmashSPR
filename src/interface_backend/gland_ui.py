@@ -1033,81 +1033,91 @@ class GlandInterface(shell_ui.ShellInterface):
     @Qt.pyqtSlot()
     def click_up_button_A(self):
         rowIndex = self.sideAListWidget.currentRow()
-        currentItem = self.sideAListWidget.takeItem(rowIndex)
-        self.glands_on_sides_dict['А'][rowIndex],self.glands_on_sides_dict['А'][rowIndex - 1] =\
-        self.glands_on_sides_dict['А'][rowIndex-1], self.glands_on_sides_dict['А'][rowIndex]
-        self.sideAListWidget.insertItem(rowIndex - 1, currentItem)
-        self.sideAListWidget.setCurrentRow(rowIndex - 1)
+        if rowIndex !=0:
+            currentItem = self.sideAListWidget.takeItem(rowIndex)
+            self.glands_on_sides_dict['А'][rowIndex],self.glands_on_sides_dict['А'][rowIndex - 1] =\
+            self.glands_on_sides_dict['А'][rowIndex-1], self.glands_on_sides_dict['А'][rowIndex]
+            self.sideAListWidget.insertItem(rowIndex - 1, currentItem)
+            self.sideAListWidget.setCurrentRow(rowIndex - 1)
 
     @Qt.pyqtSlot()
     def click_up_button_B(self):
         rowIndex = self.sideBListWidget.currentRow()
-        currentItem = self.sideBListWidget.takeItem(rowIndex)
-        self.glands_on_sides_dict['Б'][rowIndex],self.glands_on_sides_dict['Б'][rowIndex - 1] =\
-        self.glands_on_sides_dict['Б'][rowIndex-1], self.glands_on_sides_dict['Б'][rowIndex]
-        self.sideBListWidget.insertItem(rowIndex - 1, currentItem)
-        self.sideBListWidget.setCurrentRow(rowIndex - 1)
+        if rowIndex !=0:
+            currentItem = self.sideBListWidget.takeItem(rowIndex)
+            self.glands_on_sides_dict['Б'][rowIndex],self.glands_on_sides_dict['Б'][rowIndex - 1] =\
+            self.glands_on_sides_dict['Б'][rowIndex-1], self.glands_on_sides_dict['Б'][rowIndex]
+            self.sideBListWidget.insertItem(rowIndex - 1, currentItem)
+            self.sideBListWidget.setCurrentRow(rowIndex - 1)
 
     @Qt.pyqtSlot()
     def click_up_button_V(self):
         rowIndex = self.sideVListWidget.currentRow()
-        currentItem = self.sideVListWidget.takeItem(rowIndex)
-        self.glands_on_sides_dict['В'][rowIndex],self.glands_on_sides_dict['В'][rowIndex - 1] =\
-        self.glands_on_sides_dict['В'][rowIndex-1], self.glands_on_sides_dict['В'][rowIndex]
-        self.sideVListWidget.insertItem(rowIndex - 1, currentItem)
-        self.sideVListWidget.setCurrentRow(rowIndex - 1)
+        if rowIndex !=0:
+            currentItem = self.sideVListWidget.takeItem(rowIndex)
+            self.glands_on_sides_dict['В'][rowIndex],self.glands_on_sides_dict['В'][rowIndex - 1] =\
+            self.glands_on_sides_dict['В'][rowIndex-1], self.glands_on_sides_dict['В'][rowIndex]
+            self.sideVListWidget.insertItem(rowIndex - 1, currentItem)
+            self.sideVListWidget.setCurrentRow(rowIndex - 1)
 
     @Qt.pyqtSlot()
     def click_up_button_G(self):
         rowIndex = self.sideGListWidget.currentRow()
-        currentItem = self.sideGListWidget.takeItem(rowIndex)
-        self.glands_on_sides_dict['Г'][rowIndex],self.glands_on_sides_dict['Г'][rowIndex - 1] =\
-        self.glands_on_sides_dict['Г'][rowIndex-1], self.glands_on_sides_dict['Г'][rowIndex]
-        self.sideGListWidget.insertItem(rowIndex - 1, currentItem)
-        self.sideGListWidget.setCurrentRow(rowIndex - 1)
+        if rowIndex !=0:
+            currentItem = self.sideGListWidget.takeItem(rowIndex)
+            self.glands_on_sides_dict['Г'][rowIndex],self.glands_on_sides_dict['Г'][rowIndex - 1] =\
+            self.glands_on_sides_dict['Г'][rowIndex-1], self.glands_on_sides_dict['Г'][rowIndex]
+            self.sideGListWidget.insertItem(rowIndex - 1, currentItem)
+            self.sideGListWidget.setCurrentRow(rowIndex - 1)
 
     @Qt.pyqtSlot()
     def click_up_button_cover(self):
         rowIndex = self.CoverListWidget.currentRow()
-        currentItem = self.CoverListWidget.takeItem(rowIndex)
-        self.CoverListWidget.insertItem(rowIndex - 1, currentItem)
-        self.CoverListWidget.setCurrentRow(rowIndex - 1)
+        if rowIndex != 0:
+            currentItem = self.CoverListWidget.takeItem(rowIndex)
+            self.CoverListWidget.insertItem(rowIndex - 1, currentItem)
+            self.CoverListWidget.setCurrentRow(rowIndex - 1)
 
     @Qt.pyqtSlot()
     def click_down_button_A(self):
         rowIndex = self.sideAListWidget.currentRow()
-        currentItem = self.sideAListWidget.takeItem(rowIndex)
-        self.glands_on_sides_dict['А'][rowIndex],self.glands_on_sides_dict['А'][rowIndex +1] =\
-        self.glands_on_sides_dict['А'][rowIndex+1], self.glands_on_sides_dict['А'][rowIndex]
-        self.sideAListWidget.insertItem(rowIndex + 1, currentItem)
-        self.sideAListWidget.setCurrentRow(rowIndex + 1)
+        if len(self.glands_on_sides_dict['А']) > rowIndex+1:
+            currentItem = self.sideAListWidget.takeItem(rowIndex)
+            self.glands_on_sides_dict['А'][rowIndex],self.glands_on_sides_dict['А'][rowIndex +1] =\
+            self.glands_on_sides_dict['А'][rowIndex+1], self.glands_on_sides_dict['А'][rowIndex]
+            self.sideAListWidget.insertItem(rowIndex + 1, currentItem)
+            self.sideAListWidget.setCurrentRow(rowIndex + 1)
+
 
     @Qt.pyqtSlot()
     def click_down_button_B(self):
         rowIndex = self.sideBListWidget.currentRow()
-        currentItem = self.sideBListWidget.takeItem(rowIndex)
-        self.glands_on_sides_dict['Б'][rowIndex],self.glands_on_sides_dict['Б'][rowIndex +1] =\
-        self.glands_on_sides_dict['Б'][rowIndex+1], self.glands_on_sides_dict['Б'][rowIndex]
-        self.sideBListWidget.insertItem(rowIndex + 1, currentItem)
-        self.sideBListWidget.setCurrentRow(rowIndex + 1)
+        if len(self.glands_on_sides_dict['Б']) > rowIndex + 1:
+            currentItem = self.sideBListWidget.takeItem(rowIndex)
+            self.glands_on_sides_dict['Б'][rowIndex],self.glands_on_sides_dict['Б'][rowIndex +1] =\
+            self.glands_on_sides_dict['Б'][rowIndex+1], self.glands_on_sides_dict['Б'][rowIndex]
+            self.sideBListWidget.insertItem(rowIndex + 1, currentItem)
+            self.sideBListWidget.setCurrentRow(rowIndex + 1)
 
     @Qt.pyqtSlot()
     def click_down_button_V(self):
         rowIndex = self.sideVListWidget.currentRow()
-        currentItem = self.sideVListWidget.takeItem(rowIndex)
-        self.glands_on_sides_dict['В'][rowIndex],self.glands_on_sides_dict['В'][rowIndex +1] =\
-        self.glands_on_sides_dict['В'][rowIndex+1], self.glands_on_sides_dict['В'][rowIndex]
-        self.sideVListWidget.insertItem(rowIndex + 1, currentItem)
-        self.sideVListWidget.setCurrentRow(rowIndex + 1)
+        if len(self.glands_on_sides_dict['В']) > rowIndex + 1:
+            currentItem = self.sideVListWidget.takeItem(rowIndex)
+            self.glands_on_sides_dict['В'][rowIndex],self.glands_on_sides_dict['В'][rowIndex +1] =\
+            self.glands_on_sides_dict['В'][rowIndex+1], self.glands_on_sides_dict['В'][rowIndex]
+            self.sideVListWidget.insertItem(rowIndex + 1, currentItem)
+            self.sideVListWidget.setCurrentRow(rowIndex + 1)
 
     @Qt.pyqtSlot()
     def click_down_button_G(self):
         rowIndex = self.sideGListWidget.currentRow()
-        currentItem = self.sideGListWidget.takeItem(rowIndex)
-        self.glands_on_sides_dict['Г'][rowIndex],self.glands_on_sides_dict['Г'][rowIndex +1] =\
-        self.glands_on_sides_dict['Г'][rowIndex+1], self.glands_on_sides_dict['Г'][rowIndex]
-        self.sideGListWidget.insertItem(rowIndex + 1, currentItem)
-        self.sideGListWidget.setCurrentRow(rowIndex + 1)
+        if len(self.glands_on_sides_dict['Г']) > rowIndex + 1:
+            currentItem = self.sideGListWidget.takeItem(rowIndex)
+            self.glands_on_sides_dict['Г'][rowIndex],self.glands_on_sides_dict['Г'][rowIndex +1] =\
+            self.glands_on_sides_dict['Г'][rowIndex+1], self.glands_on_sides_dict['Г'][rowIndex]
+            self.sideGListWidget.insertItem(rowIndex + 1, currentItem)
+            self.sideGListWidget.setCurrentRow(rowIndex + 1)
 
     @Qt.pyqtSlot()
     def click_down_button_cover(self):

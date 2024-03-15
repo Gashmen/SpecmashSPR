@@ -70,12 +70,12 @@ class BOM_SHELL:
             }
 
 
-class BOM_GLAND:
-
-    def set_glands_dict(self,glands_dxf_dict):
-        self.glands_dict = glands_dxf_dict
-
-    def shell_name(self):
+# class BOM_GLAND:
+#
+#     def set_glands_dict(self,glands_dxf_dict):
+#         self.glands_dict = glands_dxf_dict
+#
+#     def shell_name(self):
 
 
 

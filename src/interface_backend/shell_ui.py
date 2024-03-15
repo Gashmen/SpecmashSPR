@@ -45,7 +45,7 @@ class ShellInterface(setup_ui.SetupInterface):
         '''РАЗМЕР'''
         self.sizeCombobox_shellpage.currentTextChanged.connect(self.set_shell_size)
         self.sizeCombobox_shellpage.currentTextChanged.connect(self.set_dict_shell_information)
-        self.sizeCombobox_shellpage.currentTextChanged.connect(self.set_dict_shell_BOM)
+        # self.sizeCombobox_shellpage.currentTextChanged.connect(self.set_dict_shell_BOM)
         self.sizeCombobox_shellpage.currentTextChanged.connect(self.install_enabled_marking_explosion)
         self.sizeCombobox_shellpage.currentTextChanged.connect(self.define_all_marking_explosion_protection)
         self.sizeCombobox_shellpage.currentTextChanged.connect(self.install_enabled_gas_mark)
