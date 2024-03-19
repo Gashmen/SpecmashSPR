@@ -170,23 +170,29 @@ class TwoRowGlandChecker(GlandAlgoritmChecker):
                                         self.list_diam.pop(self.current_gland_index)
                                     else:
                                         break
+
                                 step = self.width_for_cut / (len(self.level_dict[max(list(self.level_dict.keys()))]['list_cable_glands'])+1)
                                 clearens = 5
                                 y_start = self.y_start_rectangle
-                                if step >= clearens:#Проверка делается для того, что если шаг больше чем клириэнс, то просто отодвинуть ввода на шаг
-                                    for gland_two_row in self.level_dict[max(list(self.level_dict.keys()))]['list_cable_glands']:
-                                        gland_y_coordinate = y_start + gland_two_row.diametr/2 + step
-                                        y_start = gland_y_coordinate + gland_two_row.diametr/2
-                                        gland_two_row.set_y_coordinate(y_coordinate=gland_y_coordinate)
+                                if (len(self.level_dict[max(list(self.level_dict.keys()))]['list_cable_glands'])) == 1:
+                                    gland_y_coordinate = self.y_start_rectangle + (self.y_end_rectangle - self.y_start_rectangle)/2
+                                    gland_two_row = self.level_dict[max(list(self.level_dict.keys()))]['list_cable_glands'][0]
+                                    gland_two_row.set_y_coordinate(y_coordinate=gland_y_coordinate)
                                 else:
-                                    y_start = self.y_start_rectangle + ((self.width_for_cut - clearens * (len(self.level_dict[max(list(self.level_dict.keys()))]['list_cable_glands']) - 1)) / 2)
-                                    #2x = free_space - clearens * (len(gland)-1) Нужно найти икс и прибавить к y_start
-                                    for gland_two_row in self.level_dict[max(list(self.level_dict.keys()))]['list_cable_glands']:
-                                        gland_y_coordinate = y_start +\
-                                                             gland_two_row.diametr/2
+                                    if step >= clearens:#Проверка делается для того, что если шаг больше чем клириэнс, то просто отодвинуть ввода на шаг
+                                        for gland_two_row in self.level_dict[max(list(self.level_dict.keys()))]['list_cable_glands']:
+                                            gland_y_coordinate = y_start + gland_two_row.diametr/2 + step
+                                            y_start = gland_y_coordinate + gland_two_row.diametr/2
+                                            gland_two_row.set_y_coordinate(y_coordinate=gland_y_coordinate)
+                                    else:
+                                        y_start = self.y_start_rectangle + ((self.width_for_cut - clearens * (len(self.level_dict[max(list(self.level_dict.keys()))]['list_cable_glands']) - 1)) / 2)
+                                        #2x = free_space - clearens * (len(gland)-1) Нужно найти икс и прибавить к y_start
+                                        for gland_two_row in self.level_dict[max(list(self.level_dict.keys()))]['list_cable_glands']:
+                                            gland_y_coordinate = y_start +\
+                                                                 gland_two_row.diametr/2
 
-                                        y_start = gland_y_coordinate + gland_two_row.diametr/2 + clearens
-                                        gland_two_row.set_y_coordinate(y_coordinate=gland_y_coordinate)
+                                            y_start = gland_y_coordinate + gland_two_row.diametr/2 + clearens
+                                            gland_two_row.set_y_coordinate(y_coordinate=gland_y_coordinate)
                                 self.width_for_cut = self.min_size
                         else:
                             self.status_possible_to_create_input_all_inputs_after_algoritms = False
@@ -229,7 +235,6 @@ class TwoRowGlandChecker(GlandAlgoritmChecker):
         if self.level_dict != {}:
             if self.level_dict[max(list(self.level_dict.keys()))]['list_cable_glands'][0].property_snake_algoritm == True:
                 extra_length = 4
-
 
         self.len_cable_glands = sum(self.list_diam) + clearens * (len(self.list_diam) - 1)
         #т.к. self.max будет меняться и может y стать максом
@@ -369,7 +374,6 @@ class TwoRowGlandChecker(GlandAlgoritmChecker):
                         return search_gland_success
         return search_gland_success
 
-
     def calculate_x_one_row(self):
         '''
         Получение координаты x для установки в одну линию
@@ -398,7 +402,6 @@ class TwoRowGlandChecker(GlandAlgoritmChecker):
         else:
             self.new_x_start_rectangle = self.x_end_rectangle
         return self.new_x_start_rectangle
-
 
     def delete_gland_one_row(self):
         '''Удаление ввода из списка вводов

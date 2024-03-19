@@ -447,8 +447,6 @@ class CableGlandInformation:
         except:
             self.diametr = 0
 
-
-
     def set_options(self):
         self.vz_vz = False
         self.vz_vze = False
@@ -486,6 +484,11 @@ class CableGlandInformation:
         self.property_snake_algoritm = True
         self.property_onerow_algoritm = False
         self.property_tworow_algoritm = False
+
+    def set_BOM_gland(self,BOM_gland):
+        self.BOM_gland = BOM_gland
+
+
 
 
 

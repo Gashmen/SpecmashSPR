@@ -33,6 +33,8 @@ class DxfTerminalQtCommunication(dxf_gland.DxfGlandQtCommunication):
                     current_terminal.set_terminal_dxf_name(terminal_dxf_name=terminal_dxf_name)
                     current_terminal.set_doc_base(self.base_dxf.doc_base)
                     current_terminal.calculate_horizontal_length()
+                    current_terminal.set_BOM_name()
+                    current_terminal.create_BOM_dict()
                     self.list_terminal_dxf.append(current_terminal)
 
     def check_possible_to_add_terminals(self):
@@ -89,6 +91,7 @@ class DxfTerminalQtCommunication(dxf_gland.DxfGlandQtCommunication):
 
                         x_first_coordinate += len_terminal
                         self.list_used_blocks_terminals.append(terminal_insert)
+
 
 
 

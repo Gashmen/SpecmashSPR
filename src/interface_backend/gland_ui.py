@@ -7,7 +7,7 @@ from config import csv_config
 from src.Widgets_Custom import ExtendedCombobox
 from src.csv import gland_csv
 from src.interface_backend import shell_ui
-
+from src.draw import BOM
 
 class GlandInterface(shell_ui.ShellInterface):
 
@@ -210,9 +210,10 @@ class GlandInterface(shell_ui.ShellInterface):
     def install_choose_gland_widget_enabled(self):
         if self.gland_from_allRadioButton.isChecked():
             self.b_vzorglandWidget.setEnabled(True)
+            self.k_gland_optionsWidget.setEnabled(True)
         else:
             self.b_vzorglandWidget.setEnabled(False)
-
+            self.k_gland_optionsWidget.setEnabled(False)
     @Qt.pyqtSlot()
     def give_gland_all_names_vzor(self):
         self.vzorglandcomboBox.clear()
@@ -535,6 +536,16 @@ class GlandInterface(shell_ui.ShellInterface):
                         gland_dict=self.gland_information.gland_main_dict[self.key_gland])
                     self.add_options_to_gland()
                     self.gland.side = 'upside'
+                    self.gland.set_BOM_gland(BOM_gland=BOM.BOM_GLAND())
+                    self.gland.BOM_gland.get_gland_information(gland=self.gland)
+                    self.gland.BOM_gland.set_vrpt_name()
+                    self.gland.BOM_gland.set_fullname()
+                    self.gland.BOM_gland.set_property()
+                    self.gland.BOM_gland.set_production_cost()
+                    self.gland.BOM_gland.set_work_cost()
+                    self.gland.BOM_gland.calculate_sum_cost()
+                    self.gland.BOM_gland.give_bom_dict()
+                    self.gland.BOM_gland.add_options_bom()
                     self.glands_on_sides_dict['А'].append(self.gland)
                     self.sideAListWidget.addItem(self.gland.gland_russian_name)
                     if self.base_dxf.check_gland(gland_translite_name=self.gland.gland_dxf_name):
@@ -636,6 +647,16 @@ class GlandInterface(shell_ui.ShellInterface):
                         gland_dict=self.gland_information.gland_main_dict[self.key_gland])
                     self.add_options_to_gland()
                     self.gland.side = 'rightside'
+                    self.gland.set_BOM_gland(BOM_gland=BOM.BOM_GLAND())
+                    self.gland.BOM_gland.get_gland_information(gland=self.gland)
+                    self.gland.BOM_gland.set_vrpt_name()
+                    self.gland.BOM_gland.set_fullname()
+                    self.gland.BOM_gland.set_property()
+                    self.gland.BOM_gland.set_production_cost()
+                    self.gland.BOM_gland.set_work_cost()
+                    self.gland.BOM_gland.calculate_sum_cost()
+                    self.gland.BOM_gland.give_bom_dict()
+                    self.gland.BOM_gland.add_options_bom()
                     self.glands_on_sides_dict['Б'].append(self.gland)
                     self.sideBListWidget.addItem(self.gland.gland_russian_name)
                     if self.base_dxf.check_gland(gland_translite_name=self.gland.gland_dxf_name):
@@ -666,7 +687,6 @@ class GlandInterface(shell_ui.ShellInterface):
                                                  QMessageBox.Ok)
                             self.sideBListWidget.clear()
 
-
     @Qt.pyqtSlot()
     def check_to_add_all_area_glands_side_B(self):
         if hasattr(self, 'rightside_block'):
@@ -680,7 +700,6 @@ class GlandInterface(shell_ui.ShellInterface):
                                              f"Невозможно поместить эти кабельные вводы",
                                              QMessageBox.Ok)
                         self.sideBListWidget.clear()
-
 
     @Qt.pyqtSlot()
     def check_to_possible_to_create_all_glands_in_one_row_B(self):
@@ -732,6 +751,16 @@ class GlandInterface(shell_ui.ShellInterface):
                             gland_dict=self.gland_information.gland_main_dict[self.key_gland])
                         self.add_options_to_gland()
                         self.gland.side = 'downside'
+                        self.gland.set_BOM_gland(BOM_gland=BOM.BOM_GLAND())
+                        self.gland.BOM_gland.get_gland_information(gland=self.gland)
+                        self.gland.BOM_gland.set_vrpt_name()
+                        self.gland.BOM_gland.set_fullname()
+                        self.gland.BOM_gland.set_property()
+                        self.gland.BOM_gland.set_production_cost()
+                        self.gland.BOM_gland.set_work_cost()
+                        self.gland.BOM_gland.calculate_sum_cost()
+                        self.gland.BOM_gland.give_bom_dict()
+                        self.gland.BOM_gland.add_options_bom()
                         self.glands_on_sides_dict['В'].append(self.gland)
                         self.sideVListWidget.addItem(self.gland.gland_russian_name)
                         if self.base_dxf.check_gland(gland_translite_name=self.gland.gland_dxf_name):
@@ -832,6 +861,16 @@ class GlandInterface(shell_ui.ShellInterface):
                         gland_dict=self.gland_information.gland_main_dict[self.key_gland])
                     self.add_options_to_gland()
                     self.gland.side = 'leftside'
+                    self.gland.set_BOM_gland(BOM_gland=BOM.BOM_GLAND())
+                    self.gland.BOM_gland.get_gland_information(gland=self.gland)
+                    self.gland.BOM_gland.set_vrpt_name()
+                    self.gland.BOM_gland.set_fullname()
+                    self.gland.BOM_gland.set_property()
+                    self.gland.BOM_gland.set_production_cost()
+                    self.gland.BOM_gland.set_work_cost()
+                    self.gland.BOM_gland.calculate_sum_cost()
+                    self.gland.BOM_gland.give_bom_dict()
+                    self.gland.BOM_gland.add_options_bom()
                     self.glands_on_sides_dict['Г'].append(self.gland)
                     self.sideGListWidget.addItem(self.gland.gland_russian_name)
                     if self.base_dxf.check_gland(gland_translite_name=self.gland.gland_dxf_name):
@@ -926,6 +965,15 @@ class GlandInterface(shell_ui.ShellInterface):
                         gland_dict=self.gland_information.gland_main_dict[self.key_gland])
                     self.add_options_to_gland()
                     self.gland.side = 'topside'
+                    self.gland.set_BOM_gland(BOM_gland=BOM.BOM_GLAND())
+                    self.gland.BOM_gland.get_gland_information(gland=self.gland)
+                    self.gland.BOM_gland.set_vrpt_name()
+                    self.gland.BOM_gland.set_fullname()
+                    self.gland.BOM_gland.set_property()
+                    self.gland.BOM_gland.set_production_cost()
+                    self.gland.BOM_gland.set_work_cost()
+                    self.gland.BOM_gland.calculate_sum_cost()
+                    self.gland.BOM_gland.give_bom_dict()
                     self.glands_on_sides_dict['Крышка'].append(self.gland)
                     self.CoverListWidget.addItem(self.gland.gland_russian_name)
                     if self.base_dxf.check_gland(gland_translite_name=self.gland.gland_dxf_name):

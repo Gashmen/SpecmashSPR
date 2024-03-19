@@ -45,7 +45,7 @@ class ShellInterface(setup_ui.SetupInterface):
         '''РАЗМЕР'''
         self.sizeCombobox_shellpage.currentTextChanged.connect(self.set_shell_size)
         self.sizeCombobox_shellpage.currentTextChanged.connect(self.set_dict_shell_information)
-        # self.sizeCombobox_shellpage.currentTextChanged.connect(self.set_dict_shell_BOM)
+        self.sizeCombobox_shellpage.currentTextChanged.connect(self.set_dict_shell_BOM)
         self.sizeCombobox_shellpage.currentTextChanged.connect(self.install_enabled_marking_explosion)
         self.sizeCombobox_shellpage.currentTextChanged.connect(self.define_all_marking_explosion_protection)
         self.sizeCombobox_shellpage.currentTextChanged.connect(self.install_enabled_gas_mark)
@@ -187,7 +187,7 @@ class ShellInterface(setup_ui.SetupInterface):
             if self.shell_size != '':
                 self.shell_information.set_shell_dict()
                 if hasattr(self.shell_information,'shell_dict'):
-                    self.shell_information.set_BOM_shell(BOM_CLASS=BOM.BOM_SHELL)
+                    self.shell_information.set_BOM_shell(BOM_CLASS=BOM.BOM_SHELL())
                     self.shell_information.BOM_shell.get_shell_information(shell_dict=self.shell_dict)
                     self.shell_information.BOM_shell.set_vrpt_name()
                     self.shell_information.BOM_shell.set_fullname()

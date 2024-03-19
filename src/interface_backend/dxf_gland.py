@@ -36,7 +36,6 @@ class DxfGlandQtCommunication(dxf_shell_ui.DxfShellQtCommunication):
         self.draw_glands_in_sides()
         self.draw_shells_inserts()
 
-
     def set_dict_dxf_glands(self):
         self.glands_on_sides_dxf_dict = {"А": [], "Б": [], 'В': [], "Г": [], "Крышка": []}
         if hasattr(self.upside_block,'two_row_calculate') or\

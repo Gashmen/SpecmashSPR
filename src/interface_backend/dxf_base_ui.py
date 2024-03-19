@@ -10,7 +10,8 @@ from src.interface_backend import gland_ui #ПОМЕНЯТЬ НА ИТОГОВЫ
 from config import dxf_config
 from src.csv import gland_csv
 from src.Widgets_Custom import ExtendedCombobox
-from src.draw import base,scale
+from src.draw import base,scale,BOM
+
 import copy
 from src.draw.shell_side import dxf_shell
 
@@ -27,12 +28,15 @@ class DxfQtCommunication(gland_ui.GlandInterface):
         print('self.set_doc: ', time_setdoc - time.time())
         self.set_scale_dxf()
 
+
         #УСТАНОВКА ХЭШ СЛОВАРЕЙ ДЛЯ ПОТОМ УДАЛЕНИЯ БЛОКОВ ИЗ ОБЩЕЙ БАЗЫ И ИЗ БЛОКОВ
         self.set_list_used_blocks_shell()
         self.set_list_used_blocks_terminals()
 
-        '''СОMBOBOX SHELL'''
+        #УСТАНОВКА КЛАССА ДЛЯ ВСЕГО BOM
+        self.BOM_general = BOM.BOM_GENERAL()
 
+        '''СОMBOBOX SHELL'''
 
     def connect_dxf_base(self):
         self.smb_specmash.get_base_dxf_path()

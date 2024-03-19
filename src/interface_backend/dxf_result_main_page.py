@@ -25,6 +25,7 @@ class MainPageDxfQtCommunication(dxf_terminal_ui.DxfTerminalQtCommunication):
         self.Autohelper.clicked.connect(self.redraw_withoutcapside)
         self.Autohelper.clicked.connect(self.redraw_dinreyka)
         self.Autohelper.clicked.connect(self.redraw_nameplate)
+        self.Autohelper.clicked.connect(self.create_BOM)
         # self.Autohelper.clicked.connect(self.delete_block_before_save)
         self.Autohelper.clicked.connect(self.save_doc)
         self.Autohelper.clicked.connect(self.save_pdf)
@@ -290,6 +291,20 @@ class MainPageDxfQtCommunication(dxf_terminal_ui.DxfTerminalQtCommunication):
                 sort_handle += 1  # Increment the sort handle for other inserts
 
         self.base_dxf.doc_for_save.blocks['nameplate'].set_redraw_order(handles)
+
+    def create_BOM(self):
+        if hasattr(self,'BOM_general'):
+            #Добавление оболочки и всего причастного в BOM
+            self.BOM_general.add_bom_list_elements(BOM=self.shell_information.BOM_shell.bom_dict)
+            #Добавление кабельных вводов и всего причастного в BOM
+            for gland_on_side in list(self.glands_on_sides_dxf_dict.values()):
+                for gland in gland_on_side:
+                    self.BOM_general.add_bom_list_elements(BOM=gland.gland_csv.BOM_gland.bom_dict)
+            #Добавление клемм и всего причастного в BOM
+            for terminal in self.list_terminal_dxf:
+                self.BOM_general.add_bom_list_elements(BOM=terminal.bom_dict)
+            print(1)
+
 
 
 if __name__ == "__main__":
