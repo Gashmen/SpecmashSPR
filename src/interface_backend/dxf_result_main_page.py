@@ -303,8 +303,15 @@ class MainPageDxfQtCommunication(dxf_terminal_ui.DxfTerminalQtCommunication):
             #Добавление клемм и всего причастного в BOM
             for terminal in self.list_terminal_dxf:
                 self.BOM_general.add_bom_list_elements(BOM=terminal.bom_dict)
-            print(1)
+            self.BOM_general.create_new_bom_dict()
+            self.BOM_general.create_dict_main_properties()
+            self.BOM_general.dict_all_attrib_in_BOM()
 
+            # self.base_dxf.doc_base.modelspace().delete_all_entities()
+
+
+
+            print(1)
 
 
 if __name__ == "__main__":

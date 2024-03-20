@@ -1,16 +1,86 @@
-from ezdxf import recover
-from ezdxf.addons.drawing import matplotlib
-import ezdxf
-import copy
-import transliterate
-# Exception handling left out for compactness
-# doc = ezdxf.readfile('1._1.dxf')
-# doc_new = copy.copy(doc)
-# doc_doc_doc, auditor = recover.readfile('1._1.dxf')
-# if not auditor.has_errors:
-#     matplotlib.qsave(doc_doc_doc.modelspace(), '1._1.dxf.png')
+def create_dict_main_properties(list_properties):
+    '''
+    Свойства нужно вынести наружу и сделать словарь
+    :param list_properties:
+[{'Обозначение': 'ВРПТ.301172.024-11', 'Наименование': 'Оболочка ВП.161610', 'Свойство': 'Сборочные единицы', 'Формат': 'А4', 'Кол.': None, 'Примечание': None},
+ {'Обозначение': None, 'Наименование': 'Винт А2.М6-6gx10.019#ГОСТ 17473-80', 'Свойство': 'Стандартные изделия', 'Формат': 'А4', 'Кол.': None, 'Примечание': None},
+ {'Обозначение': None, 'Наименование': 'Шайба 6 019 ГОСТ 6402-70', 'Свойство': 'Стандартные изделия', 'Формат': 'А4', 'Кол.': None, 'Примечание': None},
+ {'Обозначение': None, 'Наименование': 'Шайба A.6.019 ГОСТ 11371-78', 'Свойство': 'Стандартные изделия', 'Формат': 'А4', 'Кол.': None, 'Примечание': None},
+ {'Обозначение': 'ВРПТ.745551.005-140', 'Наименование': 'DIN-рейка NS35х7,5, L=140 мм', 'Свойство': 'Детали', 'Формат': 'А4', 'Кол.': None, 'Примечание': None},
+ {'Обозначение': 'ВРПТ.305311.001-025', 'Наименование': 'Кабельный ввод ВЗ-Н25#для не бронированного#кабеля, диаметром 12-18мм', 'Свойство': 'Сборочные единицы', 'Формат': 'А4', 'Кол.': None, 'Примечание': None}]
 
-a = 'ВЗ-Н12-Т1/2G(В)'
+    :return: "Стандартные изделия":{}
+    '''
+    return_dict = dict()
+    for equip_dict in list_properties:
+        property = equip_dict['Свойство']
+        if property not in return_dict:
+            equip_dict.pop('Свойство')
+            return_dict[property] = [equip_dict]
+        else:
+            equip_dict.pop('Свойство')
+            return_dict[property].append(equip_dict)
+    return return_dict
 
-print(transliterate.translit(a, language_code='ru', reversed=True))
+def dict_all_attrib_in_BOM(list_for_creating_BOM_with):
+    '''
 
+    :param list_for_creating_BOM_with:
+    {'Сборочные единицы': [{'Обозначение': 'ВРПТ.301172.024-021', 'Наименование': ['Оболочка ВП.161610'], 'Формат': 'А4', 'Кол.': 1, 'Примечание': None, 'Цена': 7154.1}, {'Обозначение': 'ВРПТ.305311.001-025', 'Наименование': 'Кабельный ввод ВЗ-Н25#для не бронированного#кабеля, диаметром 12-18мм', 'Формат': 'А4', 'Кол.': 6, 'Примечание': None, 'Цена': 884.21}, {'Обозначение': 'ВРПТ.305311.001-016', 'Наименование': 'Кабельный ввод ВЗ-Н16#для не бронированного#кабеля, диаметром 3-8мм', 'Формат': 'А4', 'Кол.': 3, 'Примечание': None, 'Цена': 615.75}, {'Обозначение': 'ВРПТ.305311.001-012', 'Наименование': 'Кабельный ввод ВЗ-Н12#для не бронированного#кабеля, диаметром 2-6мм', 'Формат': 'А4', 'Кол.': 2, 'Примечание': None, 'Цена': 607.79}, {'Обозначение': 'ВРПТ.305311.001-032', 'Наименование': 'Кабельный ввод ВЗ-Н32#для не бронированного#кабеля, диаметром 18-25мм', 'Формат': 'А4', 'Кол.': 2, 'Примечание': None, 'Цена': 1188.38}, {'Обозначение': 'ВРПТ.685541.003', 'Наименование': 'Устройство заземления', 'Формат': None, 'Кол.': 1, 'Примечание': None, 'Цена': None}],
+    'Стандартные изделия': [{'Обозначение': None, 'Наименование': 'Винт А2.М6-6gx10.019#ГОСТ 17473-80', 'Формат': 'А4', 'Кол.': 2, 'Примечание': None, 'Цена': None}, {'Обозначение': None, 'Наименование': 'Шайба 6 019 ГОСТ 6402-70', 'Формат': 'А4', 'Кол.': 2, 'Примечание': None, 'Цена': None}, {'Обозначение': None, 'Наименование': 'Шайба A.6.019 ГОСТ 11371-78', 'Формат': 'А4', 'Кол.': 2, 'Примечание': None, 'Цена': None}],
+    'Детали': [{'Обозначение': 'ВРПТ.745551.005-240', 'Наименование': 'DIN-рейка NS35х7,5, L=240 мм', 'Формат': 'А4', 'Кол.': 1, 'Примечание': None, 'Цена': None}]}
+    :return:
+    '''
+
+    return_dict_attribs = dict()
+
+    tag_in_BOM_dxf = {'Формат': 'A', 'Зона': 'B', 'Поз.': 'C', 'Обозначение': 'D', 'Наименование': 'E', 'Кол.': 'F',
+                      'Примечание': 'G', 'Цена': 'H'}
+
+    start_row_int = 1
+    startstart_row_int = 1
+
+    for name_property in list_for_creating_BOM_with:
+        start_row_int += 1
+        startstart_row_int += 1
+        return_dict_attribs[f'E{start_row_int}'] = name_property
+        start_row_int += 2
+        startstart_row_int += 2
+
+        equipment_list = list_for_creating_BOM_with[name_property]
+        for equip_dict in equipment_list:
+            max_row = max((len(equip_dict['Обозначение']),len(equip_dict['Наименование']))) + startstart_row_int
+            for column_name in equip_dict:
+                '''СДЕЛАТЬ ['A4','',''] и тд'''
+                if not isinstance(equip_dict[column_name],list):
+                    equip_dict[column_name] = [equip_dict[column_name]]
+                    for _ in range(1,max((len(equip_dict['Обозначение']),len(equip_dict['Наименование'])))):
+                        equip_dict[column_name].append('')
+                # if 'Цена' != column_name:
+                for name in equip_dict[column_name]:
+
+                    if column_name in tag_in_BOM_dxf:
+                        tag_attrib = tag_in_BOM_dxf[column_name] + str(start_row_int)
+                        return_dict_attribs[tag_attrib] = name
+                        start_row_int += 1
+                start_row_int = startstart_row_int
+            start_row_int = max_row
+            startstart_row_int = max_row
+
+    return return_dict_attribs
+
+if __name__ == '__main__':
+    list_for_creating_BOM_with= \
+    [{'Формат': 'А4', 'Зона': '', 'Поз.': '', 'Обозначение': ['ВРПТ.301172.024-011'],
+      'Наименование': ['Оболочка ВП.161610'], 'Кол.': '1', 'Примечание': 'ВЗОР', 'Свойство': 'Сборочные единицы'},
+     {'Формат': 'А4', 'Зона': '', 'Поз.': '', 'Обозначение': ['ВРПТ.305311.001-20'],
+      'Наименование': ['Взрывозащищенный кабельный ввод', 'ВЗОР для небронированного кабеля',
+                       'круглого сечения, 6-14 мм, М20х1,5-6g,', 'никелированная латунь'], 'Кол.': '5',
+      'Примечание': 'ВЗОР', 'Свойство': 'Сборочные единицы'},
+     {'Формат': '', 'Зона': '', 'Поз.': '', 'Обозначение': ['УК20'],
+      'Наименование': ['Уплотнительное кольцо Ду 20, полимер'], 'Кол.': '5', 'Примечание': 'ВЗОР',
+      'Свойство': 'Детали'}]
+    list_for_creating_BOM_with = create_dict_main_properties(list_for_creating_BOM_with)
+
+
+    dict_all_attrib_in_BOM(list_for_creating_BOM_with=list_for_creating_BOM_with)

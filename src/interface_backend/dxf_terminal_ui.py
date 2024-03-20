@@ -13,7 +13,7 @@ class DxfTerminalQtCommunication(dxf_gland.DxfGlandQtCommunication):
     def __init__(self):
         '''БАЗА ПРИ ЗАПУСКЕ'''
         super().__init__()
-
+        self.list_terminal_dxf = list()
         # Создаем выходной список, при изменении количества в listwidget
         self.add_button_terminal_listwidget.model().rowsInserted.connect(self.set_dict_dxf_terminals)
         self.add_button_terminal_listwidget.model().rowsRemoved.connect(self.set_dict_dxf_terminals)
@@ -91,9 +91,6 @@ class DxfTerminalQtCommunication(dxf_gland.DxfGlandQtCommunication):
 
                         x_first_coordinate += len_terminal
                         self.list_used_blocks_terminals.append(terminal_insert)
-
-
-
 
 
 

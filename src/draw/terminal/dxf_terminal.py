@@ -109,7 +109,8 @@ class TerminalDxf(DxfBase):
                 'Обозначение':self.article_name,
                 'Наименование':self.bom_name,
                 'Кол.':'',
-                'Примечание':'ВЗОР'
+                'Примечание':'ВЗОР',
+                'Свойство':'Прочие изделия'
                 }
             }
         print(self.bom_dict)
