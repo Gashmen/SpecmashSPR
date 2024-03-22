@@ -5,7 +5,7 @@ from ezdxf.addons import Importer
 from PyQt5 import QtCore, QtGui, QtWidgets, Qt
 from PyQt5.QtWidgets import QMessageBox
 import time
-from src.interface_backend import dxf_terminal_ui #ПОМЕНЯТЬ НА ИТОГОВЫЙ ИНТЕРФЕЙСНЫЙ МОДУЛЬ В ОЧЕРЕДНОСТИ
+from src.interface_backend import dxf_terminal_ui  #ПОМЕНЯТЬ НА ИТОГОВЫЙ ИНТЕРФЕЙСНЫЙ МОДУЛЬ В ОЧЕРЕДНОСТИ
 from src.draw import nameplate
 
 class MainPageDxfQtCommunication(dxf_terminal_ui.DxfTerminalQtCommunication):
@@ -20,16 +20,20 @@ class MainPageDxfQtCommunication(dxf_terminal_ui.DxfTerminalQtCommunication):
         self.Autohelper.clicked.connect(self.create_border)
 
         self.Autohelper.clicked.connect(self.create_nameplate)
-        self.Autohelper.clicked.connect(self.create_importer)
         self.Autohelper.clicked.connect(self.create_dimension)
-        self.Autohelper.clicked.connect(self.redraw_withoutcapside)
+        # self.Autohelper.clicked.connect(self.redraw_withoutcapside)
         self.Autohelper.clicked.connect(self.redraw_dinreyka)
-        self.Autohelper.clicked.connect(self.redraw_nameplate)
-        self.Autohelper.clicked.connect(self.create_BOM)
-        # self.Autohelper.clicked.connect(self.delete_block_before_save)
+        # self.Autohelper.clicked.connect(self.redraw_nameplate)
+        self.Autohelper.clicked.connect(self.create_importer)
+
+
         self.Autohelper.clicked.connect(self.save_doc)
         self.Autohelper.clicked.connect(self.save_pdf)
-        print(time.time()-time_pusk)
+
+        self.Autohelper.clicked.connect(self.create_BOM)
+        # self.Autohelper.clicked.connect(self.delete_block_before_save)
+
+        print('Запуск программы: ',time.time()-time_pusk)
 
     @Qt.pyqtSlot()
     def actions_shell(self):
@@ -61,19 +65,17 @@ class MainPageDxfQtCommunication(dxf_terminal_ui.DxfTerminalQtCommunication):
         self.border_insert.add_auto_attribs(values)
 
     def create_importer(self):
-        # тест, потом удалить
-        time2 = time.time()
         self.base_dxf.doc_for_save = ezdxf.new()
         self.importer = Importer(self.base_dxf.doc_base, self.base_dxf.doc_for_save)
         self.importer.import_modelspace()
+        self.importer.import_block('BOM_FIRST')
+        self.importer.import_block('BOM_SECOND')
         self.importer.finalize()
         din_block = self.base_dxf.doc_base.blocks[self.withoutcapside_block.din_insert.dxf.name]
         din_block.set_redraw_order(
             (solid.dxf.handle, "%X" % (1000 - solid.dxf.color))
             for solid in din_block.entity_space if solid.dxftype() == 'HATCH')
-        # self.base_dxf.doc_for_save.saveas('check.dxf')
-        print(time.time() - time2)
-        # pass
+
 
     def create_dimension(self):
         '''Создаем размер'''
@@ -124,9 +126,9 @@ class MainPageDxfQtCommunication(dxf_terminal_ui.DxfTerminalQtCommunication):
                            key=lambda x: x.gland_csv.y_coordinate, reverse=True)[0]
                 y_for_leftside_dim += ((-self.topside_block.extreme_lines['y_min'] + biggest_leftest_gland.gland_csv.y_coordinate)/ self.scale_class.scale)
 
-        dim_style_new = ezdxf.setup_dimstyles(doc = self.base_dxf.doc_for_save)
+        dim_style_old = ezdxf.setup_dimstyles(doc = self.base_dxf.doc_base)
 
-        dim = self.base_dxf.doc_for_save.modelspace().add_linear_dim(
+        dim_base = self.base_dxf.doc_base.modelspace().add_linear_dim(
             angle=90,
             p1=tuple([x_bottom,y_bottom]),
             p2=tuple([x_upper,y_upper]),
@@ -137,7 +139,8 @@ class MainPageDxfQtCommunication(dxf_terminal_ui.DxfTerminalQtCommunication):
 
         )
 
-        dim_horizontal = self.base_dxf.doc_for_save.modelspace().add_linear_dim(
+
+        dim_horizontal_base = self.base_dxf.doc_base.modelspace().add_linear_dim(
                     angle =0,
                     p1=tuple([x_leftest,y_leftest]),
                     p2=tuple([x_rightest,y_rightest]),
@@ -147,19 +150,19 @@ class MainPageDxfQtCommunication(dxf_terminal_ui.DxfTerminalQtCommunication):
                           (self.upside_insert.dxf.insert[1] -
                              self.rightside_block.extreme_lines['y_min'] / self.scale_class.scale + y_bottom) / 2)
                     )
-        self.base_dxf.doc_for_save.styles.entries['kdimtextstyle'].dxf.width = 1
-        self.base_dxf.doc_for_save.styles.entries['kdimtextstyle'].dxf.oblique = 0
-        self.base_dxf.doc_for_save.styles.entries['kdimtextstyle'].dxf.height = 3.5
-        dim_horizontal.dimstyle.dxf.dimtxsty = 'kdimtextstyle'
-        dim_horizontal.dimstyle.dxf.dimtxt = 2.2
-        dim_horizontal.dimstyle.dxf.dimexe = 1
-        dim_horizontal.dimstyle.dxf.dimgap = 1
-        dim_horizontal.dimstyle.dxf.dimblk = ''
-        dim_horizontal.dimstyle.dxf.dimasz = 4
 
-        # dim_horizontal.render()
+        self.base_dxf.doc_base.styles.entries['kdimtextstyle'].dxf.width = 1
+        self.base_dxf.doc_base.styles.entries['kdimtextstyle'].dxf.oblique = 0
+        self.base_dxf.doc_base.styles.entries['kdimtextstyle'].dxf.height = 3.5
+        dim_horizontal_base.dimstyle.dxf.dimtxsty = 'kdimtextstyle'
+        dim_horizontal_base.dimstyle.dxf.dimtxt = 2.2
+        dim_horizontal_base.dimstyle.dxf.dimexe = 1
+        dim_horizontal_base.dimstyle.dxf.dimgap = 1
+        dim_horizontal_base.dimstyle.dxf.dimblk = ''
+        dim_horizontal_base.dimstyle.dxf.dimasz = 4
+        dim_horizontal_base.dimension.dxf.color = 256
 
-        dim_height_rightside = self.base_dxf.doc_for_save.modelspace().add_linear_dim(
+        dim_height_rightside_base = self.base_dxf.doc_base.modelspace().add_linear_dim(
                     p1=(x_for_leftside_dim,
                         y_for_leftside_dim),
                     p2=(self.rightside_insert.dxf.insert[0] - self.rightside_block.extreme_lines['y_min']/self.scale_class.scale,
@@ -171,7 +174,14 @@ class MainPageDxfQtCommunication(dxf_terminal_ui.DxfTerminalQtCommunication):
                           (y_upper + self.downside_insert.dxf.insert[1] + self.downside_block.extreme_lines['y_min'])/2 ),
                     text=f'{round((self.rightside_insert.dxf.insert[0] - self.rightside_block.extreme_lines["y_min"]/self.scale_class.scale - x_for_leftside_dim)  * self.scale_class.scale, 1)}'
                 )
-        # Assuming self.base_dxf.doc_base.modelspace() returns the modelspace object
+
+        dim_height_rightside_base.dimension.dxf.color = 256
+
+
+
+        dim_base.render()
+        dim_horizontal_base.render()
+        dim_height_rightside_base.render()
 
     def delete_block_before_save(self):
         time1 = time.time()
@@ -205,9 +215,9 @@ class MainPageDxfQtCommunication(dxf_terminal_ui.DxfTerminalQtCommunication):
                                               gasdustore=self.gasdustoreComboBox_shellpage.currentText(),
                                               temperature_class=self.temperature_class_comboBox_shellpage.currentText())
                 nameplate.write_minus_temperature(attrib=attrib_in_nameplate,
-                                                  minus_temperature=self.mintempLineEdit_shellpage.text())
+                                                  minus_temperature=self.mintempLineEdit_shellpage_3.text())
                 nameplate.write_plus_temperature(attrib=attrib_in_nameplate,
-                                                 plus_temperature=self.maxtempLineedit_shellpage.text())
+                                                 plus_temperature=self.maxtempLineedit_shellpage_3.text())
                 nameplate.write_voltage_current_frequency(attrib=attrib_in_nameplate)
                 nameplate.write_batch_number(attrib=attrib_in_nameplate)
                 nameplate.write_just_attrib_1(attrib=attrib_in_nameplate)
@@ -215,45 +225,11 @@ class MainPageDxfQtCommunication(dxf_terminal_ui.DxfTerminalQtCommunication):
                 nameplate.write_just_attrib_3(attrib=attrib_in_nameplate)
                 nameplate.write_just_attrib_4(attrib=attrib_in_nameplate)
 
-        block_nameplate = self.base_dxf.doc_base.blocks['nameplate']
-        values = {attdef.dxf.tag: '' for attdef in block_nameplate.query('ATTDEF')}
-        self.nameplate_insert_withoutcapside = self.base_dxf.doc_base.modelspace().add_blockref(
-            name='nameplate',
-            insert=(self.withoutcapside_insert.dxf.insert[0],
-                    (self.withoutcapside_insert.dxf.insert[1] +
-                        (self.withoutcapside_block.extreme_lines['y_max']-8)/(3*self.scale_class.scale))))
-        self.nameplate_insert_withoutcapside.dxf.xscale = 1 / self.scale_class.scale
-        self.nameplate_insert_withoutcapside.dxf.yscale = 1 / self.scale_class.scale
-        self.nameplate_insert_withoutcapside.dxf.zscale = 1 / self.scale_class.scale
-        self.nameplate_insert_withoutcapside.add_auto_attribs(values)
-        for attrib_in_nameplate in self.nameplate_insert_withoutcapside.attribs:
-            if self.task_number != '':
-                nameplate.write_attrib_box_full_name(attrib=attrib_in_nameplate,
-                                                     full_name=f'К{self.serialCombobox_shellpage.currentText()}.{self.sizeCombobox_shellpage.currentText()}',
-                                                     add_numbers=f'.{self.task_number}.{self.position_number}')
-            else:
-                nameplate.write_attrib_box_full_name(attrib=attrib_in_nameplate,
-                                                     full_name=f'К{self.serialCombobox_shellpage.currentText()}.{self.sizeCombobox_shellpage.currentText()}')
-
-            nameplate.write_explosion_tag(attrib=attrib_in_nameplate,
-                                          gasdustore=self.gasdustoreComboBox_shellpage.currentText(),
-                                          temperature_class=self.temperature_class_comboBox_shellpage.currentText())
-            nameplate.write_minus_temperature(attrib=attrib_in_nameplate,
-                                              minus_temperature=self.mintempLineEdit_shellpage.text())
-            nameplate.write_plus_temperature(attrib=attrib_in_nameplate,
-                                             plus_temperature=self.maxtempLineedit_shellpage.text())
-            nameplate.write_voltage_current_frequency(attrib=attrib_in_nameplate)
-            nameplate.write_batch_number(attrib=attrib_in_nameplate)
-            nameplate.write_just_attrib_1(attrib=attrib_in_nameplate)
-            nameplate.write_just_attrib_2(attrib=attrib_in_nameplate)
-            nameplate.write_just_attrib_3(attrib=attrib_in_nameplate)
-            nameplate.write_just_attrib_4(attrib=attrib_in_nameplate)
-
     def redraw_withoutcapside(self):
         # Create a dictionary of entity_handle and sort_handle pairs using a dictionary comprehension
         handles = {}
         sort_handle = 1  # Start with a lower sort handle for other inserts
-        for solid in self.base_dxf.doc_for_save.modelspace():
+        for solid in self.base_dxf.doc_base.modelspace():
             if solid.dxftype() == 'INSERT':
                 if 'withoutcapside' in solid.dxf.name:
                     handles[
@@ -262,26 +238,39 @@ class MainPageDxfQtCommunication(dxf_terminal_ui.DxfTerminalQtCommunication):
                     handles[solid.dxf.handle] = str(sort_handle)  # Set a unique sort handle for other inserts
                     sort_handle += 1  # Increment the sort handle for other inserts
 
-        self.base_dxf.doc_for_save.modelspace().set_redraw_order(handles)
+        self.base_dxf.doc_base.modelspace().set_redraw_order(handles)
 
     def redraw_dinreyka(self):
         # Create a dictionary of entity_handle and sort_handle pairs using a dictionary comprehension
         handles = {}
         sort_handle = 1  # Start with a lower sort handle for other inserts
-        for solid in self.base_dxf.doc_for_save.blocks[self.withoutcapside_block.din_insert.dxf.name].query():
+        for solid in self.base_dxf.doc_base.blocks[self.withoutcapside_block.din_insert.dxf.name].query():
             if solid.dxftype() != 'HATCH':
                 handles[solid.dxf.handle] = 0  # Set sort handle 'A' for inserts with 'withoutcapside' in their names
             else:
                 handles[solid.dxf.handle] = str(sort_handle)  # Set a unique sort handle for other inserts
                 sort_handle += 1  # Increment the sort handle for other inserts
 
-        self.base_dxf.doc_for_save.blocks[self.withoutcapside_block.din_insert.dxf.name].set_redraw_order(handles)
+        self.base_dxf.doc_base.blocks[self.withoutcapside_block.din_insert.dxf.name].set_redraw_order(handles)
 
     def redraw_nameplate(self):
-        # Create a dictionary of entity_handle and sort_handle pairs using a dictionary comprehension
+        # # Create a dictionary of entity_handle and sort_handle pairs using a dictionary comprehension
+        # doc = self.base_dxf.doc_base
+        # self.base_dxf.doc_base.layers.new("nameplate_layer", dxfattribs={"color": 7})  # 7 - белый цвет
+        #
+        # # Переместить объекты nameplate на новый слой
+        # for entity in self.base_dxf.doc_base.blocks["nameplate"]:
+        #     entity.dxf.layer = "nameplate_layer"
+        #
+        # layer_names = self.base_dxf.doc_base.layers.names()
+        # layer_names.remove("nameplate_layer")
+        # layer_names.append("nameplate_layer")
+        # self.base_dxf.doc_base.layers._layers = {name: self.base_dxf.doc_base.layers.get(name) for name in layer_names}
+
+
         handles = {}
         sort_handle = 1  # Start with a lower sort handle for other inserts
-        for solid in self.base_dxf.doc_for_save.blocks['nameplate']:
+        for solid in self.base_dxf.doc_base.blocks['nameplate']:
             if solid.dxftype() == 'ATTDEF':
                 handles[solid.dxf.handle] = 0
             if solid.dxftype() != 'HATCH':
@@ -290,12 +279,16 @@ class MainPageDxfQtCommunication(dxf_terminal_ui.DxfTerminalQtCommunication):
                 handles[solid.dxf.handle] = str(len(list(self.base_dxf.doc_for_save.blocks['nameplate'].query())))  # Set a unique sort handle for other inserts
                 sort_handle += 1  # Increment the sort handle for other inserts
 
-        self.base_dxf.doc_for_save.blocks['nameplate'].set_redraw_order(handles)
+        self.base_dxf.doc_base.blocks['nameplate'].set_redraw_order(handles)
 
     def create_BOM(self):
         if hasattr(self,'BOM_general'):
+            self.BOM_general.list_elements.clear()
             #Добавление оболочки и всего причастного в BOM
+            # self.shell_information.BOM_shell.give_bom_dict()
+            self.shell_information.BOM_shell.add_din_bom(self.withoutcapside_block.din_length)
             self.BOM_general.add_bom_list_elements(BOM=self.shell_information.BOM_shell.bom_dict)
+
             #Добавление кабельных вводов и всего причастного в BOM
             for gland_on_side in list(self.glands_on_sides_dxf_dict.values()):
                 for gland in gland_on_side:
@@ -306,12 +299,29 @@ class MainPageDxfQtCommunication(dxf_terminal_ui.DxfTerminalQtCommunication):
             self.BOM_general.create_new_bom_dict()
             self.BOM_general.create_dict_main_properties()
             self.BOM_general.dict_all_attrib_in_BOM()
+            self.BOM_general.modify_dict_for_BOM()
 
-            # self.base_dxf.doc_base.modelspace().delete_all_entities()
+            for bom_page in self.BOM_general.BOM_result_dict:
+                BOM = None
+                if bom_page == 1:
+                    BOM = self.BOM_general.create_BOM_first(doc_bom=self.base_dxf.doc_for_save)
+                else:
+                    BOM = self.BOM_general.create_BOM_SECOND(doc_bom=self.base_dxf.doc_for_save)
+                dict_attribs = {attrib.dxf.tag: attrib for attrib in BOM.attribs}
+                dict_attribs['SHEET_FIRST'].dxf.text = str(bom_page)
+                if bom_page == 1:
+                    dict_attribs['SHEET_COUNT'].dxf.text = str(max(list(self.BOM_general.BOM_result_dict.keys())))
+                    dict_attribs['RUDES'].dxf.text = self.designer_name
+                for attribs in self.BOM_general.BOM_result_dict[bom_page]:
+                    if attribs in list(dict_attribs.keys()):
+                        dict_attribs[attribs].dxf.text = self.BOM_general.BOM_result_dict[bom_page][attribs]
+                # self.base_dxf.doc_for_save = ezdxf.new()
+                # self.importer = Importer(self.base_dxf.doc_base, self.base_dxf.doc_for_save)
+                # self.importer.import_modelspace()
+                # self.importer.finalize()
 
-
-
-            print(1)
+                self.base_dxf.doc_for_save.saveas(f'BOM_{bom_page}.dxf')
+                self.save_pdf_BOM(page_number=bom_page)
 
 
 if __name__ == "__main__":

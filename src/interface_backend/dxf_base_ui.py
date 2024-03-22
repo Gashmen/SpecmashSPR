@@ -33,8 +33,7 @@ class DxfQtCommunication(gland_ui.GlandInterface):
         self.set_list_used_blocks_shell()
         self.set_list_used_blocks_terminals()
 
-        #УСТАНОВКА КЛАССА ДЛЯ ВСЕГО BOM
-        self.BOM_general = BOM.BOM_GENERAL()
+
 
         '''СОMBOBOX SHELL'''
 

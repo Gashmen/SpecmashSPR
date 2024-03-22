@@ -182,56 +182,105 @@ class DxfGlandQtCommunication(dxf_shell_ui.DxfShellQtCommunication):
         time2 = time.time()
         # self.base_dxf.doc_base=
         self.base_dxf.doc_for_save.saveas('check.dxf')
-        print(time.time()-time2)
+        print('Сохранение dxf: ',time.time()-time2)
 
     def save_pdf(self):
 
         time2 = time.time()
 
-        try:
-            doc, auditor = recover.readfile('check.dxf')
-        except IOError:
-            print(f'Not a DXF file or a generic I/O error.')
-            sys.exit(1)
-        except ezdxf.DXFStructureError:
-            print(f'Invalid or corrupted DXF file.')
-            sys.exit(2)
-        # doc.save()
-        if not auditor.has_errors:
+        # try:
+        #     doc, auditor = recover.readfile('check.dxf')
+        # except IOError:
+        #     print(f'Not a DXF file or a generic I/O error.')
+        #     sys.exit(1)
+        # except ezdxf.DXFStructureError:
+        #     print(f'Invalid or corrupted DXF file.')
+        #     sys.exit(2)
+        # # doc.save()
+        # if not auditor.has_errors:
+        #
+        #     try:
+        doc = self.base_dxf.doc_base
+        # matplotlib.qsave(doc.modelspace(), 'your.png',bg='#FFFFFFFF',size_inches=(800,600))
+        ezdxf.addons.drawing.properties.MODEL_SPACE_BG_COLOR = '#FFFFFF'
+        # prop = matplotlib.font_manager.FontProperties(family='GOST_A')
+        # matplotlib.font_manager.findfont(prop, fontext='ttf')
+        fig = plt.figure()
+        ax = fig.add_axes([0, 0, 1, 1])
+        ctx = RenderContext(doc)
+        # --- Делает белый бэкграунд ---
+        config = Configuration()
+        config = config.with_changes(
+            min_lineweight=0.05,  # in 1/300 inch: 1 mm = 1mm / 25.4 * 300
+            lineweight_scaling=0.1,
+        )
 
-            try:
-                # matplotlib.qsave(doc.modelspace(), 'your.png',bg='#FFFFFFFF',size_inches=(800,600))
-                ezdxf.addons.drawing.properties.MODEL_SPACE_BG_COLOR = '#FFFFFF'
-                # prop = matplotlib.font_manager.FontProperties(family='GOST_A')
-                # matplotlib.font_manager.findfont(prop, fontext='ttf')
-                fig = plt.figure()
-                ax = fig.add_axes([0, 0, 1, 1])
-                ctx = RenderContext(doc)
-                # --- Делает белый бэкграунд ---
-                config = Configuration()
-                config = config.with_changes(
-                    min_lineweight=0.05,  # in 1/300 inch: 1 mm = 1mm / 25.4 * 300
-                    lineweight_scaling=0.1
-                )
+        ctx.set_current_layout(doc.modelspace())
+        ctx.current_layout_properties.set_colors(bg='#FFFFFF')
 
-                ctx.set_current_layout(doc.modelspace())
-                ctx.current_layout_properties.set_colors(bg='#FFFFFF')
+        # --- Делает белый бэкграунд ---
 
-                # --- Делает белый бэкграунд ---
+        out = MatplotlibBackend(ax)  # {"lineweight_scaling": 0.1})
 
-                out = MatplotlibBackend(ax)  # {"lineweight_scaling": 0.1})
+        # Better control over the LayoutProperties used by the drawing frontend
+        layout_properties = LayoutProperties.from_layout(doc.modelspace())
+        layout_properties.set_colors(bg='#FFFFFF')
 
-                # Better control over the LayoutProperties used by the drawing frontend
-                layout_properties = LayoutProperties.from_layout(doc.modelspace())
-                layout_properties.set_colors(bg='#FFFFFF')
+        Frontend(ctx, out, config=config).draw_layout(doc.modelspace(), layout_properties=layout_properties,
+                                                      finalize=True)
+        path_to_pdf = 'check.' + 'pdf'
+        fig.savefig(path_to_pdf, format='pdf', dpi=300, facecolor='black', edgecolor='black')
 
-                Frontend(ctx, out, config=config).draw_layout(doc.modelspace(), layout_properties=layout_properties,
-                                                              finalize=True)
-                path_to_pdf = 'check.' + 'pdf'
-                fig.savefig(path_to_pdf, format='pdf', dpi=300, facecolor='black', edgecolor='black')
-            except:
-                print('Не построился pdf')
-        print(time.time()-time2)
+        print('Сохранение pdf: ',time.time()-time2)
+
+    def save_pdf_BOM(self,page_number):
+
+        time2 = time.time()
+
+        # try:
+        #     doc, auditor = recover.readfile('check.dxf')
+        # except IOError:
+        #     print(f'Not a DXF file or a generic I/O error.')
+        #     sys.exit(1)
+        # except ezdxf.DXFStructureError:
+        #     print(f'Invalid or corrupted DXF file.')
+        #     sys.exit(2)
+        # # doc.save()
+        # if not auditor.has_errors:
+        #
+        #     try:
+        doc = self.base_dxf.doc_for_save
+        # matplotlib.qsave(doc.modelspace(), 'your.png',bg='#FFFFFFFF',size_inches=(800,600))
+        ezdxf.addons.drawing.properties.MODEL_SPACE_BG_COLOR = '#FFFFFF'
+        # prop = matplotlib.font_manager.FontProperties(family='GOST_A')
+        # matplotlib.font_manager.findfont(prop, fontext='ttf')
+        fig = plt.figure()
+        ax = fig.add_axes([0, 0, 1, 1])
+        ctx = RenderContext(doc)
+        # --- Делает белый бэкграунд ---
+        config = Configuration()
+        config = config.with_changes(
+            min_lineweight=0.05,  # in 1/300 inch: 1 mm = 1mm / 25.4 * 300
+            lineweight_scaling=0.1,
+        )
+
+        ctx.set_current_layout(doc.modelspace())
+        ctx.current_layout_properties.set_colors(bg='#FFFFFF')
+
+        # --- Делает белый бэкграунд ---
+
+        out = MatplotlibBackend(ax)  # {"lineweight_scaling": 0.1})
+
+        # Better control over the LayoutProperties used by the drawing frontend
+        layout_properties = LayoutProperties.from_layout(doc.modelspace())
+        layout_properties.set_colors(bg='#FFFFFF')
+
+        Frontend(ctx, out, config=config).draw_layout(doc.modelspace(), layout_properties=layout_properties,
+                                                      finalize=True)
+        path_to_pdf = 'BOM_' + str(page_number) + '.pdf'
+        fig.savefig(path_to_pdf, format='pdf', dpi=300, facecolor='black', edgecolor='black')
+
+        print('Сохранение BOM: ',time.time()-time2)
 
 
 if __name__ == "__main__":

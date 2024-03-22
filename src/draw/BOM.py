@@ -71,7 +71,21 @@ class BOM_SHELL:
                 'Свойство':'Сборочные единицы'
                 }
             }
-        print(self.bom_dict)
+
+    def add_din_bom(self,din_length):
+        if hasattr(self,'bom_dict'):
+            self.bom_dict[tuple([f'ВРПТ.745551.005-{din_length}'])] =\
+                {
+                    'Формат': "",
+                    'Зона': "",
+                    'Поз.': "",
+                    'Обозначение': [f'ВРПТ.745551.005-{din_length}'],
+                    'Наименование': [f'DIN-рейка NS35х7,5, L={din_length} мм'],
+                    'Кол.': '',
+                    'Примечание': 'ВЗОР',
+                    'Свойство': 'Детали'
+
+                }
 
 
 class BOM_GLAND:
@@ -95,7 +109,11 @@ class BOM_GLAND:
 
     def set_vrpt_name(self):
         if hasattr(self,'gland_full_information'):
-            self.vrpt_name = str(self.gland_full_information['Чертеж основной']) + '-' + str(self.gland_full_information['Исполнение'])
+            self.vrpt_name =''
+            if str(self.gland_full_information['Чертеж основной']) != ' ':
+                self.vrpt_name += str(self.gland_full_information['Чертеж основной'])
+            if str(self.gland_full_information['Исполнение']) != ' ':
+                self.vrpt_name += '-' + str(self.gland_full_information['Исполнение'])
             if '#' in self.vrpt_name:
                 self.vrpt_name = self.vrpt_name.split('#')
             else:
@@ -147,7 +165,7 @@ class BOM_GLAND:
                 'Свойство':'Сборочные единицы'
                 }
             }
-        print(self.bom_dict)
+
 
     def add_options_bom(self):
         if hasattr(self,'bom_dict'):
@@ -234,10 +252,8 @@ class BOM_GLAND:
                         'Формат': "",
                         'Зона': "",
                         'Поз.': "",
-                        'Обозначение': [f'ВЗ-ВЗе{self.gland.cable_type_size}'],
-                        'Наименование': [f'Взрывозащищенная защитная пробка',
-                                         f'для кабельных вводов М{self.gland.cable_type_size},',
-                                         'никелированная латунь'],
+                        'Обозначение': [f'Ч{self.gland.cable_type_size}'],
+                        'Наименование': [f'Чехол защитный М{self.gland.cable_type_size}'],
                         'Кол.': '',
                         'Примечание': 'ВЗОР',
                         'Свойство': 'Детали'
@@ -256,11 +272,12 @@ class BOM_GENERAL:
 
     def create_new_bom_dict(self):
         '''Создает новый словарь c учетом того, что элементы повторяются тут'''
+        self.bom_dict = dict()
         for dict_elements in self.list_elements:
             for element in dict_elements:
                 if element not in self.bom_dict:
-                    dict_elements[element]['Кол.'] = '1'
-                    self.bom_dict[element] = dict_elements[element]
+                    self.bom_dict[element] = dict_elements[element].copy()
+                    self.bom_dict[element]['Кол.'] = '1'
                 else:
                     self.bom_dict[element]['Кол.'] = str(1+int(self.bom_dict[element]['Кол.']))
 
@@ -367,18 +384,44 @@ class BOM_GENERAL:
         :return:
         '''
 
-        return_dict = dict()
+        self.BOM_result_dict = dict()
 
         for attrib_name in self.return_dict_attribs:
             if (int(attrib_name[1:]) - 29) <= 0:
-                if 1 not in return_dict:
-                    return_dict[1] = dict()
-                return_dict[1][attrib_name] = self.return_dict_attribs[attrib_name]
+                if 1 not in self.BOM_result_dict:
+                    self.BOM_result_dict[1] = dict()
+                self.BOM_result_dict[1][attrib_name] = self.return_dict_attribs[attrib_name]
             else:
                 page_number = ((int(attrib_name[1:]) - 29) // 32) + 2
-                if page_number not in return_dict:
-                    return_dict[page_number] = dict()
+                if page_number not in self.BOM_result_dict:
+                    self.BOM_result_dict[page_number] = dict()
 
-                return_dict[page_number][attrib_name[0] + str(int(attrib_name[1:]) - 29 - (32 * (page_number - 2)))] = \
+                self.BOM_result_dict[page_number][attrib_name[0] + str(int(attrib_name[1:]) - 29 - (32 * (page_number - 2)))] = \
                 self.return_dict_attribs[attrib_name]
+
+    def create_BOM_first(self,doc_bom):
+        '''Создает первый лист спецификации'''
+
+        block_border = doc_bom.blocks['BOM_FIRST']
+        values = {attdef.dxf.tag: '' for attdef in block_border.query('ATTDEF')}
+        doc_bom.modelspace().delete_all_entities()
+        if doc_bom.blocks.get('BOM_FIRST'):
+            border_insert = doc_bom.modelspace().add_blockref(name='BOM_FIRST',
+                                                              insert=(0, 0))
+            border_insert.add_auto_attribs(values)
+
+            return border_insert
+
+    def create_BOM_SECOND(self,doc_bom):
+        '''Создает первый лист спецификации'''
+
+        block_border = doc_bom.blocks['BOM_SECOND']
+        values = {attdef.dxf.tag: '' for attdef in block_border.query('ATTDEF')}
+        doc_bom.modelspace().delete_all_entities()
+        if doc_bom.blocks.get('BOM_SECOND'):
+            border_insert = doc_bom.modelspace().add_blockref(name='BOM_SECOND',
+                                                              insert=(0, 0))
+            border_insert.add_auto_attribs(values)
+
+            return border_insert
 

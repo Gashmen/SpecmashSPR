@@ -168,7 +168,7 @@ class ScaleBorder:
         needed_parametrs = [self.len0_x,self.len1_x,self.len2_x,self.len3_x,self.len4_x,
                             self.len5_x,self.len6_x,self.len7_x,self.len8_x,self.len9_x,
                             self.len10_x,self.len11_x]
-        sum_len_x_top = sum(needed_parametrs) + 1*max([self.len2_y,self.len2_x,self.len4_y,self.len4_x])#для вставки размера
+        sum_len_x_top = sum(needed_parametrs) + 1.5*max([self.len2_y,self.len2_x,self.len4_y,self.len4_x])#для вставки размера
         self.scale_len_x_top = math.floor(sum_len_x_top / scale_gost)+1
         if self.scale_len_x_top <= len_x_top:
             return True

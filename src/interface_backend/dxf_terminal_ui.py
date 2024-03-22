@@ -52,7 +52,9 @@ class DxfTerminalQtCommunication(dxf_gland.DxfGlandQtCommunication):
     def delete_terminal_in_withoutcapside(self):
         if len(self.list_used_blocks_terminals) >0:
             for terminal_insert in self.list_used_blocks_terminals:
-                self.base_dxf.doc_base.blocks[self.withoutcapside_block.shell_side_name].delete_entity(terminal_insert)
+                # Не может удалить блоки после создания новой оболочки, потому что там нет их
+                if terminal_insert in self.base_dxf.doc_base.blocks[self.withoutcapside_block.shell_side_name].query('INSERT').entities:
+                    self.base_dxf.doc_base.blocks[self.withoutcapside_block.shell_side_name].delete_entity(terminal_insert)
             self.list_used_blocks_terminals.clear()
 
     def create_terminals_dxf_after_DIN_REYKA(self):

@@ -5,7 +5,7 @@ from ezdxf.document import Drawing
 
 from src.draw.base import DxfBase
 from src.csv.shell_csv import Shell_csv
-from src.algoritms import gland_algoritm_one_row
+from src.algoritms import gland_algoritm_one_row, measure_length_base
 from src.csv.gland_csv import CableGlandInformation
 from src.Widgets_Custom import UI_BaseError
 
@@ -649,7 +649,10 @@ class ShellWithoutcapsideBlock(ShellSideBlock):
         self.doc_base.blocks['DIN_' + self.shell_side_name.split('_')[0]].set_redraw_order(handles)
 
         din_base.define_extreme_lines()
-        self.din_length = din_base.extreme_lines['x_max'] - din_base.extreme_lines['x_min']
+
+        # self.din_length = din_base.extreme_lines['x_max'] - din_base.extreme_lines['x_min']
+
+        self.din_length = int(measure_length_base.calculate_horizontal_len_block(din_base.block))
 
         self.din_insert = self.doc_base.blocks[self.shell_side_name].add_blockref(
             name = 'DIN_' + self.shell_side_name.split('_')[0],

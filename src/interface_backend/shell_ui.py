@@ -66,7 +66,7 @@ class ShellInterface(setup_ui.SetupInterface):
         self.gas_mark_RadioButton_shellpage.toggled.connect(self.give_T_class_and_maxT)
         self.dust_mark_RadioButton_shellpage.toggled.connect(self.give_T_class_and_maxT)
         self.ore_mark_RadioButton_shellpage.toggled.connect(self.give_T_class_and_maxT)
-        self.maxtempLineedit_shellpage.editingFinished.connect(self.give_T_class_and_maxT)
+        self.maxtempLineedit_shellpage_3.editingFinished.connect(self.give_T_class_and_maxT)
 
 
 
@@ -195,6 +195,7 @@ class ShellInterface(setup_ui.SetupInterface):
                     self.shell_information.BOM_shell.set_production_cost()
                     self.shell_information.BOM_shell.set_work_cost()
                     self.shell_information.BOM_shell.give_bom_dict()
+                    self.BOM_general.add_bom_list_elements(BOM=self.shell_information.BOM_shell.bom_dict)
 
     @Qt.pyqtSlot()
     def define_all_marking_explosion_protection(self):
@@ -298,26 +299,26 @@ class ShellInterface(setup_ui.SetupInterface):
         if self.gas_mark_RadioButton_shellpage.isChecked():
             self.t_class_widget_shellpage.setEnabled(True)
             self.using_temperatureWidget_shellpage.setEnabled(True)
-            self.mintempLabel_shellpage.setEnabled(True)
-            self.mintempLineEdit_shellpage.setEnabled(True)
-            self.maxtempLabel_shellpage.setEnabled(True)
-            self.maxtempLineedit_shellpage.setEnabled(True)
+            self.mintempLabel_shellpage_3.setEnabled(True)
+            self.mintempLineEdit_shellpage_3.setEnabled(True)
+            self.maxtempLabel_shellpage_3.setEnabled(True)
+            self.maxtempLineedit_shellpage_3.setEnabled(True)
             self.t_class_widget_shellpage.setEnabled(True)
-            self.using_temperatureLabel_shellpage.setText('Температура окружающей среды')
+            self.using_temperatureLabel_shellpage_3.setText('Температура окружающей среды')
             self.temperature_class_comboBox_shellpage.addItems(
-                define_deleted_Tclass(int(self.maxtempLineedit_shellpage.text())))
+                define_deleted_Tclass(int(self.maxtempLineedit_shellpage_3.text())))
         elif self.dust_mark_RadioButton_shellpage.isChecked():
             self.using_temperatureWidget_shellpage.setEnabled(True)
-            self.mintempLabel_shellpage.setEnabled(False)
-            self.mintempLineEdit_shellpage.setEnabled(False)
+            self.mintempLabel_shellpage_3.setEnabled(False)
+            self.mintempLineEdit_shellpage_3.setEnabled(False)
             self.t_class_widget_shellpage.setEnabled(False)
-            self.maxtempLabel_shellpage.setEnabled(True)
-            self.maxtempLineedit_shellpage.setEnabled(True)
+            self.maxtempLabel_shellpage_3.setEnabled(True)
+            self.maxtempLineedit_shellpage_3.setEnabled(True)
             self.using_temperatureLabel_shellpage.setText('Максимальная температура поверхности')
         elif self.ore_mark_RadioButton_shellpage.isChecked():
             self.t_class_widget_shellpage.setEnabled(False)
             self.using_temperatureWidget_shellpage.setEnabled(False)
-            self.using_temperatureLabel_shellpage.setText(' ')
+            self.using_temperatureLabel_shellpage_3.setText(' ')
 
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)

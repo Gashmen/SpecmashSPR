@@ -33,70 +33,79 @@ class TerminalDxf(DxfBase):
 
     def set_BOM_name(self):
         if hasattr(self,'terminal_dxf_name'):
-            split_full_name = self.terminal_dxf_name.split('_')
-            #SUPU#VZOR
-            manufacturer = split_full_name[0]
-            #SPRING#SCREW
-            type = split_full_name[1]
-            #WHITE#BLUE#GREEN
-            color = split_full_name[2]
-            #1.5#2.5#4#6#10#16#35#50#70#95
-            size = split_full_name[3]
+            if self.terminal_dxf_name == 'Terminal_end_plate_frontside_2.5':
+                self.manufacturer_name = 'SUPU'
+                self.article_name = ['TU2.5-2-GY-EA']
+                self.bom_name = ['Концевая пластина']
+            elif self.terminal_dxf_name == 'Terminal_end_stop_frontside':
+                self.manufacturer_name = 'SUPU'
+                self.article_name = ['SPD35  (215202)']
+                self.bom_name = ['Концевой стопор']
+            else:
+                split_full_name = self.terminal_dxf_name.split('_')
+                #SUPU#VZOR
+                manufacturer = split_full_name[0]
+                #SPRING#SCREW
+                type = split_full_name[1]
+                #WHITE#BLUE#GREEN
+                color = split_full_name[2]
+                #1.5#2.5#4#6#10#16#35#50#70#95
+                size = split_full_name[3]
 
-            article_name = ''
-            bom_name = ''
-            if manufacturer == 'SUPU':
-                article_name += 'T'
-                bom_name += 'Клемма'
+                article_name = ''
+                bom_name = ''
+                if manufacturer == 'SUPU':
+                    article_name += 'T'
+                    bom_name += 'Клемма'
 
-                if str(color).lower() == 'white':
-                    bom_name += ' проходная'
-                elif str(color).lower() == 'blue':
-                    bom_name += ' нулевая'
-                else:
-                    bom_name += ' заземления'
+                    if str(color).lower() == 'white':
+                        bom_name += ' проходная'
+                    elif str(color).lower() == 'blue':
+                        bom_name += ' нулевая'
+                    else:
+                        bom_name += ' заземления'
 
-                if type == 'SCREW':
-                    article_name += 'U'
-                    bom_name += ' винтовая'
-                else:
-                    article_name += 'C'
-                    bom_name += ' пружинная'
+                    if type == 'SCREW':
+                        article_name += 'U'
+                        bom_name += ' винтовая'
+                    else:
+                        article_name += 'C'
+                        bom_name += ' пружинная'
 
-                if size in terminal_config.SQUARE_CURRENT:
-                    bom_name +=f' #Iном. ={terminal_config.SQUARE_CURRENT[size]}А, {size} мм.кв, {manufacturer}'
-                    article_name +=size
+                    if size in terminal_config.SQUARE_CURRENT:
+                        bom_name +=f' #Iном. ={terminal_config.SQUARE_CURRENT[size]}А, {size} мм.кв, {manufacturer}'
+                        article_name +=size
 
-                if str(color).lower() == 'white':
-                    article_name += '-2-GY'
-                elif str(color).lower() == 'blue':
-                    article_name += '-2-BU'
-                else:
-                    article_name += '-2-PE'
-            elif manufacturer == 'VZOR':
-                article_name += 'К'
-                bom_name += 'Клемма'
+                    if str(color).lower() == 'white':
+                        article_name += '-2-GY'
+                    elif str(color).lower() == 'blue':
+                        article_name += '-2-BU'
+                    else:
+                        article_name += '-2-PE'
+                elif manufacturer == 'VZOR':
+                    article_name += 'К'
+                    bom_name += 'Клемма'
 
-                if str(color).lower() == 'white':
-                    bom_name += ' проходная'
-                elif str(color).lower() == 'blue':
-                    bom_name += ' нулевая'
-                else:
-                    bom_name += ' заземления'
+                    if str(color).lower() == 'white':
+                        bom_name += ' проходная'
+                    elif str(color).lower() == 'blue':
+                        bom_name += ' нулевая'
+                    else:
+                        bom_name += ' заземления'
 
-                if type == 'SCREW':
-                    article_name += 'В-'
-                    bom_name += ' винтовая'
-                else:
-                    article_name += 'П-'
-                    bom_name += ' пружинная'
+                    if type == 'SCREW':
+                        article_name += 'В-'
+                        bom_name += ' винтовая'
+                    else:
+                        article_name += 'П-'
+                        bom_name += ' пружинная'
 
-                if size in terminal_config.SQUARE_CURRENT:
-                    bom_name += f' #Iном. ={terminal_config.SQUARE_CURRENT[size]}А, {size} мм.кв, ВЗОР'
-                    article_name += size
-
-            self.article_name = [article_name]
-            self.bom_name = bom_name.split('#')
+                    if size in terminal_config.SQUARE_CURRENT:
+                        bom_name += f' #Iном. ={terminal_config.SQUARE_CURRENT[size]}А, {size} мм.кв, ВЗОР'
+                        article_name += size
+                self.manufacturer_name = self.terminal_dxf_name.split('_')[0]
+                self.article_name = [article_name]
+                self.bom_name = bom_name.split('#')
 
 
     def create_BOM_dict(self):
@@ -109,8 +118,7 @@ class TerminalDxf(DxfBase):
                 'Обозначение':self.article_name,
                 'Наименование':self.bom_name,
                 'Кол.':'',
-                'Примечание':'ВЗОР',
+                'Примечание':self.manufacturer_name,
                 'Свойство':'Прочие изделия'
                 }
             }
-        print(self.bom_dict)

@@ -10,6 +10,7 @@ from src.gui.py_ui import mainver03
 from src.Widgets_Custom.Error import Ui_WidgetError
 from src.smbconnect import smbconnect
 from src.ldap_auth import backend_auth
+from src.draw import BOM
 
 class SetupInterface(QtWidgets.QMainWindow, mainver03.Ui_MainWindow):
 
@@ -27,6 +28,10 @@ class SetupInterface(QtWidgets.QMainWindow, mainver03.Ui_MainWindow):
         self.position_number = ''  #Номер позиции
         self.designer_name = ''    #Имя разработчика
 
+        '''Заполнение спецификации'''
+        #УСТАНОВКА КЛАССА ДЛЯ ВСЕГО BOM
+        self.BOM_general = BOM.BOM_GENERAL()
+
         self.stackedWidget.setCurrentIndex(0) #Устанавливает на оболочках stackedWidget
         self.set_manufacturers()
 
@@ -37,7 +42,7 @@ class SetupInterface(QtWidgets.QMainWindow, mainver03.Ui_MainWindow):
         self.terminalButton_leftMenu.clicked.connect(self.set_terminal_page)
         self.optionsButton_leftMenu.clicked.connect(self.set_options_page)
 
-        self.pushButton_2.clicked.connect(self.error_window.call_error)
+        # self.pushButton_2.clicked.connect(self.error_window.call_error)
         self.welcomewindowButton.clicked.connect(self.home_window)
 
     def qt_message_handler(self,mode, context, message):
@@ -74,13 +79,13 @@ class SetupInterface(QtWidgets.QMainWindow, mainver03.Ui_MainWindow):
 
 
     def set_manufacturers(self):
-        self.add_manufacturer_inputs_combobox()
+        # self.add_manufacturer_inputs_combobox()
         self.add_manufacturer_terminal_combobox()
 
-    def add_manufacturer_inputs_combobox(self):
-        '''Пока поставим производителя только ВЗОР'''
-        self.manufacturerInputsComboBox.clear()
-        self.manufacturerInputsComboBox.addItems(csv_config.GLAND_MANUFACTURER)
+    # def add_manufacturer_inputs_combobox(self):
+    #     '''Пока поставим производителя только ВЗОР'''
+    #     self.manufacturerInputsComboBox.clear()
+    #     self.manufacturerInputsComboBox.addItems(csv_config.GLAND_MANUFACTURER)
 
     def set_terminal_page(self):
         '''Устанавливает 2 индекс у SHELL PAGE, если он не установлен'''

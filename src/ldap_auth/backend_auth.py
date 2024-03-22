@@ -83,6 +83,7 @@ class AuthWindow(QtWidgets.QMainWindow, frontend_auth.Ui_WelcomeWindow):
         self.scripts_window.show()
 
     def show_jb_qt(self):
+
         self.jb_window = dxf_result_main_page.MainPageDxfQtCommunication()
         self.jb_window.designer_name = self.return_username()
         self.jb_window.task_number = self.return_task_number()

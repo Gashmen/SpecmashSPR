@@ -47,6 +47,16 @@ def calculate_vertical_len_block(block):
     vertical_len = abs(max(dict_with_horizontal_lines.keys()) - min(dict_with_horizontal_lines.keys()))
     return vertical_len
 
+# def calculate_horizonal_len_block(block):
+#     '''
+#     Считает горизонтальную длину блока(Дин рейка)
+#     :param block:
+#     :return:
+#     '''
+#     dict_with_vertical_lines = create_dict_with_vertical_lines(block=block)
+#     horizontal_len = abs(max(dict_with_vertical_lines.keys()) - min(dict_with_vertical_lines.keys()))
+#     return horizontal_len
+
 
 def calculate_horizontal_len_block(block):
     '''

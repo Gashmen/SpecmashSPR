@@ -161,8 +161,8 @@ class TwoRowGlandChecker(GlandAlgoritmChecker):
                                 self.list_glands[0].set_property_tworow_algoritm()
                                 self.list_glands.pop(0)
                                 self.list_diam.pop(0)
-                                while self.width_for_cut >= 0:
-                                    if self.search_inputs_can_insert_in_level() == True:
+                                while self.width_for_cut >= (len(self.level_dict[max(list(self.level_dict.keys()))]['list_cable_glands'])) * 5:
+                                    if self.search_inputs_can_insert_in_level(count_added_gland=(len(self.level_dict[max(list(self.level_dict.keys()))]['list_cable_glands']))) == True:
                                         self.add_in_current_level()
                                         self.width_for_cut -= self.level_dict[max(list(self.level_dict.keys()))]['list_cable_glands'][-1].diametr
                                         self.list_glands[self.current_gland_index].set_property_tworow_algoritm()
@@ -356,7 +356,7 @@ class TwoRowGlandChecker(GlandAlgoritmChecker):
         number_current_gland_level = max(list(self.level_dict.keys()))
         self.level_dict[number_current_gland_level]['list_cable_glands'].append(self.list_glands[self.current_gland_index])
 
-    def search_inputs_can_insert_in_level(self):
+    def search_inputs_can_insert_in_level(self,count_added_gland=1):
         '''
         Поиск ввода который поместится снизу
         :param free_width: свободное пространство
@@ -368,7 +368,7 @@ class TwoRowGlandChecker(GlandAlgoritmChecker):
         if self.list_glands is not None:
             if len(self.list_glands) > 0:
                 for gland in self.list_glands:
-                    if self.width_for_cut - 5 >= gland.diametr:
+                    if self.width_for_cut - 5*count_added_gland >= gland.diametr:
                         self.current_gland_index = self.list_glands.index(gland)
                         search_gland_success = True
                         return search_gland_success

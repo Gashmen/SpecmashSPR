@@ -74,8 +74,8 @@ class GlandInterface(shell_ui.ShellInterface):
         self.gland_additionalmarkingcomboBox.currentTextChanged.connect(self.install_gland_type_mr_marking_enabled)
         self.gland_additionalmarkingcomboBox.currentTextChanged.connect(self.give_gland_tube_mr_modification)
 
-        self.gland_tube_mr_markingcomboBox.currentTextChanged.connect(self.set_gland_tube_mr_modification)
-        self.gland_tube_mr_markingcomboBox.currentTextChanged.connect(self.set_key_gland)
+        self.gland_tube_mr_markingcomboBox_2.currentTextChanged.connect(self.set_gland_tube_mr_modification)
+        self.gland_tube_mr_markingcomboBox_2.currentTextChanged.connect(self.set_key_gland)
 
         '''LINE EDIT'''
         self.gland_checkdiam_minlineedit.editingFinished.connect(self.set_min_diam_qt)
@@ -165,10 +165,10 @@ class GlandInterface(shell_ui.ShellInterface):
 
 
 
-    def add_manufacturer_inputs_combobox(self):
-        '''Пока поставим производителя только ВЗОР'''
-        self.manufacturerInputsComboBox.clear()
-        self.manufacturerInputsComboBox.addItems(csv_config.GLAND_MANUFACTURER)
+    # def add_manufacturer_inputs_combobox(self):
+    #     '''Пока поставим производителя только ВЗОР'''
+    #     self.manufacturerInputsComboBox.clear()
+    #     self.manufacturerInputsComboBox.addItems(csv_config.GLAND_MANUFACTURER)
 
     def improve_choose_widget(self):
         '''ИЗМЕНЕНИЕ КЛАССА COMBOBOX WIDGET'''
@@ -185,8 +185,8 @@ class GlandInterface(shell_ui.ShellInterface):
     @Qt.pyqtSlot()
     def set_gland_page(self):
         '''Устанавливает 1 индекс у SHELL PAGE, если он не установлен'''
-        if self.stackedWidget.count() != 5:
-            self.stackedWidget.setCurrentIndex(5)
+        if self.stackedWidget.count() != 1:
+            self.stackedWidget.setCurrentIndex(1)
 
     def install_gland_csv(self):
         self.smb_specmash.get_gland_csv_path()
@@ -423,20 +423,20 @@ class GlandInterface(shell_ui.ShellInterface):
 
     @Qt.pyqtSlot()
     def give_gland_tube_mr_modification(self):
-        self.gland_tube_mr_markingcomboBox.clear()
+        self.gland_tube_mr_markingcomboBox_2.clear()
         if self.gland_additionalmarkingcomboBox.isEnabled():
             if self.gland_additionalmarkingcomboBox.currentText() != '':
                 self.gland_information.get_uniqie_tube_mr_modification()
-                self.gland_tube_mr_markingcomboBox.addItems(['',*self.gland_information.unique_tube_mr_modification])
+                self.gland_tube_mr_markingcomboBox_2.addItems(['',*self.gland_information.unique_tube_mr_modification])
                 if self.gland_information.gland_additional_marking == 'МР':
                     self.gland_tube_mr_markinglabel.setText('Металлорукав')
                 elif self.gland_information.gland_additional_marking == 'Т':
                     self.gland_tube_mr_markinglabel.setText('Трубная')
 
     def set_gland_tube_mr_modification(self):
-        if self.gland_tube_mr_markingcomboBox.isEnabled():
-            if self.gland_tube_mr_markingcomboBox.currentText() != '':
-                self.gland_tube_mr_modification = self.gland_tube_mr_markingcomboBox.currentText()
+        if self.gland_tube_mr_markingcomboBox_2.isEnabled():
+            if self.gland_tube_mr_markingcomboBox_2.currentText() != '':
+                self.gland_tube_mr_modification = self.gland_tube_mr_markingcomboBox_2.currentText()
                 self.gland_information.set_gland_tube_mr_modification(
                     gland_tube_mr_modification= self.gland_tube_mr_modification)
 
@@ -444,7 +444,7 @@ class GlandInterface(shell_ui.ShellInterface):
     def set_key_gland(self):
         '''Установка ключа кабельнного ввода при выборе модификаций'''
         if hasattr(self,'gland_tube_mr_modification'):
-            if self.gland_tube_mr_markingcomboBox.currentText() != '':
+            if self.gland_tube_mr_markingcomboBox_2.currentText() != '':
                     self.gland_information.set_gland()
                     self.key_gland = self.gland_information.key_gland
 

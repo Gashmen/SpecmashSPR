@@ -12,7 +12,7 @@ from src.csv import gland_csv
 from src.Widgets_Custom import ExtendedCombobox,UI_BaseError
 from src.draw import base
 from src.draw.shell_side import dxf_shell
-
+from src.draw import nameplate
 class DxfShellQtCommunication(terminal_ui.TerminalUi):
 
     def __init__(self):
@@ -321,6 +321,46 @@ class DxfShellQtCommunication(terminal_ui.TerminalUi):
     def withoutcapside_din(self):
         if hasattr(self, 'withoutcapside_block'):
             self.withoutcapside_block.draw_din()
+
+    def create_nameplate_withoutcapside(self,x_coordinate_withoutcapside,y_coordinate_withoutcapside):
+        if hasattr(self, 'withoutcapside_block'):
+            block_nameplate = self.base_dxf.doc_base.blocks['nameplate']
+            values = {attdef.dxf.tag: '' for attdef in block_nameplate.query('ATTDEF')}
+            self.nameplate_insert_withoutcapside = self.base_dxf.doc_base.modelspace().add_blockref(
+                name='nameplate',
+                insert=(x_coordinate_withoutcapside,
+                        (y_coordinate_withoutcapside +
+                         (self.withoutcapside_block.extreme_lines['y_max'] - 8) / (3 * self.scale_class.scale))))
+            self.nameplate_insert_withoutcapside.dxf.xscale = 1 / self.scale_class.scale
+            self.nameplate_insert_withoutcapside.dxf.yscale = 1 / self.scale_class.scale
+            self.nameplate_insert_withoutcapside.dxf.zscale = 1 / self.scale_class.scale
+            self.nameplate_insert_withoutcapside.add_auto_attribs(values)
+            for attrib_in_nameplate in self.nameplate_insert_withoutcapside.attribs:
+                if self.task_number != '':
+                    nameplate.write_attrib_box_full_name(attrib=attrib_in_nameplate,
+                                                         full_name=f'К{self.serialCombobox_shellpage.currentText()}.{self.sizeCombobox_shellpage.currentText()}',
+                                                         add_numbers=f'.{self.task_number}.{self.position_number}')
+                else:
+                    nameplate.write_attrib_box_full_name(attrib=attrib_in_nameplate,
+                                                         full_name=f'К{self.serialCombobox_shellpage.currentText()}.{self.sizeCombobox_shellpage.currentText()}')
+
+                nameplate.write_explosion_tag(attrib=attrib_in_nameplate,
+                                              gasdustore=self.gasdustoreComboBox_shellpage.currentText(),
+                                              temperature_class=self.temperature_class_comboBox_shellpage.currentText())
+                nameplate.write_minus_temperature(attrib=attrib_in_nameplate,
+                                                  minus_temperature=self.mintempLineEdit_shellpage_3.text())
+                nameplate.write_plus_temperature(attrib=attrib_in_nameplate,
+                                                 plus_temperature=self.maxtempLineedit_shellpage_3.text())
+                nameplate.write_voltage_current_frequency(attrib=attrib_in_nameplate)
+                nameplate.write_batch_number(attrib=attrib_in_nameplate)
+                nameplate.write_just_attrib_1(attrib=attrib_in_nameplate)
+                nameplate.write_just_attrib_2(attrib=attrib_in_nameplate)
+                nameplate.write_just_attrib_3(attrib=attrib_in_nameplate)
+                nameplate.write_just_attrib_4(attrib=attrib_in_nameplate)
+
+
+
+
     def draw_withoutcapside_insert(self):
         x_coordinate_withoutcapside = 0
         if hasattr(self.scale_class, 'free_space_x'):
@@ -381,10 +421,15 @@ class DxfShellQtCommunication(terminal_ui.TerminalUi):
         if hasattr(self, 'withoutcapside_block'):
             y_coordinate_withoutcapside += -self.withoutcapside_block.extreme_lines['y_min'] / self.scale_class.scale
 
+
+        self.create_nameplate_withoutcapside(x_coordinate_withoutcapside=x_coordinate_withoutcapside,
+                                             y_coordinate_withoutcapside=y_coordinate_withoutcapside)
+
         self.withoutcapside_insert = self.base_dxf.doc_base.modelspace().add_blockref(
             name=self.withoutcapside_block.shell_side_name,
             insert=(x_coordinate_withoutcapside,
                     y_coordinate_withoutcapside))
+
         self.withoutcapside_insert.dxf.rotation = 0
         self.withoutcapside_insert.dxf.xscale = 1 / self.scale_class.scale
         self.withoutcapside_insert.dxf.yscale = 1 / self.scale_class.scale
