@@ -1,12 +1,17 @@
 import ezdxf
 import os
 import sys
+from pypdf import PdfMerger
 from ezdxf.addons import Importer
 from PyQt5 import QtCore, QtGui, QtWidgets, Qt
 from PyQt5.QtWidgets import QMessageBox
 import time
 from src.interface_backend import dxf_terminal_ui  #ПОМЕНЯТЬ НА ИТОГОВЫЙ ИНТЕРФЕЙСНЫЙ МОДУЛЬ В ОЧЕРЕДНОСТИ
 from src.draw import nameplate
+from src.draw import price
+from src.draw import border as border_create
+from src.border import change_border
+from src.draw.preview import cad_viewer
 
 class MainPageDxfQtCommunication(dxf_terminal_ui.DxfTerminalQtCommunication):
 
@@ -15,7 +20,20 @@ class MainPageDxfQtCommunication(dxf_terminal_ui.DxfTerminalQtCommunication):
         time_pusk = time.time()
         super().__init__()
 
+
         self.sizeCombobox_shellpage.currentTextChanged.connect(self.actions_shell)
+
+        self.border_window_setup()
+        self.border_window.lineEdit_10.editingFinished.connect(self.change_scale)
+
+        self.serialCombobox_shellpage.currentTextChanged.connect(self.border_window_title)
+        self.sizeCombobox_shellpage.currentTextChanged.connect(self.border_window_title)
+
+        self.borderButton.clicked.connect(self.border_window_show)
+
+        self.sizeCombobox_shellpage.currentTextChanged.connect(self.preview_button_enabled)
+        self.previewButton_leftMenu.clicked.connect(self.preview_mode)
+
 
         self.Autohelper.clicked.connect(self.create_border)
 
@@ -25,13 +43,18 @@ class MainPageDxfQtCommunication(dxf_terminal_ui.DxfTerminalQtCommunication):
         self.Autohelper.clicked.connect(self.redraw_dinreyka)
         # self.Autohelper.clicked.connect(self.redraw_nameplate)
         self.Autohelper.clicked.connect(self.create_importer)
+        self.Autohelper.clicked.connect(self.logger_update_info)
 
 
         self.Autohelper.clicked.connect(self.save_doc)
         self.Autohelper.clicked.connect(self.save_pdf)
 
         self.Autohelper.clicked.connect(self.create_BOM)
+        self.Autohelper.clicked.connect(self.merge_result_pdf)
+
         # self.Autohelper.clicked.connect(self.delete_block_before_save)
+
+
 
         print('Запуск программы: ',time.time()-time_pusk)
 
@@ -50,6 +73,7 @@ class MainPageDxfQtCommunication(dxf_terminal_ui.DxfTerminalQtCommunication):
         self.setup_gland_sideV()
         self.setup_gland_sideG()
         self.setup_gland_sideCover()
+        self.check_possible_to_add_terminals()
         if hasattr(self,'glands_on_sides_dxf_dict'):
             if self.glands_on_sides_dxf_dict != {"А": [], "Б": [], 'В': [], "Г": [], "Крышка": []}:
 
@@ -63,6 +87,34 @@ class MainPageDxfQtCommunication(dxf_terminal_ui.DxfTerminalQtCommunication):
         self.border_insert = self.base_dxf.doc_base.modelspace().add_blockref(name='Border_A3',
                                                                               insert=(0,0))
         self.border_insert.add_auto_attribs(values)
+
+        for attrib in self.border_insert.attribs:
+            if self.designer_name !='':
+                border_create.write_rudes(attrib_rudes=attrib, rudes=self.designer_name)
+                border_create.write_rudesdata(attrib_rudesdata=attrib, rudesdata=self.border_window.date_today)
+
+            if self.border_window.lineEdit_2.text() !='':
+                border_create.write_rucheck(attrib,self.border_window.lineEdit_2.text())
+                border_create.write_rucheckdata(attrib, self.border_window.date_today)
+
+            if self.border_window.lineEdit_3.text() !='':
+                border_create.write_runcont(attrib,self.border_window.lineEdit_3.text())
+                border_create.write_runcontdata(attrib, self.border_window.date_today)
+
+            if self.border_window.lineEdit_4.text() != '':
+                border_create.wrire_rupem(attrib,self.border_window.lineEdit_4.text())
+                border_create.wrire_rupemdata(attrib, self.border_window.date_today)
+
+            border_create.write_RUTITLE_attrib(attrib_rutitle=attrib, rutitle_text=self.border_window.lineEdit_5.text())
+            border_create.write_project_title_1(attrib,self.border_window.lineEdit_6.text())
+            border_create.write_project_title_2(attrib, self.border_window.lineEdit_7.text())
+            border_create.write_project_title_3(attrib, self.border_window.lineEdit_8.text())
+            border_create.write_company_attrib(attrib,self.border_window.lineEdit_9.text())
+
+            border_create.write_scale(attrib_SCALE=attrib,SCALE=self.scale_class.scale)
+            border_create.write_page_number(attrib_RUSHEET=attrib,sheet_number=1)
+            border_create.write_page_numbers(attrib_RUSHTS=attrib,sheet_count='')
+
 
     def create_importer(self):
         self.base_dxf.doc_for_save = ezdxf.new()
@@ -139,7 +191,6 @@ class MainPageDxfQtCommunication(dxf_terminal_ui.DxfTerminalQtCommunication):
 
         )
 
-
         dim_horizontal_base = self.base_dxf.doc_base.modelspace().add_linear_dim(
                     angle =0,
                     p1=tuple([x_leftest,y_leftest]),
@@ -176,8 +227,6 @@ class MainPageDxfQtCommunication(dxf_terminal_ui.DxfTerminalQtCommunication):
                 )
 
         dim_height_rightside_base.dimension.dxf.color = 256
-
-
 
         dim_base.render()
         dim_horizontal_base.render()
@@ -254,19 +303,6 @@ class MainPageDxfQtCommunication(dxf_terminal_ui.DxfTerminalQtCommunication):
         self.base_dxf.doc_base.blocks[self.withoutcapside_block.din_insert.dxf.name].set_redraw_order(handles)
 
     def redraw_nameplate(self):
-        # # Create a dictionary of entity_handle and sort_handle pairs using a dictionary comprehension
-        # doc = self.base_dxf.doc_base
-        # self.base_dxf.doc_base.layers.new("nameplate_layer", dxfattribs={"color": 7})  # 7 - белый цвет
-        #
-        # # Переместить объекты nameplate на новый слой
-        # for entity in self.base_dxf.doc_base.blocks["nameplate"]:
-        #     entity.dxf.layer = "nameplate_layer"
-        #
-        # layer_names = self.base_dxf.doc_base.layers.names()
-        # layer_names.remove("nameplate_layer")
-        # layer_names.append("nameplate_layer")
-        # self.base_dxf.doc_base.layers._layers = {name: self.base_dxf.doc_base.layers.get(name) for name in layer_names}
-
 
         handles = {}
         sort_handle = 1  # Start with a lower sort handle for other inserts
@@ -280,6 +316,35 @@ class MainPageDxfQtCommunication(dxf_terminal_ui.DxfTerminalQtCommunication):
                 sort_handle += 1  # Increment the sort handle for other inserts
 
         self.base_dxf.doc_base.blocks['nameplate'].set_redraw_order(handles)
+
+    def logger_update_info(self):
+
+        if hasattr(self,'logger'):
+            self.logger.logger.info(f'Время заполнения информации: {time.time() - self.logger_time}')
+            if hasattr(self,'shell_dict'):
+                self.logger.logger.info(f'Оболочка: {self.shell_dict["СПЕЦИФИКАЦИЯ_НАИМЕНОВАНИЕ"]}')
+            if self.sideAListWidget.count() != 0:
+                self.logger.logger.info(f'Сторона А: {[self.sideAListWidget.item(i).text() for i in range(self.sideAListWidget.count())]}')
+            if self.sideBListWidget.count() != 0:
+                self.logger.logger.info(f'Сторона Б: {[self.sideBListWidget.item(i).text() for i in range(self.sideBListWidget.count())]}')
+            if self.sideVListWidget.count() != 0:
+                self.logger.logger.info(f'Сторона В: {[self.sideVListWidget.item(i).text() for i in range(self.sideVListWidget.count())]}')
+            if self.sideGListWidget.count() != 0:
+                self.logger.logger.info(f'Сторона Г: {[self.sideGListWidget.item(i).text() for i in range(self.sideGListWidget.count())]}')
+            if self.CoverListWidget.count() != 0:
+                self.logger.logger.info(f'На Крышке: {[self.CoverListWidget.item(i).text() for i in range(self.CoverListWidget.count())]}')
+
+            if self.add_button_terminal_listwidget.count() != 0:
+                self.logger.logger.info(f'Клеммы: {[self.add_button_terminal_listwidget.item(i).text() for i in range(self.add_button_terminal_listwidget.count())]}')
+
+
+
+            # with open(self.logger.logger_path, 'r') as fr,open(f'{os.getlogin()}_{time.time()}.txt','w') as fw:
+            #     for line in fr:
+            #         fw.write(line)
+
+
+            self.smb_specmash.save_log(logger_path=self.logger.logger_path)
 
     def create_BOM(self):
         if hasattr(self,'BOM_general'):
@@ -309,19 +374,121 @@ class MainPageDxfQtCommunication(dxf_terminal_ui.DxfTerminalQtCommunication):
                     BOM = self.BOM_general.create_BOM_SECOND(doc_bom=self.base_dxf.doc_for_save)
                 dict_attribs = {attrib.dxf.tag: attrib for attrib in BOM.attribs}
                 dict_attribs['SHEET_FIRST'].dxf.text = str(bom_page)
+                dict_attribs['RUTITLE'].dxf.text = self.border_window.lineEdit_5.text()
                 if bom_page == 1:
                     dict_attribs['SHEET_COUNT'].dxf.text = str(max(list(self.BOM_general.BOM_result_dict.keys())))
-                    dict_attribs['RUDES'].dxf.text = self.designer_name
+                    if self.designer_name != '':
+                        dict_attribs['RUDES'].dxf.text = self.designer_name
+                        dict_attribs['RUDESDATA'].dxf.text = self.border_window.date_today
+                    if self.border_window.lineEdit_2.text() !='':
+                        dict_attribs['RUCHECK'].dxf.text = self.border_window.lineEdit_2.text()
+                        dict_attribs['RUCHECKDATA'].dxf.text = self.border_window.date_today
+                    if self.border_window.lineEdit_3.text() !='':
+                        dict_attribs['RUNCONT'].dxf.text = self.border_window.lineEdit_3.text()
+                        dict_attribs['RUNCONTDATA'].dxf.text = self.border_window.date_today
+                    if self.border_window.lineEdit_4.text() !='':
+                        dict_attribs['RUPEM'].dxf.text = self.border_window.lineEdit_4.text()
+                        dict_attribs['RUPEMDATA'].dxf.text = self.border_window.date_today
+
+                    dict_attribs['PROJECT_TITLE_1'].dxf.text = self.border_window.lineEdit_6.text()
+                    dict_attribs['PROJECT_TITLE_2'].dxf.text = self.border_window.lineEdit_7.text()
+                    dict_attribs['PROJECT_TITLE_3'].dxf.text = self.border_window.lineEdit_8.text()
+
+
+
+
                 for attribs in self.BOM_general.BOM_result_dict[bom_page]:
                     if attribs in list(dict_attribs.keys()):
                         dict_attribs[attribs].dxf.text = self.BOM_general.BOM_result_dict[bom_page][attribs]
+
                 # self.base_dxf.doc_for_save = ezdxf.new()
                 # self.importer = Importer(self.base_dxf.doc_base, self.base_dxf.doc_for_save)
                 # self.importer.import_modelspace()
                 # self.importer.finalize()
 
-                self.base_dxf.doc_for_save.saveas(f'BOM_{bom_page}.dxf')
+                if self.border_window.lineEdit_5.text() !='':
+                    self.base_dxf.doc_for_save.saveas(f'Спецификация_' + self.border_window.lineEdit_5.text() + '.dxf')
+                else:
+                    self.base_dxf.doc_for_save.saveas(f'Спецификация' + self.designer_name + str(time.time()) + '.dxf')
                 self.save_pdf_BOM(page_number=bom_page)
+                self.smb_specmash.get_base_pricexlsx_path()
+                price_terminal_dict = price.read_price(path_price=self.smb_specmash.price_xlsx_path)
+                self.price_xlsx_wb = price.result_xlsx(dict_columnrowname_value=self.BOM_general.return_dict_attribs,
+                                                       price_terminal_dict=price_terminal_dict)
+                self.price_xlsx_wb.save(f'Спецификация_' + self.border_window.lineEdit_5.text() + '.xlsx')
+
+    def merge_result_pdf(self):
+
+        merger = PdfMerger()
+
+        for pdf in self.pdf_files:
+            merger.append(pdf)
+
+        merger.write(self.border_window.lineEdit_5.text() + ".pdf")
+        merger.close()
+
+        for i in self.pdf_files:
+            os.remove(i)
+        self.pdf_files.clear()
+
+    def border_window_setup(self):
+        self.border_window = change_border.BorderInterface()
+
+
+    def border_window_title(self):
+        self.title_name = ''
+        if self.serialCombobox_shellpage.currentText() != '':
+            self.title_name += f'К{self.serialCombobox_shellpage.currentText()}.'
+        if self.sizeCombobox_shellpage.currentText() != '':
+            self.title_name += f'{self.sizeCombobox_shellpage.currentText()}.'
+        if self.task_number != '':
+            self.title_name += f'{self.task_number}.'
+        else:
+            self.title_name += f'ХХХХ.'
+        if self.position_number != '':
+            self.title_name += f'{self.position_number} '
+        else:
+            self.title_name += f'ХX '
+        self.title_name += 'ВО'
+
+        self.border_window.set_title(title=self.title_name)
+
+
+    def border_window_show(self):
+        '''открытие окна настройки рамки'''
+        self.border_window.set_designer(designer=self.designer_name)
+        if hasattr(self,'scale_class'):
+            if hasattr(self.scale_class,'scale_border'):
+                self.border_window.set_scale(scale= str(self.scale_class.scale_border))
+        self.border_window.show()
+
+    def change_scale(self):
+        if hasattr(self.scale_class,'scale'):
+            if self.border_window.lineEdit_10.text() != '':
+                if self.scale_class.scale != self.border_window.lineEdit_10.text():
+
+                    if '.' in self.border_window.lineEdit_10.text():
+                        self.scale_class.scale = float(self.border_window.lineEdit_10.text())
+                    else:
+                        self.scale_class.scale = int(self.border_window.lineEdit_10.text())
+
+                    self.scale_class.calculate_len_x_top(scale_gost=self.scale_class.scale)
+                    self.scale_class.calculate_len_y_left(scale_gost=self.scale_class.scale)
+                    self.scale_class.calculate_free_space()
+
+                    self.draw_glands_in_sides()
+                    self.draw_shells_inserts()
+
+    def preview_button_enabled(self):
+        if hasattr(self,'base_dxf'):
+            if hasattr(self.base_dxf,'doc_base'):
+                self.previewButton_leftMenu.setEnabled(True)
+    def preview_mode(self):
+        cad_viewer.preview_mode(doc=self.base_dxf.doc_base)
+
+
+
+
 
 
 if __name__ == "__main__":

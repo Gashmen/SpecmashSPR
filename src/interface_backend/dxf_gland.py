@@ -1,15 +1,19 @@
 import ezdxf
 from ezdxf import recover
 from ezdxf.addons.drawing import matplotlib
-
+from matplotlib import gridspec
 import matplotlib.font_manager
 import matplotlib.pyplot as plt
 from ezdxf.addons.drawing import RenderContext, Frontend
 from ezdxf.addons.drawing.matplotlib import MatplotlibBackend
 from ezdxf.addons.drawing.properties import Properties, LayoutProperties
 from ezdxf.addons.drawing.config import Configuration
+from matplotlib.transforms import Bbox
+from PyPDF2 import PdfReader
 import ezdxf
 import time
+from PIL import Image
+
 from ezdxf.addons import Importer
 
 import sys
@@ -156,17 +160,17 @@ class DxfGlandQtCommunication(dxf_shell_ui.DxfShellQtCommunication):
 
     def withoutcapside_draw_glands(self):
         if hasattr(self,'withoutcapside_block'):
-
+            type_shell = self.shell_dict['Серия']
             self.withoutcapside_block.set_dict_glands_all_sizes(self.glands_on_sides_dict)
             # self.withoutcapside_block.set_dict_glands_all_sizes(glands_on_sides_dict=self.glands_on_sides_dict)
             if hasattr(self, 'rightside_block'):
-                self.withoutcapside_block.draw_rightside_glands(rightside_extreme_lines=self.rightside_block.extreme_lines)
+                self.withoutcapside_block.draw_rightside_glands(rightside_extreme_lines=self.rightside_block.extreme_lines,type_shell=type_shell)
             if hasattr(self, 'leftside_block'):
-                self.withoutcapside_block.draw_leftside_glands(leftside_extreme_lines=self.leftside_block.extreme_lines)
+                self.withoutcapside_block.draw_leftside_glands(leftside_extreme_lines=self.leftside_block.extreme_lines,type_shell=type_shell)
             if hasattr(self,'upside_block'):
-                self.withoutcapside_block.draw_upside_glands(upside_extreme_lines=self.upside_block.extreme_lines)
+                self.withoutcapside_block.draw_upside_glands(upside_extreme_lines=self.upside_block.extreme_lines,type_shell=type_shell)
             if hasattr(self,'downside_block'):
-                self.withoutcapside_block.draw_downside_glands(downside_extreme_lines=self.downside_block.extreme_lines)
+                self.withoutcapside_block.draw_downside_glands(downside_extreme_lines=self.downside_block.extreme_lines,type_shell=type_shell)
 
     def draw_glands_in_sides(self):
         self.topside_draw_glands()
@@ -181,32 +185,36 @@ class DxfGlandQtCommunication(dxf_shell_ui.DxfShellQtCommunication):
     def save_doc(self):#тест, потом удалить
         time2 = time.time()
         # self.base_dxf.doc_base=
-        self.base_dxf.doc_for_save.saveas('check.dxf')
+        if self.border_window.lineEdit_5.text() !='':
+            self.base_dxf.doc_for_save.saveas(self.border_window.lineEdit_5.text() + '.dxf')
+        else:
+            self.base_dxf.doc_for_save.saveas(self.designer_name + str(time.time()) + '.dxf')
         print('Сохранение dxf: ',time.time()-time2)
 
     def save_pdf(self):
 
         time2 = time.time()
 
-        # try:
-        #     doc, auditor = recover.readfile('check.dxf')
-        # except IOError:
-        #     print(f'Not a DXF file or a generic I/O error.')
-        #     sys.exit(1)
-        # except ezdxf.DXFStructureError:
-        #     print(f'Invalid or corrupted DXF file.')
-        #     sys.exit(2)
-        # # doc.save()
-        # if not auditor.has_errors:
-        #
-        #     try:
         doc = self.base_dxf.doc_base
         # matplotlib.qsave(doc.modelspace(), 'your.png',bg='#FFFFFFFF',size_inches=(800,600))
         ezdxf.addons.drawing.properties.MODEL_SPACE_BG_COLOR = '#FFFFFF'
         # prop = matplotlib.font_manager.FontProperties(family='GOST_A')
         # matplotlib.font_manager.findfont(prop, fontext='ttf')
+
+        # A4 canvas
+        fig_width_cm = 46.18  # A3 page
+        fig_height_cm = 32.66
+        inches_per_cm = 1 / 2.54  # Convert cm to inches
+        fig_width = fig_width_cm * inches_per_cm  # width in inches
+        fig_height = fig_height_cm * inches_per_cm  # height in inches
+        fig_size = [fig_width, fig_height]
+
+
         fig = plt.figure()
+        # ax = fig.add_axes([0, 0, 1.7222, 1.7222])
         ax = fig.add_axes([0, 0, 1, 1])
+        # gs = gridspec.GridSpec(29, 21, wspace=0.1, hspace=0.1)
+
         ctx = RenderContext(doc)
         # --- Делает белый бэкграунд ---
         config = Configuration()
@@ -218,18 +226,30 @@ class DxfGlandQtCommunication(dxf_shell_ui.DxfShellQtCommunication):
         ctx.set_current_layout(doc.modelspace())
         ctx.current_layout_properties.set_colors(bg='#FFFFFF')
 
-        # --- Делает белый бэкграунд ---
-
-        out = MatplotlibBackend(ax)  # {"lineweight_scaling": 0.1})
 
         # Better control over the LayoutProperties used by the drawing frontend
         layout_properties = LayoutProperties.from_layout(doc.modelspace())
         layout_properties.set_colors(bg='#FFFFFF')
 
+        # --- Делает белый бэкграунд ---
+
+        out = MatplotlibBackend(ax)  # {"lineweight_scaling": 0.1})
+
         Frontend(ctx, out, config=config).draw_layout(doc.modelspace(), layout_properties=layout_properties,
                                                       finalize=True)
+
+        # gs.tight_layout(fig, pad=0)
         path_to_pdf = 'check.' + 'pdf'
-        fig.savefig(path_to_pdf, format='pdf', dpi=300, facecolor='black', edgecolor='black')
+
+        left_x = 2.09 * inches_per_cm  # Example coordinates in inches
+        bottom_y = 1.48 * inches_per_cm
+        right_x = (46.18 - 2.09) * inches_per_cm
+        top_y = (32.66 - 1.48) * inches_per_cm
+
+        bbox = Bbox([[left_x, bottom_y], [right_x, top_y]])
+        fig.set_size_inches(fig_size)
+        fig.savefig(path_to_pdf, format='pdf',dpi=300, facecolor='black', edgecolor='black', bbox_inches=bbox, pad_inches=0, )
+        self.pdf_files.append(path_to_pdf)
 
         print('Сохранение pdf: ',time.time()-time2)
 
@@ -249,6 +269,15 @@ class DxfGlandQtCommunication(dxf_shell_ui.DxfShellQtCommunication):
         # if not auditor.has_errors:
         #
         #     try:
+
+
+        fig_width_cm = 23.1  # A3 page
+        fig_height_cm = 32.66
+        inches_per_cm = 1 / 2.54  # Convert cm to inches
+        fig_width = fig_width_cm * inches_per_cm  # width in inches
+        fig_height = fig_height_cm * inches_per_cm  # height in inches
+        fig_size = [fig_width, fig_height]
+
         doc = self.base_dxf.doc_for_save
         # matplotlib.qsave(doc.modelspace(), 'your.png',bg='#FFFFFFFF',size_inches=(800,600))
         ezdxf.addons.drawing.properties.MODEL_SPACE_BG_COLOR = '#FFFFFF'
@@ -278,7 +307,18 @@ class DxfGlandQtCommunication(dxf_shell_ui.DxfShellQtCommunication):
         Frontend(ctx, out, config=config).draw_layout(doc.modelspace(), layout_properties=layout_properties,
                                                       finalize=True)
         path_to_pdf = 'BOM_' + str(page_number) + '.pdf'
-        fig.savefig(path_to_pdf, format='pdf', dpi=300, facecolor='black', edgecolor='black')
+
+        left_x = 1.05 * inches_per_cm  # Example coordinates in inches
+        bottom_y = 1.48 * inches_per_cm
+        right_x = (23.1 - 1.05) * inches_per_cm
+        top_y = (32.66 - 1.48) * inches_per_cm
+
+        bbox = Bbox([[left_x, bottom_y], [right_x, top_y]])
+        fig.set_size_inches(fig_size)
+
+
+        fig.savefig(path_to_pdf, format='pdf', dpi=300, facecolor='black', edgecolor='black', bbox_inches=bbox, pad_inches=0)
+        self.pdf_files.append(path_to_pdf)
 
         print('Сохранение BOM: ',time.time()-time2)
 

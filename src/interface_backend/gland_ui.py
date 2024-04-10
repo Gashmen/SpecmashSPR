@@ -8,6 +8,8 @@ from src.Widgets_Custom import ExtendedCombobox
 from src.csv import gland_csv
 from src.interface_backend import shell_ui
 from src.draw import BOM
+from matplotlib import pylab
+import numpy as np
 
 class GlandInterface(shell_ui.ShellInterface):
 
@@ -1081,7 +1083,7 @@ class GlandInterface(shell_ui.ShellInterface):
     @Qt.pyqtSlot()
     def click_up_button_A(self):
         rowIndex = self.sideAListWidget.currentRow()
-        if rowIndex !=0:
+        if rowIndex >0:
             currentItem = self.sideAListWidget.takeItem(rowIndex)
             self.glands_on_sides_dict['А'][rowIndex],self.glands_on_sides_dict['А'][rowIndex - 1] =\
             self.glands_on_sides_dict['А'][rowIndex-1], self.glands_on_sides_dict['А'][rowIndex]
@@ -1091,7 +1093,7 @@ class GlandInterface(shell_ui.ShellInterface):
     @Qt.pyqtSlot()
     def click_up_button_B(self):
         rowIndex = self.sideBListWidget.currentRow()
-        if rowIndex !=0:
+        if rowIndex >0:
             currentItem = self.sideBListWidget.takeItem(rowIndex)
             self.glands_on_sides_dict['Б'][rowIndex],self.glands_on_sides_dict['Б'][rowIndex - 1] =\
             self.glands_on_sides_dict['Б'][rowIndex-1], self.glands_on_sides_dict['Б'][rowIndex]
@@ -1101,7 +1103,7 @@ class GlandInterface(shell_ui.ShellInterface):
     @Qt.pyqtSlot()
     def click_up_button_V(self):
         rowIndex = self.sideVListWidget.currentRow()
-        if rowIndex !=0:
+        if rowIndex >0:
             currentItem = self.sideVListWidget.takeItem(rowIndex)
             self.glands_on_sides_dict['В'][rowIndex],self.glands_on_sides_dict['В'][rowIndex - 1] =\
             self.glands_on_sides_dict['В'][rowIndex-1], self.glands_on_sides_dict['В'][rowIndex]
@@ -1111,7 +1113,7 @@ class GlandInterface(shell_ui.ShellInterface):
     @Qt.pyqtSlot()
     def click_up_button_G(self):
         rowIndex = self.sideGListWidget.currentRow()
-        if rowIndex !=0:
+        if rowIndex >0:
             currentItem = self.sideGListWidget.takeItem(rowIndex)
             self.glands_on_sides_dict['Г'][rowIndex],self.glands_on_sides_dict['Г'][rowIndex - 1] =\
             self.glands_on_sides_dict['Г'][rowIndex-1], self.glands_on_sides_dict['Г'][rowIndex]
@@ -1121,7 +1123,7 @@ class GlandInterface(shell_ui.ShellInterface):
     @Qt.pyqtSlot()
     def click_up_button_cover(self):
         rowIndex = self.CoverListWidget.currentRow()
-        if rowIndex != 0:
+        if rowIndex >0:
             currentItem = self.CoverListWidget.takeItem(rowIndex)
             self.CoverListWidget.insertItem(rowIndex - 1, currentItem)
             self.CoverListWidget.setCurrentRow(rowIndex - 1)
@@ -1178,36 +1180,41 @@ class GlandInterface(shell_ui.ShellInterface):
     def click_delete_button_A(self):
         if self.sideAListWidget.count() !=0:
             rowIndex = self.sideAListWidget.currentRow()
-            self.glands_on_sides_dict['А'].pop(rowIndex)
-            currentItem = self.sideAListWidget.takeItem(rowIndex)
+            if rowIndex >=0:
+                self.glands_on_sides_dict['А'].pop(rowIndex)
+                currentItem = self.sideAListWidget.takeItem(rowIndex)
 
     @Qt.pyqtSlot()
     def click_delete_button_B(self):
         if self.sideBListWidget.count() != 0:
             rowIndex = self.sideBListWidget.currentRow()
-            self.glands_on_sides_dict['Б'].pop(rowIndex)
-            currentItem = self.sideBListWidget.takeItem(rowIndex)
+            if rowIndex >= 0:
+                self.glands_on_sides_dict['Б'].pop(rowIndex)
+                currentItem = self.sideBListWidget.takeItem(rowIndex)
 
     @Qt.pyqtSlot()
     def click_delete_button_V(self):
         if self.sideVListWidget.count() != 0:
             rowIndex = self.sideVListWidget.currentRow()
-            self.glands_on_sides_dict['В'].pop(rowIndex)
-            currentItem = self.sideVListWidget.takeItem(rowIndex)
+            if rowIndex >= 0:
+                self.glands_on_sides_dict['В'].pop(rowIndex)
+                currentItem = self.sideVListWidget.takeItem(rowIndex)
 
     @Qt.pyqtSlot()
     def click_delete_button_G(self):
         if self.sideGListWidget.count() != 0:
             rowIndex = self.sideGListWidget.currentRow()
-            self.glands_on_sides_dict['Г'].pop(rowIndex)
-            currentItem = self.sideGListWidget.takeItem(rowIndex)
+            if rowIndex >= 0:
+                self.glands_on_sides_dict['Г'].pop(rowIndex)
+                currentItem = self.sideGListWidget.takeItem(rowIndex)
 
     @Qt.pyqtSlot()
     def click_delete_button_cover(self):
         if self.CoverListWidget.count() != 0:
             rowIndex = self.CoverListWidget.currentRow()
-            self.glands_on_sides_dict['Крышка'].pop(rowIndex)
-            currentItem = self.CoverListWidget.takeItem(rowIndex)
+            if rowIndex >= 0:
+                self.glands_on_sides_dict['Крышка'].pop(rowIndex)
+                currentItem = self.CoverListWidget.takeItem(rowIndex)
 
 
 if __name__ == "__main__":

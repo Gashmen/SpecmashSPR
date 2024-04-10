@@ -92,6 +92,7 @@ class AuthWindow(QtWidgets.QMainWindow, frontend_auth.Ui_WelcomeWindow):
         self.close()
         self.jb_window.show()
 
+
 def run_app():
     app = QtWidgets.QApplication(sys.argv)
     authWindow = AuthWindow()

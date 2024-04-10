@@ -11,6 +11,8 @@ from src.Widgets_Custom.Error import Ui_WidgetError
 from src.smbconnect import smbconnect
 from src.ldap_auth import backend_auth
 from src.draw import BOM
+from src.logger_sapr import logger_sapr
+
 
 class SetupInterface(QtWidgets.QMainWindow, mainver03.Ui_MainWindow):
 
@@ -18,15 +20,20 @@ class SetupInterface(QtWidgets.QMainWindow, mainver03.Ui_MainWindow):
 
         '''БАЗА ПРИ ЗАПУСКЕ'''
         super().__init__()
+        self.connect_smb()  # получаем self.smb_specmash
+        self.install_logger()
         QtCore.qInstallMessageHandler(self.qt_message_handler)
-        self.connect_smb() #получаем self.smb_specmash
+
 
         self.setupUi(self)
+        self.deletelastButton_2.setEnabled(False)
 
         '''Заполнение штампов'''
         self.task_number = ''      #Номер заявки
         self.position_number = ''  #Номер позиции
         self.designer_name = ''    #Имя разработчика
+
+        self.pdf_files = list()
 
         '''Заполнение спецификации'''
         #УСТАНОВКА КЛАССА ДЛЯ ВСЕГО BOM
@@ -45,6 +52,16 @@ class SetupInterface(QtWidgets.QMainWindow, mainver03.Ui_MainWindow):
         # self.pushButton_2.clicked.connect(self.error_window.call_error)
         self.welcomewindowButton.clicked.connect(self.home_window)
 
+        self.stackedWidget.currentChanged.connect(self.updateButtonColors)
+        self.shellButton_leftMenu.setStyleSheet("background-color: rgb(97, 149, 156);")
+
+
+    def install_logger(self):
+        self.logger = logger_sapr.LoggerSapr()
+
+        self.logger_time = time.time()
+
+
     def qt_message_handler(self,mode, context, message):
         if mode == 4:
             mode = 'INFO'
@@ -56,9 +73,21 @@ class SetupInterface(QtWidgets.QMainWindow, mainver03.Ui_MainWindow):
             mode = 'FATAL'
         else:
             mode = 'DEBUG'
+        self.logger.logger.info('qt_message_handler: line: %d, func: %s(), file: %s' % (
+            context.line, context.function, context.file))
+        self.logger.logger.info('  %s: %s\n' % (mode, message))
+        self.logger.logger.info(time.time() - self.logger_time)
+
+        self.smb_specmash.save_log(logger_path=self.logger.logger_path)
+
+        # with open(self.logger.logger_path, 'r') as fr, open(f'{os.getlogin()}_{time.time()}.txt', 'w') as fw:
+        #     for line in fr:
+        #         fw.write(line)
+
         print('qt_message_handler: line: %d, func: %s(), file: %s' % (
             context.line, context.function, context.file))
         print('  %s: %s\n' % (mode, message))
+
 
     def set_authorization_information(self,
                                       task_number='',
@@ -82,10 +111,6 @@ class SetupInterface(QtWidgets.QMainWindow, mainver03.Ui_MainWindow):
         # self.add_manufacturer_inputs_combobox()
         self.add_manufacturer_terminal_combobox()
 
-    # def add_manufacturer_inputs_combobox(self):
-    #     '''Пока поставим производителя только ВЗОР'''
-    #     self.manufacturerInputsComboBox.clear()
-    #     self.manufacturerInputsComboBox.addItems(csv_config.GLAND_MANUFACTURER)
 
     def set_terminal_page(self):
         '''Устанавливает 2 индекс у SHELL PAGE, если он не установлен'''
@@ -109,6 +134,26 @@ class SetupInterface(QtWidgets.QMainWindow, mainver03.Ui_MainWindow):
         self.close()
         self.home_window.show()
 
+    def closeEvent(self, event):
+        try:
+            self.smb_specmash.save_log(logger_path=self.logger.logger_path)
+        except:
+            pass
+
+    def updateButtonColors(self, index):
+        # Set button colors based on current page index
+        if index == 0:
+            self.shellButton_leftMenu.setStyleSheet("background-color: rgb(97, 149, 156);")
+            self.inputsButton_leftMenu.setStyleSheet("background-color: none;")
+            self.terminalButton_leftMenu.setStyleSheet("background-color: none;")
+        elif index == 1:
+            self.shellButton_leftMenu.setStyleSheet("background-color: none;")
+            self.inputsButton_leftMenu.setStyleSheet("background-color: rgb(97, 149, 156);")
+            self.terminalButton_leftMenu.setStyleSheet("background-color: none;")
+        elif index == 2:
+            self.shellButton_leftMenu.setStyleSheet("background-color: none;")
+            self.inputsButton_leftMenu.setStyleSheet("background-color: none;")
+            self.terminalButton_leftMenu.setStyleSheet("background-color: rgb(97, 149, 156);")
 
 
 if __name__ == '__main__':

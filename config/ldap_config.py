@@ -6,8 +6,8 @@ attrs = ['sAMAccountName']
 server_adres = '192.168.200.101'
 port = 389
 
-LOGIN = 'ZAVOD\g.zubkov'
-PASSWORD = 'QWErty!!11'
+LOGIN = 'ZAVOD\specmashspr'
+PASSWORD = 'N3m!kg^dcZ6TE7'
 
 
 

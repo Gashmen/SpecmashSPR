@@ -591,44 +591,74 @@ class ShellWithoutcapsideBlock(ShellSideBlock):
                                  side_dxf_name='withoutcapside')
         self.set_block_from_dxf_base()
 
-    def draw_leftside_glands(self, leftside_extreme_lines):
+    def draw_leftside_glands(self, leftside_extreme_lines,type_shell):
 
         if self.glands_on_sides_dict['Г'] != list():
             for gland in sorted(self.glands_on_sides_dict['Г'], key=lambda x: x.y_coordinate, reverse=True):
-                gland_insert = self.doc_base.blocks[self.shell_side_name].add_blockref(
-                    name=gland.gland_dxf_name + '_withoutcapside',
-                    insert=(self.extreme_lines['x_min'],
-                            leftside_extreme_lines['x_max'] - gland.x_coordinate + self.extreme_lines['y_min']
-                            ))
-                gland_insert.dxf.rotation = 270
+                if type_shell != 'ВН':
+                    gland_insert = self.doc_base.blocks[self.shell_side_name].add_blockref(
+                        name=gland.gland_dxf_name + '_withoutcapside',
+                        insert=(self.extreme_lines['x_min'],
+                                leftside_extreme_lines['x_max'] - gland.x_coordinate + self.extreme_lines['y_min']
+                                ))
+                    gland_insert.dxf.rotation = 270
+                else:
+                    gland_insert = self.doc_base.blocks[self.shell_side_name].add_blockref(
+                        name=gland.gland_dxf_name + '_topside',
+                        insert=(self.extreme_lines['x_min'],
+                                leftside_extreme_lines['x_max'] - gland.x_coordinate + self.extreme_lines['y_min']
+                                ))
+                    gland_insert.dxf.rotation = 270
 
-    def draw_rightside_glands(self, rightside_extreme_lines):
+    def draw_rightside_glands(self, rightside_extreme_lines,type_shell):
         self.delete_inserts()
         if self.glands_on_sides_dict['Б'] != list():
             for gland in sorted(self.glands_on_sides_dict['Б'], key=lambda x: x.y_coordinate, reverse=True):
-                gland_insert = self.doc_base.blocks[self.shell_side_name].add_blockref(
-                    name=gland.gland_dxf_name + '_withoutcapside',
-                    insert=(self.extreme_lines['x_max'],
-                            gland.x_coordinate - rightside_extreme_lines['x_min'] + self.extreme_lines['y_min']))
-                gland_insert.dxf.rotation = 90
+                if type_shell != 'ВН':
+                    gland_insert = self.doc_base.blocks[self.shell_side_name].add_blockref(
+                        name=gland.gland_dxf_name + '_withoutcapside',
+                        insert=(self.extreme_lines['x_max'],
+                                gland.x_coordinate - rightside_extreme_lines['x_min'] + self.extreme_lines['y_min']))
+                    gland_insert.dxf.rotation = 90
+                else:
+                    gland_insert = self.doc_base.blocks[self.shell_side_name].add_blockref(
+                        name=gland.gland_dxf_name + '_topside',
+                        insert=(self.extreme_lines['x_max'],
+                                gland.x_coordinate - rightside_extreme_lines['x_min'] + self.extreme_lines['y_min']))
+                    gland_insert.dxf.rotation = 90
 
-    def draw_upside_glands(self, upside_extreme_lines):
+    def draw_upside_glands(self, upside_extreme_lines,type_shell):
         if self.glands_on_sides_dict['А'] != list():
             for gland in sorted(self.glands_on_sides_dict['А'], key=lambda x: x.y_coordinate, reverse=False):
-                gland_insert = self.doc_base.blocks[self.shell_side_name].add_blockref(
-                    name=gland.gland_dxf_name + '_withoutcapside',
-                    insert=(upside_extreme_lines['x_max'] - gland.x_coordinate + self.extreme_lines['x_min'],
-                            self.extreme_lines['y_max']))
-                gland_insert.dxf.rotation = 180
+                if type_shell != 'ВН':
+                    gland_insert = self.doc_base.blocks[self.shell_side_name].add_blockref(
+                        name=gland.gland_dxf_name + '_withoutcapside',
+                        insert=(upside_extreme_lines['x_max'] - gland.x_coordinate + self.extreme_lines['x_min'],
+                                self.extreme_lines['y_max']))
+                    gland_insert.dxf.rotation = 180
+                else:
+                    gland_insert = self.doc_base.blocks[self.shell_side_name].add_blockref(
+                        name=gland.gland_dxf_name + '_topside',
+                        insert=(upside_extreme_lines['x_max'] - gland.x_coordinate + self.extreme_lines['x_min'],
+                                self.extreme_lines['y_max']))
+                    gland_insert.dxf.rotation = 180
 
-    def draw_downside_glands(self, downside_extreme_lines):
+
+    def draw_downside_glands(self, downside_extreme_lines,type_shell):
         if self.glands_on_sides_dict['В'] != list():
             for gland in sorted(self.glands_on_sides_dict['В'], key=lambda x: x.x_coordinate, reverse=True):
-                gland_insert = self.doc_base.blocks[self.shell_side_name].add_blockref(
-                    name=gland.gland_dxf_name + '_withoutcapside',
-                    insert=(gland.x_coordinate - downside_extreme_lines['x_min'] + self.extreme_lines['x_min'],
-                            self.extreme_lines['y_min']))
-                gland_insert.dxf.rotation = 0
+                if type_shell != 'ВН':
+                    gland_insert = self.doc_base.blocks[self.shell_side_name].add_blockref(
+                        name=gland.gland_dxf_name + '_withoutcapside',
+                        insert=(gland.x_coordinate - downside_extreme_lines['x_min'] + self.extreme_lines['x_min'],
+                                self.extreme_lines['y_min']))
+                    gland_insert.dxf.rotation = 0
+                else:
+                    gland_insert = self.doc_base.blocks[self.shell_side_name].add_blockref(
+                        name=gland.gland_dxf_name + '_topside',
+                        insert=(gland.x_coordinate - downside_extreme_lines['x_min'] + self.extreme_lines['x_min'],
+                                self.extreme_lines['y_min']))
+                    gland_insert.dxf.rotation = 0
 
     def draw_din(self):
         din_base = DxfBase()

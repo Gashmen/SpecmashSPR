@@ -40,14 +40,14 @@ class BOM_SHELL:
     def set_production_cost(self):
         if hasattr(self,'shell_full_information'):
             self.production_cost = str(self.shell_full_information['СПЕЦИФИКАЦИЯ_СЕБЕСТОИМОСТЬ'])
-            if ',' in self.production_cost:
-                self.production_cost.replace(',','.')
+            if ',' in str(self.production_cost):
+                self.production_cost = str(self.production_cost).replace(',','.')
 
     def set_work_cost(self):
         if hasattr(self,'shell_full_information'):
             self.work_cost = str(self.shell_full_information['СПЕЦИФИКАЦИЯ_РАБОТА'])
-            if ',' in self.work_cost:
-                self.work_cost.replace(',','.')
+            if ',' in str(self.work_cost):
+                self.work_cost = str(self.work_cost).replace(',','.')
 
     def calculate_sum_cost(self):
         if hasattr(self,'work_cost') and hasattr(self,'production_cost'):
@@ -68,7 +68,8 @@ class BOM_SHELL:
                 'Наименование':self.fullname,
                 'Кол.':'1',
                 'Примечание':'ВЗОР',
-                'Свойство':'Сборочные единицы'
+                'Свойство':'Сборочные единицы',
+                'Цена': self.shell_sum_cost
                 }
             }
 
@@ -83,8 +84,8 @@ class BOM_SHELL:
                     'Наименование': [f'DIN-рейка NS35х7,5, L={din_length} мм'],
                     'Кол.': '',
                     'Примечание': 'ВЗОР',
-                    'Свойство': 'Детали'
-
+                    'Свойство': 'Детали',
+                    'Цена': f'{int(150*din_length/1000)}'
                 }
 
 
@@ -162,7 +163,8 @@ class BOM_GLAND:
                 'Наименование':self.fullname,
                 'Кол.':'',
                 'Примечание':'ВЗОР',
-                'Свойство':'Сборочные единицы'
+                'Свойство':'Сборочные единицы',
+                'Цена':self.shell_sum_cost
                 }
             }
 
@@ -178,8 +180,8 @@ class BOM_GLAND:
                     'Наименование': [f'Уплотнительное кольцо Ду {self.gland.cable_type_size}, полимер'],
                     'Кол.': '',
                     'Примечание': 'ВЗОР',
-                    'Свойство': 'Детали'
-
+                    'Свойство': 'Детали',
+                    'Цена': ''
                 }
 
             if self.gland.kz == True:
@@ -192,7 +194,8 @@ class BOM_GLAND:
                         'Наименование': [f'Кольцо заземления Ду {self.gland.cable_type_size}-6,','никелированная латунь'],
                         'Кол.': '',
                         'Примечание': 'ВЗОР',
-                        'Свойство': 'Детали'
+                        'Свойство': 'Детали',
+                        'Цена': ''
                     }
 
             if self.gland.gsh == True:
@@ -205,7 +208,8 @@ class BOM_GLAND:
                         'Наименование': [f'Гроверная шайба {self.gland.cable_type_size},','нержавеющая сталь AISI 304'],
                         'Кол.': '',
                         'Примечание': 'ВЗОР',
-                        'Свойство': 'Детали'
+                        'Свойство': 'Детали',
+                        'Цена': ''
                     }
 
             if self.gland.kg == True:
@@ -218,7 +222,8 @@ class BOM_GLAND:
                         'Наименование': [f'Контргайка М{self.gland.cable_type_size}х1.5,','никелированная латунь'],
                         'Кол.': '',
                         'Примечание': 'ВЗОР',
-                        'Свойство': 'Детали'
+                        'Свойство': 'Детали',
+                        'Цена': ''
                     }
 
             if self.gland.vz_vz == True:
@@ -231,7 +236,8 @@ class BOM_GLAND:
                         'Наименование': [f'Взрывозащищенная защитная пробка',f'для кабельных вводов М{self.gland.cable_type_size},','никелированная латунь'],
                         'Кол.': '',
                         'Примечание': 'ВЗОР',
-                        'Свойство': 'Детали'
+                        'Свойство': 'Детали',
+                        'Цена': ''
                     }
 
             if self.gland.vz_vze == True:
@@ -244,7 +250,8 @@ class BOM_GLAND:
                         'Наименование': [f'Взрывозащищенная защитная пробка',f'для кабельных вводов М{self.gland.cable_type_size},','никелированная латунь'],
                         'Кол.': '',
                         'Примечание': 'ВЗОР',
-                        'Свойство': 'Детали'
+                        'Свойство': 'Детали',
+                        'Цена': ''
                     }
             if self.gland.ch == True:
                 self.bom_dict[tuple([f'Чехол защитный М{self.gland.cable_type_size}'])] = \
@@ -256,7 +263,8 @@ class BOM_GLAND:
                         'Наименование': [f'Чехол защитный М{self.gland.cable_type_size}'],
                         'Кол.': '',
                         'Примечание': 'ВЗОР',
-                        'Свойство': 'Детали'
+                        'Свойство': 'Детали',
+                        'Цена': ''
                     }
 
 class BOM_GENERAL:

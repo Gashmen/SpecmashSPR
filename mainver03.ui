@@ -546,6 +546,19 @@
       <string>Предпросмотр</string>
      </property>
     </widget>
+    <widget class="QPushButton" name="borderButton">
+     <property name="geometry">
+      <rect>
+       <x>720</x>
+       <y>20</y>
+       <width>75</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Рамка</string>
+     </property>
+    </widget>
    </widget>
    <widget class="QWidget" name="MainBody" native="true">
     <property name="geometry">
@@ -898,7 +911,7 @@
       <item>
        <widget class="QStackedWidget" name="stackedWidget">
         <property name="currentIndex">
-         <number>0</number>
+         <number>1</number>
         </property>
         <widget class="QWidget" name="shellPage">
          <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -2449,7 +2462,14 @@
           </property>
           <layout class="QHBoxLayout" name="horizontalLayout_30">
            <item>
-            <widget class="QListWidget" name="sideAListWidget"/>
+            <widget class="QListWidget" name="sideAListWidget">
+             <property name="maximumSize">
+              <size>
+               <width>90</width>
+               <height>16777215</height>
+              </size>
+             </property>
+            </widget>
            </item>
            <item>
             <widget class="QWidget" name="sideAupdownButtonsWidget" native="true">
@@ -2558,7 +2578,14 @@
          <widget class="QWidget" name="sideBWidget1" native="true">
           <layout class="QHBoxLayout" name="horizontalLayout_29">
            <item>
-            <widget class="QListWidget" name="sideBListWidget"/>
+            <widget class="QListWidget" name="sideBListWidget">
+             <property name="maximumSize">
+              <size>
+               <width>90</width>
+               <height>16777215</height>
+              </size>
+             </property>
+            </widget>
            </item>
            <item>
             <widget class="QWidget" name="sideBupdownButtonsWidget" native="true">
@@ -2670,7 +2697,14 @@
          <widget class="QWidget" name="sideVWidget1" native="true">
           <layout class="QHBoxLayout" name="horizontalLayout_31">
            <item>
-            <widget class="QListWidget" name="sideVListWidget"/>
+            <widget class="QListWidget" name="sideVListWidget">
+             <property name="maximumSize">
+              <size>
+               <width>90</width>
+               <height>16777215</height>
+              </size>
+             </property>
+            </widget>
            </item>
            <item>
             <widget class="QWidget" name="sideVupdownButtonsWidget" native="true">
@@ -2776,7 +2810,14 @@
          <widget class="QWidget" name="sideGWidget1" native="true">
           <layout class="QHBoxLayout" name="horizontalLayout_32">
            <item>
-            <widget class="QListWidget" name="sideGListWidget"/>
+            <widget class="QListWidget" name="sideGListWidget">
+             <property name="maximumSize">
+              <size>
+               <width>90</width>
+               <height>16777215</height>
+              </size>
+             </property>
+            </widget>
            </item>
            <item>
             <widget class="QWidget" name="sideGupdownButtonsWidget" native="true">
@@ -2899,6 +2940,12 @@
               <size>
                <width>80</width>
                <height>0</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>90</width>
+               <height>16777215</height>
               </size>
              </property>
             </widget>

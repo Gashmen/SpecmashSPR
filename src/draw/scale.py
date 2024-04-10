@@ -164,7 +164,7 @@ class ScaleBorder:
         else:
             return False
 
-    def calculate_len_x_top(self,len_x_top,scale_gost=1):
+    def calculate_len_x_top(self,len_x_top=BOUNDARIES.A3_BOUNDARIES['LEN_X_ВЕРХНЯЯ_ГРАНИЦА'],scale_gost=1):
         needed_parametrs = [self.len0_x,self.len1_x,self.len2_x,self.len3_x,self.len4_x,
                             self.len5_x,self.len6_x,self.len7_x,self.len8_x,self.len9_x,
                             self.len10_x,self.len11_x]
@@ -175,7 +175,7 @@ class ScaleBorder:
         else:
             return False
 
-    def calculate_len_y_left(self,len_y_left,scale_gost=1):
+    def calculate_len_y_left(self,len_y_left=BOUNDARIES.A3_BOUNDARIES['LEN_Y_ЛЕВАЯ_ГРАНИЦА'],scale_gost=1):
         needed_parametrs = [self.len0_y,self.len1_y,self.len2_y,self.len3_y,self.len4_y,self.len5_y,self.len6_y]
         sum_len_y_left = sum(needed_parametrs) + 1.5*max(self.len2_y,self.len2_x,self.len4_y,self.len4_x)#для вставки размера
         self.scale_len_y_left = math.floor(sum_len_y_left / scale_gost)
@@ -193,13 +193,13 @@ class ScaleBorder:
         else:
             return False
 
-
     def calculate_scale(self,boundaries:dict = BOUNDARIES.A3_BOUNDARIES):
         if hasattr(self,'len1_x'):
             conditions = False
             i=0
             while conditions == False:
                 self.scale = SCALE.SCALE_GOST[i]
+                self.scale_border = self.scale
                 i += 1
                 conditions = all([
                     self.calculate_len_x_bottom(len_x_bottom=boundaries['LEN_X_НИЖНЯЯ_ГРАНИЦА'],scale_gost=self.scale),
@@ -208,6 +208,7 @@ class ScaleBorder:
                     self.calculate_len_y_right(len_y_right=boundaries['LEN_Y_ПРАВАЯ_ГРАНИЦА'],scale_gost=self.scale)
                 ])
                 self.calculate_free_space()
+
 
     def calculate_free_space(self,boundaries:dict = BOUNDARIES.A3_BOUNDARIES):
         self.free_space_x = boundaries['LEN_X_ВЕРХНЯЯ_ГРАНИЦА'] - self.scale_len_x_top
@@ -226,6 +227,7 @@ class ScaleBorder:
         self.len2_y = 0
         self.len4_y = 0
         self.len6_y = 0
+
 
 
 

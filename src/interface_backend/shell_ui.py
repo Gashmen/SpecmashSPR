@@ -181,6 +181,7 @@ class ShellInterface(setup_ui.SetupInterface):
                 if hasattr(self.shell_information,'shell_dict'):
                     self.shell_dict = self.shell_information.shell_dict
 
+
     @Qt.pyqtSlot()
     def set_dict_shell_BOM(self):
         if hasattr(self,'shell_size'):
@@ -194,6 +195,7 @@ class ShellInterface(setup_ui.SetupInterface):
                     self.shell_information.BOM_shell.set_property()
                     self.shell_information.BOM_shell.set_production_cost()
                     self.shell_information.BOM_shell.set_work_cost()
+                    self.shell_information.BOM_shell.calculate_sum_cost()
                     self.shell_information.BOM_shell.give_bom_dict()
                     self.BOM_general.add_bom_list_elements(BOM=self.shell_information.BOM_shell.bom_dict)
 

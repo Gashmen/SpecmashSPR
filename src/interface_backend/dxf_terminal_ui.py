@@ -41,7 +41,7 @@ class DxfTerminalQtCommunication(dxf_gland.DxfGlandQtCommunication):
         if hasattr(self,'list_terminal_dxf'):
             if len(self.list_terminal_dxf) >0:
                 summary_terminal_len = dxf_terminal.define_len_terminals(list_terminal_dxf=self.list_terminal_dxf)
-                if summary_terminal_len > 0.95 * self.withoutcapside_block.din_length:
+                if summary_terminal_len > 0.9 * self.withoutcapside_block.din_length:
                     self.list_terminal_dxf.clear()
                     self.list_with_terminals.clear()
                     self.add_button_terminal_listwidget.clear()
@@ -79,7 +79,7 @@ class DxfTerminalQtCommunication(dxf_gland.DxfGlandQtCommunication):
                                                     if insert.dxf.name == '35_DIN_CUTSIDE'][0].dxf.insert
 
                         len_terminal = terminal_dxf.horizontal_length
-                        x_insert = x_first_coordinate + len_terminal / 2
+                        x_insert = x_first_coordinate + len_terminal/2
                         y_insert = y_first_coordinate
                         terminal_insert = self.base_dxf.doc_base.blocks[self.withoutcapside_block.shell_side_name].add_blockref(
                                                                          name = terminal_dxf.terminal_dxf_name,

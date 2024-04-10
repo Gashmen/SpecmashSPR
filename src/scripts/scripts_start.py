@@ -1,6 +1,7 @@
 import sys
 from PyQt5.QtWidgets import QApplication, QMainWindow, QPushButton
-from src.scripts import  bommerger
+from src.scripts import bommerger
+from src.ldap_auth import backend_auth
 class ScriptsMainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
